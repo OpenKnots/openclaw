@@ -587,6 +587,29 @@ html[data-theme="dark"] .docs-chat-user {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: text }),
       });
+
+      // Handle rate limiting
+      if (response.status === 429) {
+        const retryAfter = response.headers.get("Retry-After") || "60";
+        fullText = `You're asking questions too quickly. Please wait ${retryAfter} seconds before trying again.`;
+        assistantBubble.innerHTML = renderMarkdown(fullText);
+        addCopyButtons(assistantBubble, fullText);
+        return;
+      }
+
+      // Handle other errors
+      if (!response.ok) {
+        try {
+          const errorData = await response.json();
+          fullText = errorData.error || "Something went wrong. Please try again.";
+        } catch {
+          fullText = "Something went wrong. Please try again.";
+        }
+        assistantBubble.innerHTML = renderMarkdown(fullText);
+        addCopyButtons(assistantBubble, fullText);
+        return;
+      }
+
       if (!response.body) {
         fullText = await response.text();
         assistantBubble.innerHTML = renderMarkdown(fullText);

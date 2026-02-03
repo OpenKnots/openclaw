@@ -23,7 +23,15 @@ This generates embeddings for all doc chunks and stores them in
 OPENAI_API_KEY=sk-... pnpm docs:chat:serve:vector
 ```
 
-Defaults to `http://localhost:3001`. Health check:
+Defaults to `http://localhost:3001`. Optional environment variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `3001` | Server port |
+| `RATE_LIMIT` | `20` | Max requests per window per IP |
+| `RATE_WINDOW_MS` | `60000` | Rate limit window in milliseconds |
+
+Health check:
 
 ```bash
 curl http://localhost:3001/health
