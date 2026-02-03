@@ -202,11 +202,10 @@ html[data-theme="dark"] .docs-chat-user {
 }
 .docs-chat-assistant pre {
   background: var(--docs-chat-code-bg);
-  padding: 12px 14px;
-  padding-top: 32px;
+  padding: 10px 12px;
   border-radius: 8px;
   overflow-x: auto;
-  margin: 10px 0;
+  margin: 6px 0;
   font-size: 0.9em;
   max-width: 100%;
   white-space: pre;
@@ -225,6 +224,15 @@ html[data-theme="dark"] .docs-chat-user {
   white-space: pre;
   word-wrap: normal;
   display: block;
+}
+/* Compact single-line code blocks */
+.docs-chat-assistant pre.compact {
+  margin: 4px 0;
+  padding: 6px 10px;
+}
+/* Longer code blocks with copy button need extra top padding */
+.docs-chat-assistant pre:not(.compact) {
+  padding-top: 28px;
 }
 .docs-chat-assistant a {
   color: var(--docs-chat-accent);
@@ -407,9 +415,18 @@ html[data-theme="dark"] .docs-chat-user {
     });
     bubble.appendChild(copyResponse);
 
-    // Add copy buttons to code blocks
+    // Add copy buttons to code blocks (skip short/single-line blocks)
     bubble.querySelectorAll("pre").forEach((pre) => {
       const code = pre.querySelector("code") || pre;
+      const text = code.textContent || "";
+      const lineCount = text.split("\n").length;
+      const isShort = lineCount <= 2 && text.length < 100;
+
+      if (isShort) {
+        pre.classList.add("compact");
+        return; // Skip copy button for compact blocks
+      }
+
       const copyCode = document.createElement("button");
       copyCode.className = "docs-chat-copy-code";
       copyCode.textContent = "Copy";
@@ -417,7 +434,7 @@ html[data-theme="dark"] .docs-chat-user {
       copyCode.addEventListener("click", async (e) => {
         e.stopPropagation();
         try {
-          await navigator.clipboard.writeText(code.textContent);
+          await navigator.clipboard.writeText(text);
           copyCode.textContent = "Copied!";
           setTimeout(() => (copyCode.textContent = "Copy"), 1500);
         } catch (err) {
