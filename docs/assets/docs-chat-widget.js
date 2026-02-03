@@ -29,7 +29,7 @@
 #docs-chat-root { position: fixed; right: 20px; bottom: 20px; z-index: 9999; font-family: var(--font-body, system-ui, -apple-system, sans-serif); }
 #docs-chat-root.docs-chat-expanded { right: 0; bottom: 0; }
 :root {
-  --docs-chat-accent: var(--accent, #FF5A36);
+  --docs-chat-accent: var(--accent, #ff7d60);
   --docs-chat-text: #1a1a1a;
   --docs-chat-muted: #555;
   --docs-chat-panel: rgba(255, 255, 255, 0.92);
@@ -182,15 +182,22 @@ html[data-theme="dark"] {
 .docs-chat-assistant pre {
   background: var(--docs-chat-code-bg);
   padding: 12px 14px;
+  padding-top: 32px;
   border-radius: 8px;
   overflow-x: auto;
   margin: 10px 0;
   font-size: 0.9em;
+  max-width: 100%;
+  white-space: pre;
+  word-wrap: normal;
 }
 .docs-chat-assistant pre code {
   background: transparent;
   padding: 0;
   font-size: inherit;
+  white-space: pre;
+  word-wrap: normal;
+  display: block;
 }
 .docs-chat-assistant a {
   color: var(--docs-chat-accent);
@@ -239,42 +246,45 @@ html[data-theme="dark"] {
   margin: 12px 0;
 }
 /* Copy buttons */
-.docs-chat-assistant { position: relative; }
+.docs-chat-assistant { position: relative; padding-top: 28px; }
 .docs-chat-copy-response {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  background: var(--docs-chat-code-bg);
+  top: 8px;
+  right: 8px;
+  background: var(--docs-chat-surface);
   border: 1px solid var(--docs-chat-panel-border);
   border-radius: 5px;
-  padding: 3px 6px;
+  padding: 4px 8px;
   font-size: 11px;
   cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.15s ease;
   color: var(--docs-chat-muted);
+  transition: color 0.15s ease, background 0.15s ease;
 }
-.docs-chat-assistant:hover .docs-chat-copy-response { opacity: 1; }
-.docs-chat-copy-response:hover { color: var(--docs-chat-text); }
+.docs-chat-copy-response:hover {
+  color: var(--docs-chat-text);
+  background: var(--docs-chat-code-bg);
+}
 .docs-chat-assistant pre {
   position: relative;
 }
 .docs-chat-copy-code {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  background: var(--docs-chat-assistant-bg);
+  top: 8px;
+  right: 8px;
+  background: var(--docs-chat-surface);
   border: 1px solid var(--docs-chat-panel-border);
   border-radius: 4px;
-  padding: 2px 6px;
+  padding: 3px 7px;
   font-size: 10px;
   cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.15s ease;
   color: var(--docs-chat-muted);
+  transition: color 0.15s ease, background 0.15s ease;
+  z-index: 1;
 }
-.docs-chat-assistant pre:hover .docs-chat-copy-code { opacity: 1; }
-.docs-chat-copy-code:hover { color: var(--docs-chat-text); }
+.docs-chat-copy-code:hover {
+  color: var(--docs-chat-text);
+  background: var(--docs-chat-code-bg);
+}
 `;
   document.head.appendChild(style);
 
