@@ -59,8 +59,8 @@ export const zaloDock: ChannelDock = {
   outbound: { textChunkLimit: 2000 },
   config: {
     resolveAllowFrom: ({ cfg, accountId }) =>
-      (resolveZaloAccount({ cfg: cfg, accountId }).config.allowFrom ?? []).map(
-        (entry) => String(entry),
+      (resolveZaloAccount({ cfg: cfg, accountId }).config.allowFrom ?? []).map((entry) =>
+        String(entry),
       ),
     formatAllowFrom: ({ allowFrom }) =>
       allowFrom
@@ -94,8 +94,7 @@ export const zaloPlugin: ChannelPlugin<ResolvedZaloAccount> = {
   configSchema: buildChannelConfigSchema(ZaloConfigSchema),
   config: {
     listAccountIds: (cfg) => listZaloAccountIds(cfg),
-    resolveAccount: (cfg, accountId) =>
-      resolveZaloAccount({ cfg: cfg, accountId }),
+    resolveAccount: (cfg, accountId) => resolveZaloAccount({ cfg: cfg, accountId }),
     defaultAccountId: (cfg) => resolveDefaultZaloAccountId(cfg),
     setAccountEnabled: ({ cfg, accountId, enabled }) =>
       setAccountEnabledInConfigSection({
@@ -121,8 +120,8 @@ export const zaloPlugin: ChannelPlugin<ResolvedZaloAccount> = {
       tokenSource: account.tokenSource,
     }),
     resolveAllowFrom: ({ cfg, accountId }) =>
-      (resolveZaloAccount({ cfg: cfg, accountId }).config.allowFrom ?? []).map(
-        (entry) => String(entry),
+      (resolveZaloAccount({ cfg: cfg, accountId }).config.allowFrom ?? []).map((entry) =>
+        String(entry),
       ),
     formatAllowFrom: ({ allowFrom }) =>
       allowFrom
@@ -133,11 +132,8 @@ export const zaloPlugin: ChannelPlugin<ResolvedZaloAccount> = {
   },
   security: {
     resolveDmPolicy: ({ cfg, accountId, account }) => {
-      const resolvedAccountId =
-        accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
-      const useAccountPath = Boolean(
-        cfg.channels?.zalo?.accounts?.[resolvedAccountId],
-      );
+      const resolvedAccountId = accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
+      const useAccountPath = Boolean(cfg.channels?.zalo?.accounts?.[resolvedAccountId]);
       const basePath = useAccountPath
         ? `channels.zalo.accounts.${resolvedAccountId}.`
         : "channels.zalo.";
@@ -274,9 +270,7 @@ export const zaloPlugin: ChannelPlugin<ResolvedZaloAccount> = {
       if (!account.token) {
         throw new Error("Zalo token not configured");
       }
-      await sendMessageZalo(id, PAIRING_APPROVED_MESSAGE, {
-        token: account.token,
-      });
+      await sendMessageZalo(id, PAIRING_APPROVED_MESSAGE, { token: account.token });
     },
   },
   outbound: {
@@ -303,12 +297,8 @@ export const zaloPlugin: ChannelPlugin<ResolvedZaloAccount> = {
         if (chunk.length > 0) {
           chunks.push(chunk);
         }
-        const brokeOnSeparator =
-          breakIdx < remaining.length && /\s/.test(remaining[breakIdx]);
-        const nextStart = Math.min(
-          remaining.length,
-          breakIdx + (brokeOnSeparator ? 1 : 0),
-        );
+        const brokeOnSeparator = breakIdx < remaining.length && /\s/.test(remaining[breakIdx]);
+        const nextStart = Math.min(remaining.length, breakIdx + (brokeOnSeparator ? 1 : 0));
         remaining = remaining.slice(nextStart).trimStart();
       }
       if (remaining.length) {
@@ -365,11 +355,7 @@ export const zaloPlugin: ChannelPlugin<ResolvedZaloAccount> = {
       lastProbeAt: snapshot.lastProbeAt ?? null,
     }),
     probeAccount: async ({ account, timeoutMs }) =>
-      probeZalo(
-        account.token,
-        timeoutMs,
-        resolveZaloProxyFetch(account.config.proxy),
-      ),
+      probeZalo(account.token, timeoutMs, resolveZaloProxyFetch(account.config.proxy)),
     buildAccountSnapshot: ({ account, runtime }) => {
       const configured = Boolean(account.token?.trim());
       return {
@@ -421,8 +407,7 @@ export const zaloPlugin: ChannelPlugin<ResolvedZaloAccount> = {
         webhookSecret: account.config.webhookSecret,
         webhookPath: account.config.webhookPath,
         fetcher,
-        statusSink: (patch) =>
-          ctx.setStatus({ accountId: ctx.accountId, ...patch }),
+        statusSink: (patch) => ctx.setStatus({ accountId: ctx.accountId, ...patch }),
       });
     },
   },

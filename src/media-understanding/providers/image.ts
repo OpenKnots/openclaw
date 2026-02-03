@@ -47,11 +47,7 @@ export async function describeImageWithModel(
         role: "user",
         content: [
           { type: "text", text: params.prompt ?? "Describe the image." },
-          {
-            type: "image",
-            data: base64,
-            mimeType: params.mime ?? "image/jpeg",
-          },
+          { type: "image", data: base64, mimeType: params.mime ?? "image/jpeg" },
         ],
         timestamp: Date.now(),
       },

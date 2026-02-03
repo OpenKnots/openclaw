@@ -110,18 +110,12 @@ describe("cron tool", () => {
     callGatewayMock
       .mockResolvedValueOnce({
         messages: [
-          {
-            role: "user",
-            content: [{ type: "text", text: "Discussed Q2 budget" }],
-          },
+          { role: "user", content: [{ type: "text", text: "Discussed Q2 budget" }] },
           {
             role: "assistant",
             content: [{ type: "text", text: "We agreed to review on Tuesday." }],
           },
-          {
-            role: "user",
-            content: [{ type: "text", text: "Remind me about the thing at 2pm" }],
-          },
+          { role: "user", content: [{ type: "text", text: "Remind me about the thing at 2pm" }] },
         ],
       })
       .mockResolvedValueOnce({ ok: true });

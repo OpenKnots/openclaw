@@ -19,7 +19,7 @@ function loadIndex() {
   if (index) return index;
   if (!fs.existsSync(indexPath)) {
     console.error(
-      `Missing index at ${indexPath}. Run: node scripts/docs-chat/build-index.mjs --out ${defaultIndex}`,
+      `Missing index at ${indexPath}. Run: node scripts/docs-chat/build-index.mjs --out ${defaultIndex}`
     );
     process.exit(1);
   }
@@ -131,7 +131,7 @@ async function handleChat(req, res) {
       "Content-Type": "text/plain; charset=utf-8",
     });
     res.end(
-      "I couldn't find relevant documentation excerpts for that question. Try rephrasing or search the docs.",
+      "I couldn't find relevant documentation excerpts for that question. Try rephrasing or search the docs."
     );
     return;
   }
@@ -139,7 +139,7 @@ async function handleChat(req, res) {
   const context = chunks
     .map(
       (chunk) =>
-        `[${chunk.title}](${chunk.url})\n${chunk.content.slice(0, 1200)}`,
+        `[${chunk.title}](${chunk.url})\n${chunk.content.slice(0, 1200)}`
     )
     .join("\n\n---\n\n");
 
@@ -188,6 +188,6 @@ const server = http.createServer(async (req, res) => {
 server.listen(port, () => {
   loadIndex();
   console.error(
-    `docs-chat API running at http://localhost:${port} (chunks: ${index.chunks.length})`,
+    `docs-chat API running at http://localhost:${port} (chunks: ${index.chunks.length})`
   );
 });

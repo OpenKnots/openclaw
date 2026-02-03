@@ -57,10 +57,7 @@ export async function setupCommand(
     if (!existingRaw.exists) {
       runtime.log(`Wrote ${formatConfigPath(configPath)}`);
     } else {
-      logConfigUpdated(runtime, {
-        path: configPath,
-        suffix: "(set agents.defaults.workspace)",
-      });
+      logConfigUpdated(runtime, { path: configPath, suffix: "(set agents.defaults.workspace)" });
     }
   } else {
     runtime.log(`Config OK: ${formatConfigPath(configPath)}`);

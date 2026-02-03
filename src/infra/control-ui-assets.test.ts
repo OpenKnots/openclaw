@@ -65,9 +65,7 @@ describe("control UI assets helpers", () => {
       const binDir = path.join(tmp, "node_modules", ".bin");
       const pkgRoot = path.join(tmp, "node_modules", "openclaw");
       await fs.mkdir(binDir, { recursive: true });
-      await fs.mkdir(path.join(pkgRoot, "dist", "control-ui"), {
-        recursive: true,
-      });
+      await fs.mkdir(path.join(pkgRoot, "dist", "control-ui"), { recursive: true });
       await fs.writeFile(path.join(binDir, "openclaw"), "#!/usr/bin/env node\n");
       await fs.writeFile(path.join(pkgRoot, "package.json"), JSON.stringify({ name: "openclaw" }));
       await fs.writeFile(path.join(pkgRoot, "dist", "control-ui", "index.html"), "<html></html>\n");

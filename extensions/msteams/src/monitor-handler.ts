@@ -4,11 +4,7 @@ import type { MSTeamsAdapter } from "./messenger.js";
 import type { MSTeamsMonitorLogger } from "./monitor-types.js";
 import type { MSTeamsPollStore } from "./polls.js";
 import type { MSTeamsTurnContext } from "./sdk-types.js";
-import {
-  buildFileInfoCard,
-  parseFileConsentInvoke,
-  uploadToConsentUrl,
-} from "./file-consent.js";
+import { buildFileInfoCard, parseFileConsentInvoke, uploadToConsentUrl } from "./file-consent.js";
 import { createMSTeamsMessageHandler } from "./monitor-handler/message-handler.js";
 import { getPendingUpload, removePendingUpload } from "./pending-uploads.js";
 
@@ -130,17 +126,11 @@ export function registerMSTeamsHandlers<T extends MSTeamsActivityHandler>(
     handler.run = async (context: unknown) => {
       const ctx = context as MSTeamsTurnContext;
       // Handle file consent invokes before passing to normal flow
-      if (
-        ctx.activity?.type === "invoke" &&
-        ctx.activity?.name === "fileConsent/invoke"
-      ) {
+      if (ctx.activity?.type === "invoke" && ctx.activity?.name === "fileConsent/invoke") {
         const handled = await handleFileConsentInvoke(ctx, deps.log);
         if (handled) {
           // Send invoke response for file consent
-          await ctx.sendActivity({
-            type: "invokeResponse",
-            value: { status: 200 },
-          });
+          await ctx.sendActivity({ type: "invokeResponse", value: { status: 200 } });
           return;
         }
       }
@@ -158,12 +148,9 @@ export function registerMSTeamsHandlers<T extends MSTeamsActivityHandler>(
   });
 
   handler.onMembersAdded(async (context, next) => {
-    const membersAdded =
-      (context as MSTeamsTurnContext).activity?.membersAdded ?? [];
+    const membersAdded = (context as MSTeamsTurnContext).activity?.membersAdded ?? [];
     for (const member of membersAdded) {
-      if (
-        member.id !== (context as MSTeamsTurnContext).activity?.recipient?.id
-      ) {
+      if (member.id !== (context as MSTeamsTurnContext).activity?.recipient?.id) {
         deps.log.debug("member added", { member: member.id });
         // Don't send welcome message - let the user initiate conversation.
       }

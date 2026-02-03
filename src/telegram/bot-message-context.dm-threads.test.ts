@@ -3,12 +3,7 @@ import { buildTelegramMessageContext } from "./bot-message-context.js";
 
 describe("buildTelegramMessageContext dm thread sessions", () => {
   const baseConfig = {
-    agents: {
-      defaults: {
-        model: "anthropic/claude-opus-4-5",
-        workspace: "/tmp/openclaw",
-      },
-    },
+    agents: { defaults: { model: "anthropic/claude-opus-4-5", workspace: "/tmp/openclaw" } },
     channels: { telegram: {} },
     messages: { groupChat: { mentionPatterns: [] } },
   } as never;
@@ -77,12 +72,7 @@ describe("buildTelegramMessageContext dm thread sessions", () => {
 
 describe("buildTelegramMessageContext group sessions without forum", () => {
   const baseConfig = {
-    agents: {
-      defaults: {
-        model: "anthropic/claude-opus-4-5",
-        workspace: "/tmp/openclaw",
-      },
-    },
+    agents: { defaults: { model: "anthropic/claude-opus-4-5", workspace: "/tmp/openclaw" } },
     channels: { telegram: {} },
     messages: { groupChat: { mentionPatterns: [] } },
   } as never;
@@ -165,12 +155,7 @@ describe("buildTelegramMessageContext group sessions without forum", () => {
   it("uses topic session for forum groups with message_thread_id", async () => {
     const ctx = await buildContext({
       message_id: 1,
-      chat: {
-        id: -1001234567890,
-        type: "supergroup",
-        title: "Test Forum",
-        is_forum: true,
-      },
+      chat: { id: -1001234567890, type: "supergroup", title: "Test Forum", is_forum: true },
       date: 1700000000,
       text: "@bot hello",
       message_thread_id: 99,

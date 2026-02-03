@@ -334,9 +334,7 @@ describe("runCronIsolatedAgentTurn", () => {
       });
 
       expect(res.status).toBe("ok");
-      const call = vi.mocked(runEmbeddedPiAgent).mock.calls[0]?.[0] as {
-        prompt?: string;
-      };
+      const call = vi.mocked(runEmbeddedPiAgent).mock.calls[0]?.[0] as { prompt?: string };
       expect(call?.prompt).toContain("EXTERNAL, UNTRUSTED");
       expect(call?.prompt).toContain("Hello");
     });
@@ -376,9 +374,7 @@ describe("runCronIsolatedAgentTurn", () => {
       });
 
       expect(res.status).toBe("ok");
-      const call = vi.mocked(runEmbeddedPiAgent).mock.calls[0]?.[0] as {
-        prompt?: string;
-      };
+      const call = vi.mocked(runEmbeddedPiAgent).mock.calls[0]?.[0] as { prompt?: string };
       expect(call?.prompt).not.toContain("EXTERNAL, UNTRUSTED");
       expect(call?.prompt).toContain("Hello");
     });
@@ -605,11 +601,7 @@ describe("runCronIsolatedAgentTurn", () => {
       });
 
       const cfg = makeCfg(home, storePath);
-      const job = makeJob({
-        kind: "agentTurn",
-        message: "ping",
-        deliver: false,
-      });
+      const job = makeJob({ kind: "agentTurn", message: "ping", deliver: false });
 
       await runCronIsolatedAgentTurn({
         cfg,

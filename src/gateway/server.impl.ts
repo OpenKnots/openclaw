@@ -195,10 +195,7 @@ export async function startGatewayServer(
     );
   }
 
-  const autoEnable = applyPluginAutoEnable({
-    config: configSnapshot.config,
-    env: process.env,
-  });
+  const autoEnable = applyPluginAutoEnable({ config: configSnapshot.config, env: process.env });
   if (autoEnable.changes.length > 0) {
     try {
       await writeConfigFile(autoEnable.config);
@@ -217,9 +214,7 @@ export async function startGatewayServer(
   if (diagnosticsEnabled) {
     startDiagnosticHeartbeat();
   }
-  setGatewaySigusr1RestartPolicy({
-    allowExternal: cfgAtStart.commands?.restart === true,
-  });
+  setGatewaySigusr1RestartPolicy({ allowExternal: cfgAtStart.commands?.restart === true });
   initSubagentRegistry();
   const defaultAgentId = resolveDefaultAgentId(cfgAtStart);
   const defaultWorkspaceDir = resolveAgentWorkspaceDir(cfgAtStart, defaultAgentId);

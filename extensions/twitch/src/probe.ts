@@ -41,10 +41,7 @@ export async function probeTwitch(
   let client: ChatClient | undefined;
 
   try {
-    const authProvider = new StaticAuthProvider(
-      account.clientId ?? "",
-      rawToken,
-    );
+    const authProvider = new StaticAuthProvider(account.clientId ?? "", rawToken);
 
     client = new ChatClient({
       authProvider,
@@ -54,12 +51,8 @@ export async function probeTwitch(
     const connectionPromise = new Promise<void>((resolve, reject) => {
       let settled = false;
       let connectListener: ReturnType<ChatClient["onConnect"]> | undefined;
-      let disconnectListener:
-        | ReturnType<ChatClient["onDisconnect"]>
-        | undefined;
-      let authFailListener:
-        | ReturnType<ChatClient["onAuthenticationFailure"]>
-        | undefined;
+      let disconnectListener: ReturnType<ChatClient["onDisconnect"]> | undefined;
+      let authFailListener: ReturnType<ChatClient["onAuthenticationFailure"]> | undefined;
 
       const cleanup = () => {
         if (settled) {
@@ -91,10 +84,7 @@ export async function probeTwitch(
     });
 
     const timeout = new Promise<never>((_, reject) => {
-      setTimeout(
-        () => reject(new Error(`timeout after ${timeoutMs}ms`)),
-        timeoutMs,
-      );
+      setTimeout(() => reject(new Error(`timeout after ${timeoutMs}ms`)), timeoutMs);
     });
 
     client.connect();

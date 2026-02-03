@@ -161,9 +161,7 @@ describe("monitorTelegramProvider (grammY)", () => {
   });
 
   it("retries on recoverable network errors", async () => {
-    const networkError = Object.assign(new Error("timeout"), {
-      code: "ETIMEDOUT",
-    });
+    const networkError = Object.assign(new Error("timeout"), { code: "ETIMEDOUT" });
     runSpy
       .mockImplementationOnce(() => ({
         task: () => Promise.reject(networkError),

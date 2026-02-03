@@ -223,11 +223,7 @@ function collectUsageCandidates(root: Record<string, unknown>): Record<string, u
   const MAX_SCAN_NODES = 60;
   const queue: Array<{ value: unknown; depth: number }> = [{ value: root, depth: 0 }];
   const seen = new Set<object>();
-  const candidates: Array<{
-    record: Record<string, unknown>;
-    score: number;
-    depth: number;
-  }> = [];
+  const candidates: Array<{ record: Record<string, unknown>; score: number; depth: number }> = [];
   let scanned = 0;
 
   while (queue.length && scanned < MAX_SCAN_NODES) {

@@ -33,13 +33,8 @@ describe("deliverLineAutoReply", () => {
       type: "text" as const,
       text,
     }));
-    const createQuickReplyItems = vi.fn((labels: string[]) => ({
-      items: labels,
-    }));
-    const pushMessagesLine = vi.fn(async () => ({
-      messageId: "push",
-      chatId: "u1",
-    }));
+    const createQuickReplyItems = vi.fn((labels: string[]) => ({ items: labels }));
+    const pushMessagesLine = vi.fn(async () => ({ messageId: "push", chatId: "u1" }));
 
     const lineData = {
       flexMessage: { altText: "Card", contents: { type: "bubble" } },
@@ -92,13 +87,8 @@ describe("deliverLineAutoReply", () => {
       type: "text" as const,
       text,
     }));
-    const createQuickReplyItems = vi.fn((labels: string[]) => ({
-      items: labels,
-    }));
-    const pushMessagesLine = vi.fn(async () => ({
-      messageId: "push",
-      chatId: "u1",
-    }));
+    const createQuickReplyItems = vi.fn((labels: string[]) => ({ items: labels }));
+    const pushMessagesLine = vi.fn(async () => ({ messageId: "push", chatId: "u1" }));
 
     const lineData = {
       flexMessage: { altText: "Card", contents: { type: "bubble" } },
@@ -155,13 +145,8 @@ describe("deliverLineAutoReply", () => {
       text,
       quickReply: { items: ["A"] },
     }));
-    const createQuickReplyItems = vi.fn((labels: string[]) => ({
-      items: labels,
-    }));
-    const pushMessagesLine = vi.fn(async () => ({
-      messageId: "push",
-      chatId: "u1",
-    }));
+    const createQuickReplyItems = vi.fn((labels: string[]) => ({ items: labels }));
+    const pushMessagesLine = vi.fn(async () => ({ messageId: "push", chatId: "u1" }));
 
     const lineData = {
       flexMessage: { altText: "Card", contents: { type: "bubble" } },

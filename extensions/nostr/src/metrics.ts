@@ -41,9 +41,7 @@ export type RateLimitMetricName = "rate_limit.per_sender" | "rate_limit.global";
 
 export type DecryptMetricName = "decrypt.success" | "decrypt.failure";
 
-export type MemoryMetricName =
-  | "memory.seen_tracker_size"
-  | "memory.rate_limiter_entries";
+export type MemoryMetricName = "memory.seen_tracker_size" | "memory.rate_limiter_entries";
 
 export type MetricName =
   | EventMetricName
@@ -144,11 +142,7 @@ export interface MetricsSnapshot {
 
 export interface NostrMetrics {
   /** Emit a metric event */
-  emit: (
-    name: MetricName,
-    value?: number,
-    labels?: Record<string, string | number>,
-  ) => void;
+  emit: (name: MetricName, value?: number, labels?: Record<string, string | number>) => void;
 
   /** Get current metrics snapshot */
   getSnapshot: () => MetricsSnapshot;
@@ -405,10 +399,7 @@ export function createMetrics(onMetric?: OnMetricCallback): NostrMetrics {
     // Convert relay map to object
     const relaysObj: MetricsSnapshot["relays"] = {};
     for (const [url, stats] of relays) {
-      relaysObj[url] = {
-        ...stats,
-        messagesReceived: { ...stats.messagesReceived },
-      };
+      relaysObj[url] = { ...stats, messagesReceived: { ...stats.messagesReceived } };
     }
 
     return {

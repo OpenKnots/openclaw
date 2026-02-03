@@ -172,10 +172,7 @@ export async function resolveModelsCommandReply(params: {
     const lines: string[] = [
       "Providers:",
       ...providers.map((p) =>
-        formatProviderLine({
-          provider: p,
-          count: byProvider.get(p)?.size ?? 0,
-        }),
+        formatProviderLine({ provider: p, count: byProvider.get(p)?.size ?? 0 }),
       ),
       "",
       "Use: /models <provider>",

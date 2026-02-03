@@ -1,6 +1,4 @@
-export function normalizeNextcloudTalkMessagingTarget(
-  raw: string,
-): string | undefined {
+export function normalizeNextcloudTalkMessagingTarget(raw: string): string | undefined {
   const trimmed = raw.trim();
   if (!trimmed) {
     return undefined;

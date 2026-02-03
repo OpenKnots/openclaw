@@ -301,10 +301,7 @@ async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Respons
 export async function fetchNpmLatestVersion(params?: {
   timeoutMs?: number;
 }): Promise<RegistryStatus> {
-  const res = await fetchNpmTagVersion({
-    tag: "latest",
-    timeoutMs: params?.timeoutMs,
-  });
+  const res = await fetchNpmTagVersion({ tag: "latest", timeoutMs: params?.timeoutMs });
   return {
     latestVersion: res.version,
     error: res.error,
@@ -338,18 +335,12 @@ export async function resolveNpmChannelTag(params: {
   timeoutMs?: number;
 }): Promise<{ tag: string; version: string | null }> {
   const channelTag = channelToNpmTag(params.channel);
-  const channelStatus = await fetchNpmTagVersion({
-    tag: channelTag,
-    timeoutMs: params.timeoutMs,
-  });
+  const channelStatus = await fetchNpmTagVersion({ tag: channelTag, timeoutMs: params.timeoutMs });
   if (params.channel !== "beta") {
     return { tag: channelTag, version: channelStatus.version };
   }
 
-  const latestStatus = await fetchNpmTagVersion({
-    tag: "latest",
-    timeoutMs: params.timeoutMs,
-  });
+  const latestStatus = await fetchNpmTagVersion({ tag: "latest", timeoutMs: params.timeoutMs });
   if (!latestStatus.version) {
     return { tag: channelTag, version: channelStatus.version };
   }

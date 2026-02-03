@@ -121,8 +121,6 @@ describe("processDiscordMessage ack reactions", () => {
     // oxlint-disable-next-line typescript/no-explicit-any
     await processDiscordMessage(ctx as any);
 
-    expect(reactMessageDiscord).toHaveBeenCalledWith("c1", "m1", "👀", {
-      rest: {},
-    });
+    expect(reactMessageDiscord).toHaveBeenCalledWith("c1", "m1", "👀", { rest: {} });
   });
 });

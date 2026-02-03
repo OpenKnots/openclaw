@@ -19,11 +19,7 @@ describe("agent delivery helpers", () => {
   it("builds a delivery plan from session delivery context", () => {
     const plan = resolveAgentDeliveryPlan({
       sessionEntry: {
-        deliveryContext: {
-          channel: "whatsapp",
-          to: "+1555",
-          accountId: "work",
-        },
+        deliveryContext: { channel: "whatsapp", to: "+1555", accountId: "work" },
       },
       requestedChannel: "last",
       explicitTo: undefined,

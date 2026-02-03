@@ -64,9 +64,7 @@ describe("message-normalizer", () => {
         text: "Alternative format",
       });
 
-      expect(result.content).toEqual([
-        { type: "text", text: "Alternative format" },
-      ]);
+      expect(result.content).toEqual([{ type: "text", text: "Alternative format" }]);
     });
 
     it("detects tool result by toolCallId", () => {
@@ -107,9 +105,7 @@ describe("message-normalizer", () => {
     it("handles arguments field (alternative to args)", () => {
       const result = normalizeMessage({
         role: "assistant",
-        content: [
-          { type: "tool_use", name: "test", arguments: { foo: "bar" } },
-        ],
+        content: [{ type: "tool_use", name: "test", arguments: { foo: "bar" } }],
       });
 
       expect(result.content[0].args).toEqual({ foo: "bar" });

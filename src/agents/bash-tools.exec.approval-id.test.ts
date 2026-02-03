@@ -146,10 +146,7 @@ describe("exec approvals", () => {
       elevated: { enabled: true, allowed: true, defaultLevel: "ask" },
     });
 
-    const result = await tool.execute("call3", {
-      command: "echo ok",
-      elevated: true,
-    });
+    const result = await tool.execute("call3", { command: "echo ok", elevated: true });
     expect(result.details.status).toBe("completed");
     expect(calls).not.toContain("exec.approval.request");
   });
@@ -179,10 +176,7 @@ describe("exec approvals", () => {
       elevated: { enabled: true, allowed: true, defaultLevel: "ask" },
     });
 
-    const result = await tool.execute("call4", {
-      command: "echo ok",
-      elevated: true,
-    });
+    const result = await tool.execute("call4", { command: "echo ok", elevated: true });
     expect(result.details.status).toBe("approval-pending");
     await approvalSeen;
     expect(calls).toContain("exec.approval.request");

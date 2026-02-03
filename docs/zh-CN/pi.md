@@ -166,11 +166,7 @@ const result = await runEmbeddedPiAgent({
 在 `runEmbeddedAttempt()`（由 `runEmbeddedPiAgent()` 调用）内部，使用 pi SDK：
 
 ```typescript
-import {
-  createAgentSession,
-  SessionManager,
-  SettingsManager,
-} from "@mariozechner/pi-coding-agent";
+import { createAgentSession, SessionManager, SettingsManager } from "@mariozechner/pi-coding-agent";
 
 const { session } = await createAgentSession({
   cwd: resolvedWorkspace,
@@ -263,10 +259,7 @@ export function toToolDefinitions(tools: AnyAgentTool[]): ToolDefinition[] {
 `splitSdkTools()` 将所有工具通过 `customTools` 传递：
 
 ```typescript
-export function splitSdkTools(options: {
-  tools: AnyAgentTool[];
-  sandboxEnabled: boolean;
-}) {
+export function splitSdkTools(options: { tools: AnyAgentTool[]; sandboxEnabled: boolean }) {
   return {
     builtInTools: [], // 空。我们覆盖所有内容
     customTools: toToolDefinitions(options.tools),
@@ -330,15 +323,8 @@ const compactResult = await compactEmbeddedPiSessionDirect({
 OpenClaw 维护一个认证配置文件存储，每个提供商可有多个 API 密钥：
 
 ```typescript
-const authStore = ensureAuthProfileStore(agentDir, {
-  allowKeychainPrompt: false,
-});
-const profileOrder = resolveAuthProfileOrder({
-  cfg,
-  store: authStore,
-  provider,
-  preferredProfile,
-});
+const authStore = ensureAuthProfileStore(agentDir, { allowKeychainPrompt: false });
+const profileOrder = resolveAuthProfileOrder({ cfg, store: authStore, provider, preferredProfile });
 ```
 
 配置文件在失败时轮换，并带有冷却跟踪：
@@ -418,9 +404,7 @@ if (cfg?.agents?.defaults?.contextPruning?.mode === "cache-ttl") {
 `EmbeddedBlockChunker` 管理将流式文本拆分为离散的回复块：
 
 ```typescript
-const blockChunker = blockChunking
-  ? new EmbeddedBlockChunker(blockChunking)
-  : null;
+const blockChunker = blockChunking ? new EmbeddedBlockChunker(blockChunking) : null;
 ```
 
 ### 思考/最终标签剥离
@@ -428,10 +412,7 @@ const blockChunker = blockChunking
 流式输出会被处理以剥离 `<think>`/`<thinking>` 块并提取 `<final>` 内容：
 
 ```typescript
-const stripBlockTags = (
-  text: string,
-  state: { thinking: boolean; final: boolean },
-) => {
+const stripBlockTags = (text: string, state: { thinking: boolean; final: boolean }) => {
   // 剥离 <think>...</think> 内容
   // 如果 enforceFinalTag，仅返回 <final>...</final> 内容
 };
@@ -442,12 +423,7 @@ const stripBlockTags = (
 `[[media:url]]`、`[[voice]]`、`[[reply:id]]` 等回复指令会被解析和提取：
 
 ```typescript
-const {
-  text: cleanedText,
-  mediaUrls,
-  audioAsVoice,
-  replyToId,
-} = consumeReplyDirectives(chunk);
+const { text: cleanedText, mediaUrls, audioAsVoice, replyToId } = consumeReplyDirectives(chunk);
 ```
 
 ## 错误处理

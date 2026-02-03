@@ -49,10 +49,7 @@ describe("tui-event-handlers: handleAgentEvent", () => {
   };
 
   it("processes tool events when runId matches activeChatRunId (even if sessionId differs)", () => {
-    const state = makeState({
-      currentSessionId: "session-xyz",
-      activeChatRunId: "run-123",
-    });
+    const state = makeState({ currentSessionId: "session-xyz", activeChatRunId: "run-123" });
     const { chatLog, tui, setActivityStatus } = makeContext(state);
     const { handleAgentEvent } = createEventHandlers({
       // Casts are fine here: TUI runtime shape is larger than we need in unit tests.
@@ -77,9 +74,7 @@ describe("tui-event-handlers: handleAgentEvent", () => {
 
     handleAgentEvent(evt);
 
-    expect(chatLog.startTool).toHaveBeenCalledWith("tc1", "exec", {
-      command: "echo hi",
-    });
+    expect(chatLog.startTool).toHaveBeenCalledWith("tc1", "exec", { command: "echo hi" });
     expect(tui.requestRender).toHaveBeenCalledTimes(1);
   });
 

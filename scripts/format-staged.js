@@ -3,16 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const OXFMT_EXTENSIONS = new Set([
-  ".cjs",
-  ".js",
-  ".json",
-  ".jsonc",
-  ".jsx",
-  ".mjs",
-  ".ts",
-  ".tsx",
-]);
+const OXFMT_EXTENSIONS = new Set([".cjs", ".js", ".json", ".jsonc", ".jsx", ".mjs", ".ts", ".tsx"]);
 
 function getRepoRoot() {
   const here = path.dirname(fileURLToPath(import.meta.url));
@@ -51,9 +42,7 @@ function filterOxfmtTargets(paths) {
 
 function findPartiallyStagedFiles(stagedFiles, unstagedFiles) {
   const unstaged = new Set(unstagedFiles.map(normalizeGitPath));
-  return stagedFiles.filter((filePath) =>
-    unstaged.has(normalizeGitPath(filePath)),
-  );
+  return stagedFiles.filter((filePath) => unstaged.has(normalizeGitPath(filePath)));
 }
 
 function filterOutPartialTargets(targets, partialTargets) {
@@ -88,14 +77,10 @@ function getGitPaths(args, repoRoot) {
 }
 
 function formatFiles(repoRoot, oxfmt, files) {
-  const result = spawnSync(
-    oxfmt.command,
-    ["--write", ...oxfmt.args, ...files],
-    {
-      cwd: repoRoot,
-      stdio: "inherit",
-    },
-  );
+  const result = spawnSync(oxfmt.command, ["--write", ...oxfmt.args, ...files], {
+    cwd: repoRoot,
+    stdio: "inherit",
+  });
   return result.status === 0;
 }
 
@@ -103,10 +88,7 @@ function stageFiles(repoRoot, files) {
   if (files.length === 0) {
     return true;
   }
-  const result = runGitCommand(["add", "--", ...files], {
-    cwd: repoRoot,
-    stdio: "inherit",
-  });
+  const result = runGitCommand(["add", "--", ...files], { cwd: repoRoot, stdio: "inherit" });
   return result.status === 0;
 }
 
@@ -162,9 +144,6 @@ export {
   splitNullDelimited,
 };
 
-if (
-  process.argv[1] &&
-  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-) {
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main();
 }

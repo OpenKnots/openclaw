@@ -13,11 +13,7 @@ describe("buildGatewayAuthConfig", () => {
       token: "abc",
     });
 
-    expect(result).toEqual({
-      mode: "token",
-      token: "abc",
-      allowTailscale: true,
-    });
+    expect(result).toEqual({ mode: "token", token: "abc", allowTailscale: true });
   });
 
   it("drops password when switching to token", () => {

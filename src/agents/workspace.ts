@@ -98,9 +98,7 @@ async function hasGitRepo(dir: string): Promise<boolean> {
 
 async function isGitAvailable(): Promise<boolean> {
   try {
-    const result = await runCommandWithTimeout(["git", "--version"], {
-      timeoutMs: 2_000,
-    });
+    const result = await runCommandWithTimeout(["git", "--version"], { timeoutMs: 2_000 });
     return result.code === 0;
   } catch {
     return false;
@@ -118,10 +116,7 @@ async function ensureGitRepo(dir: string, isBrandNewWorkspace: boolean) {
     return;
   }
   try {
-    await runCommandWithTimeout(["git", "init"], {
-      cwd: dir,
-      timeoutMs: 10_000,
-    });
+    await runCommandWithTimeout(["git", "init"], { cwd: dir, timeoutMs: 10_000 });
   } catch {
     // Ignore git init failures; workspace creation should still succeed.
   }

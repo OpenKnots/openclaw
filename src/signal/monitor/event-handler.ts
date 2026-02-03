@@ -45,10 +45,7 @@ import {
 import { sendMessageSignal, sendReadReceiptSignal, sendTypingSignal } from "../send.js";
 
 export function createSignalEventHandler(deps: SignalEventHandlerDeps) {
-  const inboundDebounceMs = resolveInboundDebounceMs({
-    cfg: deps.cfg,
-    channel: "signal",
-  });
+  const inboundDebounceMs = resolveInboundDebounceMs({ cfg: deps.cfg, channel: "signal" });
 
   type SignalInboundEntry = {
     senderName: string;
@@ -174,10 +171,7 @@ export function createSignalEventHandler(deps: SignalEventHandlerDeps) {
       logVerbose(`signal inbound: from=${ctxPayload.From} len=${body.length} preview="${preview}"`);
     }
 
-    const prefixContext = createReplyPrefixContext({
-      cfg: deps.cfg,
-      agentId: route.agentId,
-    });
+    const prefixContext = createReplyPrefixContext({ cfg: deps.cfg, agentId: route.agentId });
 
     const typingCallbacks = createTypingCallbacks({
       start: async () => {
@@ -486,14 +480,8 @@ export function createSignalEventHandler(deps: SignalEventHandlerDeps) {
     const commandGate = resolveControlCommandGate({
       useAccessGroups,
       authorizers: [
-        {
-          configured: effectiveDmAllow.length > 0,
-          allowed: ownerAllowedForCommands,
-        },
-        {
-          configured: effectiveGroupAllow.length > 0,
-          allowed: groupAllowedForCommands,
-        },
+        { configured: effectiveDmAllow.length > 0, allowed: ownerAllowedForCommands },
+        { configured: effectiveGroupAllow.length > 0, allowed: groupAllowedForCommands },
       ],
       allowTextCommands: true,
       hasControlCommand: hasControlCommandInMessage,

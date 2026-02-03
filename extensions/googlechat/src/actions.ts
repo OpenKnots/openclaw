@@ -10,10 +10,7 @@ import {
   readReactionParams,
   readStringParam,
 } from "openclaw/plugin-sdk";
-import {
-  listEnabledGoogleChatAccounts,
-  resolveGoogleChatAccount,
-} from "./accounts.js";
+import { listEnabledGoogleChatAccounts, resolveGoogleChatAccount } from "./accounts.js";
 import {
   createGoogleChatReaction,
   deleteGoogleChatReaction,
@@ -32,15 +29,14 @@ function listEnabledAccounts(cfg: OpenClawConfig) {
   );
 }
 
-function isReactionsEnabled(
-  accounts: ReturnType<typeof listEnabledAccounts>,
-  cfg: OpenClawConfig,
-) {
+function isReactionsEnabled(accounts: ReturnType<typeof listEnabledAccounts>, cfg: OpenClawConfig) {
   for (const account of accounts) {
     const gate = createActionGate(
       (account.config.actions ??
-        (cfg.channels?.["googlechat"] as { actions?: unknown })
-          ?.actions) as Record<string, boolean | undefined>,
+        (cfg.channels?.["googlechat"] as { actions?: unknown })?.actions) as Record<
+        string,
+        boolean | undefined
+      >,
     );
     if (gate("reactions")) {
       return true;
@@ -50,9 +46,7 @@ function isReactionsEnabled(
 }
 
 function resolveAppUserNames(account: { config: { botUser?: string | null } }) {
-  return new Set(
-    ["users/app", account.config.botUser?.trim()].filter(Boolean) as string[],
-  );
+  return new Set(["users/app", account.config.botUser?.trim()].filter(Boolean) as string[]);
 }
 
 export const googlechatMessageActions: ChannelMessageActionAdapter = {
@@ -78,8 +72,7 @@ export const googlechatMessageActions: ChannelMessageActionAdapter = {
     if (!to) {
       return null;
     }
-    const accountId =
-      typeof args.accountId === "string" ? args.accountId.trim() : undefined;
+    const accountId = typeof args.accountId === "string" ? args.accountId.trim() : undefined;
     return { to, accountId };
   },
   handleAction: async ({ action, params, cfg, accountId }) => {
@@ -98,20 +91,13 @@ export const googlechatMessageActions: ChannelMessageActionAdapter = {
         allowEmpty: true,
       });
       const mediaUrl = readStringParam(params, "media", { trim: false });
-      const threadId =
-        readStringParam(params, "threadId") ??
-        readStringParam(params, "replyTo");
-      const space = await resolveGoogleChatOutboundSpace({
-        account,
-        target: to,
-      });
+      const threadId = readStringParam(params, "threadId") ?? readStringParam(params, "replyTo");
+      const space = await resolveGoogleChatOutboundSpace({ account, target: to });
 
       if (mediaUrl) {
         const core = getGoogleChatRuntime();
         const maxBytes = (account.config.mediaMaxMb ?? 20) * 1024 * 1024;
-        const loaded = await core.channel.media.fetchRemoteMedia(mediaUrl, {
-          maxBytes,
-        });
+        const loaded = await core.channel.media.fetchRemoteMedia(mediaUrl, { maxBytes });
         const upload = await uploadGoogleChatAttachment({
           account,
           space,
@@ -146,18 +132,12 @@ export const googlechatMessageActions: ChannelMessageActionAdapter = {
     }
 
     if (action === "react") {
-      const messageName = readStringParam(params, "messageId", {
-        required: true,
-      });
+      const messageName = readStringParam(params, "messageId", { required: true });
       const { emoji, remove, isEmpty } = readReactionParams(params, {
-        removeErrorMessage:
-          "Emoji is required to remove a Google Chat reaction.",
+        removeErrorMessage: "Emoji is required to remove a Google Chat reaction.",
       });
       if (remove || isEmpty) {
-        const reactions = await listGoogleChatReactions({
-          account,
-          messageName,
-        });
+        const reactions = await listGoogleChatReactions({ account, messageName });
         const appUsers = resolveAppUserNames(account);
         const toRemove = reactions.filter((reaction) => {
           const userName = reaction.user?.name?.trim();
@@ -173,10 +153,7 @@ export const googlechatMessageActions: ChannelMessageActionAdapter = {
           if (!reaction.name) {
             continue;
           }
-          await deleteGoogleChatReaction({
-            account,
-            reactionName: reaction.name,
-          });
+          await deleteGoogleChatReaction({ account, reactionName: reaction.name });
         }
         return jsonResult({ ok: true, removed: toRemove.length });
       }
@@ -189,9 +166,7 @@ export const googlechatMessageActions: ChannelMessageActionAdapter = {
     }
 
     if (action === "reactions") {
-      const messageName = readStringParam(params, "messageId", {
-        required: true,
-      });
+      const messageName = readStringParam(params, "messageId", { required: true });
       const limit = readNumberParam(params, "limit", { integer: true });
       const reactions = await listGoogleChatReactions({
         account,
@@ -201,8 +176,6 @@ export const googlechatMessageActions: ChannelMessageActionAdapter = {
       return jsonResult({ ok: true, reactions });
     }
 
-    throw new Error(
-      `Action ${action} is not supported for provider ${providerId}.`,
-    );
+    throw new Error(`Action ${action} is not supported for provider ${providerId}.`);
   },
 };

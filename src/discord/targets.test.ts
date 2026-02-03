@@ -86,11 +86,7 @@ describe("resolveDiscordTarget", () => {
 
     await expect(
       resolveDiscordTarget("jane", { cfg, accountId: "default" }),
-    ).resolves.toMatchObject({
-      kind: "user",
-      id: "999",
-      normalized: "user:999",
-    });
+    ).resolves.toMatchObject({ kind: "user", id: "999", normalized: "user:999" });
   });
 
   it("falls back to parsing when lookup misses", async () => {

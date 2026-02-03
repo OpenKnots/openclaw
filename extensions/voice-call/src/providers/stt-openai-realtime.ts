@@ -185,9 +185,7 @@ class OpenAIRealtimeSTTSession implements RealtimeSTTSession {
       return;
     }
 
-    if (
-      this.reconnectAttempts >= OpenAIRealtimeSTTSession.MAX_RECONNECT_ATTEMPTS
-    ) {
+    if (this.reconnectAttempts >= OpenAIRealtimeSTTSession.MAX_RECONNECT_ATTEMPTS) {
       console.error(
         `[RealtimeSTT] Max reconnect attempts (${OpenAIRealtimeSTTSession.MAX_RECONNECT_ATTEMPTS}) reached`,
       );
@@ -195,9 +193,7 @@ class OpenAIRealtimeSTTSession implements RealtimeSTTSession {
     }
 
     this.reconnectAttempts++;
-    const delay =
-      OpenAIRealtimeSTTSession.RECONNECT_DELAY_MS *
-      2 ** (this.reconnectAttempts - 1);
+    const delay = OpenAIRealtimeSTTSession.RECONNECT_DELAY_MS * 2 ** (this.reconnectAttempts - 1);
     console.log(
       `[RealtimeSTT] Reconnecting ${this.reconnectAttempts}/${OpenAIRealtimeSTTSession.MAX_RECONNECT_ATTEMPTS} in ${delay}ms...`,
     );

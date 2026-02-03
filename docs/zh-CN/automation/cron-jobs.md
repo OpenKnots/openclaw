@@ -234,11 +234,7 @@ Telegram 通过 `message_thread_id` 支持论坛主题。对于定时任务投�
 ```json
 {
   "name": "Morning brief",
-  "schedule": {
-    "kind": "cron",
-    "expr": "0 7 * * *",
-    "tz": "America/Los_Angeles"
-  },
+  "schedule": { "kind": "cron", "expr": "0 7 * * *", "tz": "America/Los_Angeles" },
   "sessionTarget": "isolated",
   "wakeMode": "next-heartbeat",
   "payload": {

@@ -1,9 +1,5 @@
 import type { GatewayBrowserClient } from "../gateway";
-import {
-  cloneConfigObject,
-  removePathValue,
-  setPathValue,
-} from "./config/form-utils";
+import { cloneConfigObject, removePathValue, setPathValue } from "./config/form-utils";
 
 export type ExecApprovalsDefaults = {
   security?: string;
@@ -38,9 +34,7 @@ export type ExecApprovalsSnapshot = {
   file: ExecApprovalsFile;
 };
 
-export type ExecApprovalsTarget =
-  | { kind: "gateway" }
-  | { kind: "node"; nodeId: string };
+export type ExecApprovalsTarget = { kind: "gateway" } | { kind: "node"; nodeId: string };
 
 export type ExecApprovalsState = {
   client: GatewayBrowserClient | null;
@@ -134,8 +128,7 @@ export async function saveExecApprovals(
       state.lastError = "Exec approvals hash missing; reload and retry.";
       return;
     }
-    const file =
-      state.execApprovalsForm ?? state.execApprovalsSnapshot?.file ?? {};
+    const file = state.execApprovalsForm ?? state.execApprovalsSnapshot?.file ?? {};
     const rpc = resolveExecApprovalsSaveRpc(target, { file, baseHash });
     if (!rpc) {
       state.lastError = "Select a node before saving exec approvals.";

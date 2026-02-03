@@ -98,14 +98,8 @@ openclaw agents list --bindings
     ],
   },
   bindings: [
-    {
-      agentId: "alex",
-      match: { channel: "whatsapp", peer: { kind: "dm", id: "+15551230001" } },
-    },
-    {
-      agentId: "mia",
-      match: { channel: "whatsapp", peer: { kind: "dm", id: "+15551230002" } },
-    },
+    { agentId: "alex", match: { channel: "whatsapp", peer: { kind: "dm", id: "+15551230001" } } },
+    { agentId: "mia", match: { channel: "whatsapp", peer: { kind: "dm", id: "+15551230002" } } },
   ],
   channels: {
     whatsapp: {
@@ -265,10 +259,7 @@ openclaw agents list --bindings
     ],
   },
   bindings: [
-    {
-      agentId: "opus",
-      match: { channel: "whatsapp", peer: { kind: "dm", id: "+15551234567" } },
-    },
+    { agentId: "opus", match: { channel: "whatsapp", peer: { kind: "dm", id: "+15551234567" } } },
     { agentId: "chat", match: { channel: "whatsapp" } },
   ],
 }
@@ -306,15 +297,7 @@ openclaw agents list --bindings
             "sessions_spawn",
             "session_status",
           ],
-          deny: [
-            "write",
-            "edit",
-            "apply_patch",
-            "browser",
-            "canvas",
-            "nodes",
-            "cron",
-          ],
+          deny: ["write", "edit", "apply_patch", "browser", "canvas", "nodes", "cron"],
         },
       },
     ],

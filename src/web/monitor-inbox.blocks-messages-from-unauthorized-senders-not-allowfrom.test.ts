@@ -234,11 +234,7 @@ describe("web monitor inbox", () => {
       type: "notify",
       messages: [
         {
-          key: {
-            id: "rr-off-1",
-            fromMe: false,
-            remoteJid: "222@s.whatsapp.net",
-          },
+          key: { id: "rr-off-1", fromMe: false, remoteJid: "222@s.whatsapp.net" },
           message: { conversation: "read receipts off" },
           messageTimestamp: nowSeconds(),
         },

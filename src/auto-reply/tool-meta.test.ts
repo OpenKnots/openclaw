@@ -37,9 +37,7 @@ describe("tool meta formatting", () => {
 
   it("wraps aggregate meta in backticks when markdown is enabled", () => {
     vi.stubEnv("HOME", "/Users/test");
-    const out = formatToolAggregate("fs", ["/Users/test/dir/a.txt"], {
-      markdown: true,
-    });
+    const out = formatToolAggregate("fs", ["/Users/test/dir/a.txt"], { markdown: true });
     expect(out).toContain("`~/dir/a.txt`");
   });
 

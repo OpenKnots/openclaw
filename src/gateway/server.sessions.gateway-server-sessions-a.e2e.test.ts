@@ -17,11 +17,7 @@ import {
 } from "./test-helpers.js";
 
 const sessionCleanupMocks = vi.hoisted(() => ({
-  clearSessionQueues: vi.fn(() => ({
-    followupCleared: 0,
-    laneCleared: 0,
-    keys: [],
-  })),
+  clearSessionQueues: vi.fn(() => ({ followupCleared: 0, laneCleared: 0, keys: [] })),
   stopSubagentsForRequester: vi.fn(() => ({ stopped: 0 })),
 }));
 
@@ -387,14 +383,9 @@ describe("gateway server sessions", () => {
       JSON.stringify({ message: { role: "user", content: "Hello" } }),
       JSON.stringify({ message: { role: "assistant", content: "Hi" } }),
       JSON.stringify({
-        message: {
-          role: "assistant",
-          content: [{ type: "toolcall", name: "weather" }],
-        },
+        message: { role: "assistant", content: [{ type: "toolcall", name: "weather" }] },
       }),
-      JSON.stringify({
-        message: { role: "assistant", content: "Forecast ready" },
-      }),
+      JSON.stringify({ message: { role: "assistant", content: "Forecast ready" } }),
     ];
     await fs.writeFile(transcriptPath, lines.join("\n"), "utf-8");
 

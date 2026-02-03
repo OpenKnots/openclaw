@@ -51,18 +51,11 @@ type TokenResult =
 
 function toFormUrlEncoded(data: Record<string, string>): string {
   return Object.entries(data)
-    .map(
-      ([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
-    )
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join("&");
 }
 
-function generatePkce(): {
-  verifier: string;
-  challenge: string;
-  state: string;
-} {
+function generatePkce(): { verifier: string; challenge: string; state: string } {
   const verifier = randomBytes(32).toString("base64url");
   const challenge = createHash("sha256").update(verifier).digest("base64url");
   const state = randomBytes(16).toString("base64url");
@@ -94,14 +87,10 @@ async function requestOAuthCode(params: {
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(
-      `MiniMax OAuth authorization failed: ${text || response.statusText}`,
-    );
+    throw new Error(`MiniMax OAuth authorization failed: ${text || response.statusText}`);
   }
 
-  const payload = (await response.json()) as MiniMaxOAuthAuthorization & {
-    error?: string;
-  };
+  const payload = (await response.json()) as MiniMaxOAuthAuthorization & { error?: string };
   if (!payload.user_code || !payload.verification_uri) {
     throw new Error(
       payload.error ??
@@ -109,9 +98,7 @@ async function requestOAuthCode(params: {
     );
   }
   if (payload.state !== params.state) {
-    throw new Error(
-      "MiniMax OAuth state mismatch: possible CSRF attack or session corruption.",
-    );
+    throw new Error("MiniMax OAuth state mismatch: possible CSRF attack or session corruption.");
   }
   return payload;
 }
@@ -155,16 +142,12 @@ async function pollOAuthToken(params: {
     return {
       status: "error",
       message:
-        (payload?.base_resp?.status_msg ?? text) ||
-        "MiniMax OAuth failed to parse response.",
+        (payload?.base_resp?.status_msg ?? text) || "MiniMax OAuth failed to parse response.",
     };
   }
 
   if (!payload) {
-    return {
-      status: "error",
-      message: "MiniMax OAuth failed to parse response.",
-    };
+    return { status: "error", message: "MiniMax OAuth failed to parse response." };
   }
 
   const tokenPayload = payload as {
@@ -178,28 +161,15 @@ async function pollOAuthToken(params: {
   };
 
   if (tokenPayload.status === "error") {
-    return {
-      status: "error",
-      message: "An error occurred. Please try again later",
-    };
+    return { status: "error", message: "An error occurred. Please try again later" };
   }
 
   if (tokenPayload.status != "success") {
-    return {
-      status: "pending",
-      message: "current user code is not authorized",
-    };
+    return { status: "pending", message: "current user code is not authorized" };
   }
 
-  if (
-    !tokenPayload.access_token ||
-    !tokenPayload.refresh_token ||
-    !tokenPayload.expired_in
-  ) {
-    return {
-      status: "error",
-      message: "MiniMax OAuth returned incomplete token payload.",
-    };
+  if (!tokenPayload.access_token || !tokenPayload.refresh_token || !tokenPayload.expired_in) {
+    return { status: "error", message: "MiniMax OAuth returned incomplete token payload." };
   }
 
   return {
@@ -217,10 +187,7 @@ async function pollOAuthToken(params: {
 export async function loginMiniMaxPortalOAuth(params: {
   openUrl: (url: string) => Promise<void>;
   note: (message: string, title?: string) => Promise<void>;
-  progress: {
-    update: (message: string) => void;
-    stop: (message?: string) => void;
-  };
+  progress: { update: (message: string) => void; stop: (message?: string) => void };
   region?: MiniMaxRegion;
 }): Promise<MiniMaxOAuthToken> {
   const region = params.region ?? "global";

@@ -82,9 +82,7 @@ export async function handleDiscordMessagingAction(
       });
       if (remove) {
         if (accountId) {
-          await removeReactionDiscord(channelId, messageId, emoji, {
-            accountId,
-          });
+          await removeReactionDiscord(channelId, messageId, emoji, { accountId });
         } else {
           await removeReactionDiscord(channelId, messageId, emoji);
         }
@@ -294,11 +292,7 @@ export async function handleDiscordMessagingAction(
             { name, messageId, autoArchiveMinutes },
             { accountId },
           )
-        : await createThreadDiscord(channelId, {
-            name,
-            messageId,
-            autoArchiveMinutes,
-          });
+        : await createThreadDiscord(channelId, { name, messageId, autoArchiveMinutes });
       return jsonResult({ ok: true, thread });
     }
     case "threadList": {
@@ -391,10 +385,7 @@ export async function handleDiscordMessagingAction(
       const pins = accountId
         ? await listPinsDiscord(channelId, { accountId })
         : await listPinsDiscord(channelId);
-      return jsonResult({
-        ok: true,
-        pins: pins.map((pin) => normalizeMessage(pin)),
-      });
+      return jsonResult({ ok: true, pins: pins.map((pin) => normalizeMessage(pin)) });
     }
     case "searchMessages": {
       if (!isActionEnabled("search")) {

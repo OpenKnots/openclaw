@@ -153,12 +153,7 @@ describe("directive behavior", () => {
       });
 
       await getReplyFromConfig(
-        {
-          Body: "/verbose on",
-          From: ctx.From,
-          To: ctx.To,
-          CommandAuthorized: true,
-        },
+        { Body: "/verbose on", From: ctx.From, To: ctx.To, CommandAuthorized: true },
         {},
         {
           agents: {
@@ -230,12 +225,7 @@ describe("directive behavior", () => {
       const storePath = path.join(home, "sessions.json");
 
       const res = await getReplyFromConfig(
-        {
-          Body: "/model status",
-          From: "+1222",
-          To: "+1222",
-          CommandAuthorized: true,
-        },
+        { Body: "/model status", From: "+1222", To: "+1222", CommandAuthorized: true },
         {},
         {
           agents: {

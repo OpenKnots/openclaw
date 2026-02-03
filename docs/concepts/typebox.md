@@ -122,11 +122,7 @@ Hello-ok response:
       "stateVersion": { "presence": 0, "health": 0 },
       "uptimeMs": 0
     },
-    "policy": {
-      "maxPayload": 1048576,
-      "maxBufferedBytes": 1048576,
-      "tickIntervalMs": 30000
-    }
+    "policy": { "maxPayload": 1048576, "maxBufferedBytes": 1048576, "tickIntervalMs": 30000 }
   }
 }
 ```
@@ -226,9 +222,7 @@ export type SystemEchoResult = Static<typeof SystemEchoResultSchema>;
 In `src/gateway/protocol/index.ts`, export an AJV validator:
 
 ```ts
-export const validateSystemEchoParams = ajv.compile<SystemEchoParams>(
-  SystemEchoParamsSchema,
-);
+export const validateSystemEchoParams = ajv.compile<SystemEchoParams>(SystemEchoParamsSchema);
 ```
 
 3. **Server behavior**

@@ -154,10 +154,7 @@ describe("/models command", () => {
   } as unknown as OpenClawConfig;
 
   it.each(["telegram", "discord", "whatsapp"])("lists providers on %s", async (surface) => {
-    const params = buildParams("/models", cfg, {
-      Provider: surface,
-      Surface: surface,
-    });
+    const params = buildParams("/models", cfg, { Provider: surface, Surface: surface });
     const result = await handleCommands(params);
     expect(result.shouldContinue).toBe(false);
     expect(result.reply?.text).toContain("Providers:");

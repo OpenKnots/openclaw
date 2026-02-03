@@ -39,15 +39,9 @@ export function createDiscordMessageHandler(params: {
 }): DiscordMessageHandler {
   const groupPolicy = params.discordConfig?.groupPolicy ?? "open";
   const ackReactionScope = params.cfg.messages?.ackReactionScope ?? "group-mentions";
-  const debounceMs = resolveInboundDebounceMs({
-    cfg: params.cfg,
-    channel: "discord",
-  });
+  const debounceMs = resolveInboundDebounceMs({ cfg: params.cfg, channel: "discord" });
 
-  const debouncer = createInboundDebouncer<{
-    data: DiscordMessageEvent;
-    client: Client;
-  }>({
+  const debouncer = createInboundDebouncer<{ data: DiscordMessageEvent; client: Client }>({
     debounceMs,
     buildKey: (entry) => {
       const message = entry.data.message;
@@ -69,9 +63,7 @@ export function createDiscordMessageHandler(params: {
       if (message.attachments && message.attachments.length > 0) {
         return false;
       }
-      const baseText = resolveDiscordMessageText(message, {
-        includeForwarded: false,
-      });
+      const baseText = resolveDiscordMessageText(message, { includeForwarded: false });
       if (!baseText.trim()) {
         return false;
       }
@@ -97,11 +89,7 @@ export function createDiscordMessageHandler(params: {
         return;
       }
       const combinedBaseText = entries
-        .map((entry) =>
-          resolveDiscordMessageText(entry.data.message, {
-            includeForwarded: false,
-          }),
-        )
+        .map((entry) => resolveDiscordMessageText(entry.data.message, { includeForwarded: false }))
         .filter(Boolean)
         .join("\n");
       const syntheticMessage = {

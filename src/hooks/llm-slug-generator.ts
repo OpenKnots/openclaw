@@ -75,10 +75,7 @@ Reply with ONLY the slug, nothing else. Examples: "vendor-pitch", "api-design", 
     // Clean up temporary session file
     if (tempSessionFile) {
       try {
-        await fs.rm(path.dirname(tempSessionFile), {
-          recursive: true,
-          force: true,
-        });
+        await fs.rm(path.dirname(tempSessionFile), { recursive: true, force: true });
       } catch {
         // Ignore cleanup errors
       }

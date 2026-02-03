@@ -210,10 +210,7 @@ describe("legacy config detection", () => {
           {
             auth: {
               profiles: {
-                "anthropic:claude-cli": {
-                  provider: "anthropic",
-                  mode: "token",
-                },
+                "anthropic:claude-cli": { provider: "anthropic", mode: "token" },
               },
             },
           },
@@ -325,12 +322,7 @@ describe("legacy config detection", () => {
         configPath,
         JSON.stringify(
           {
-            bindings: [
-              {
-                agentId: "main",
-                match: { channel: "telegram", accountID: "work" },
-              },
-            ],
+            bindings: [{ agentId: "main", match: { channel: "telegram", accountID: "work" } }],
           },
           null,
           2,
@@ -381,9 +373,7 @@ describe("legacy config detection", () => {
 
       const raw = await fs.readFile(configPath, "utf-8");
       const parsed = JSON.parse(raw) as {
-        session?: {
-          sendPolicy?: { rules?: Array<{ match?: { provider?: string } }> };
-        };
+        session?: { sendPolicy?: { rules?: Array<{ match?: { provider?: string } }> } };
       };
       expect(parsed.session?.sendPolicy?.rules?.[0]?.match?.provider).toBe("telegram");
     });

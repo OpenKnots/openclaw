@@ -113,9 +113,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
         const res = await fetch(`http://127.0.0.1:${port}/v1/chat/completions`, {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            messages: [{ role: "user", content: "hi" }],
-          }),
+          body: JSON.stringify({ messages: [{ role: "user", content: "hi" }] }),
         });
         expect(res.status).toBe(401);
         await res.text();
@@ -354,11 +352,7 @@ describe("OpenAI-compatible HTTP API (e2e)", () => {
         agentCommand.mockImplementationOnce(async (opts: unknown) => {
           const runId = (opts as { runId?: string } | undefined)?.runId ?? "";
           emitAgentEvent({ runId, stream: "assistant", data: { delta: "he" } });
-          emitAgentEvent({
-            runId,
-            stream: "assistant",
-            data: { delta: "llo" },
-          });
+          emitAgentEvent({ runId, stream: "assistant", data: { delta: "llo" } });
           return { payloads: [{ text: "hello" }] } as never;
         });
 

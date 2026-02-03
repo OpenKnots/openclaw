@@ -47,10 +47,7 @@ export async function sendMessageZalouser(
 
     return { ok: false, error: result.stderr || "Failed to send message" };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : String(err),
-    };
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
 }
 
@@ -97,10 +94,7 @@ async function sendMediaZalouser(
 
     return { ok: false, error: result.stderr || `Failed to send ${command}` };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : String(err),
-    };
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
 }
 
@@ -125,10 +119,7 @@ export async function sendImageZalouser(
     }
     return { ok: false, error: result.stderr || "Failed to send image" };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : String(err),
-    };
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
 }
 
@@ -150,10 +141,7 @@ export async function sendLinkZalouser(
     }
     return { ok: false, error: result.stderr || "Failed to send link" };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : String(err),
-    };
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
 }
 

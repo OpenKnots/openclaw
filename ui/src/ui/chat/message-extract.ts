@@ -46,10 +46,7 @@ export function extractText(message: unknown): string | null {
   const role = typeof m.role === "string" ? m.role : "";
   const content = m.content;
   if (typeof content === "string") {
-    const processed =
-      role === "assistant"
-        ? stripThinkingTags(content)
-        : stripEnvelope(content);
+    const processed = role === "assistant" ? stripThinkingTags(content) : stripEnvelope(content);
     return processed;
   }
   if (Array.isArray(content)) {
@@ -64,16 +61,12 @@ export function extractText(message: unknown): string | null {
       .filter((v): v is string => typeof v === "string");
     if (parts.length > 0) {
       const joined = parts.join("\n");
-      const processed =
-        role === "assistant"
-          ? stripThinkingTags(joined)
-          : stripEnvelope(joined);
+      const processed = role === "assistant" ? stripThinkingTags(joined) : stripEnvelope(joined);
       return processed;
     }
   }
   if (typeof m.text === "string") {
-    const processed =
-      role === "assistant" ? stripThinkingTags(m.text) : stripEnvelope(m.text);
+    const processed = role === "assistant" ? stripThinkingTags(m.text) : stripEnvelope(m.text);
     return processed;
   }
   return null;
@@ -117,9 +110,7 @@ export function extractThinking(message: unknown): string | null {
     return null;
   }
   const matches = [
-    ...rawText.matchAll(
-      /<\s*think(?:ing)?\s*>([\s\S]*?)<\s*\/\s*think(?:ing)?\s*>/gi,
-    ),
+    ...rawText.matchAll(/<\s*think(?:ing)?\s*>([\s\S]*?)<\s*\/\s*think(?:ing)?\s*>/gi),
   ];
   const extracted = matches.map((m) => (m[1] ?? "").trim()).filter(Boolean);
   return extracted.length > 0 ? extracted.join("\n") : null;

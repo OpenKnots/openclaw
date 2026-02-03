@@ -105,9 +105,7 @@ describe("sendLineReplyChunks", () => {
       { accountId: undefined },
     );
     expect(pushMessageLine).toHaveBeenCalledTimes(1);
-    expect(pushMessageLine).toHaveBeenCalledWith("line:group:1", "6", {
-      accountId: undefined,
-    });
+    expect(pushMessageLine).toHaveBeenCalledWith("line:group:1", "6", { accountId: undefined });
     expect(pushTextMessageWithQuickReplies).toHaveBeenCalledTimes(1);
     expect(pushTextMessageWithQuickReplies).toHaveBeenCalledWith("line:group:1", "7", ["A"], {
       accountId: undefined,

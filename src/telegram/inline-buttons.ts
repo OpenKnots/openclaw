@@ -45,10 +45,7 @@ export function resolveTelegramInlineButtonsScope(params: {
   cfg: OpenClawConfig;
   accountId?: string | null;
 }): TelegramInlineButtonsScope {
-  const account = resolveTelegramAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveTelegramAccount({ cfg: params.cfg, accountId: params.accountId });
   return resolveInlineButtonsScopeFromCapabilities(account.config.capabilities);
 }
 

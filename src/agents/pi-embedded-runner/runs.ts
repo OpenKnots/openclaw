@@ -127,11 +127,7 @@ export function setActiveEmbeddedRun(sessionId: string, handle: EmbeddedPiQueueH
 export function clearActiveEmbeddedRun(sessionId: string, handle: EmbeddedPiQueueHandle) {
   if (ACTIVE_EMBEDDED_RUNS.get(sessionId) === handle) {
     ACTIVE_EMBEDDED_RUNS.delete(sessionId);
-    logSessionStateChange({
-      sessionId,
-      state: "idle",
-      reason: "run_completed",
-    });
+    logSessionStateChange({ sessionId, state: "idle", reason: "run_completed" });
     if (!sessionId.startsWith("probe-")) {
       diag.debug(`run cleared: sessionId=${sessionId} totalActive=${ACTIVE_EMBEDDED_RUNS.size}`);
     }

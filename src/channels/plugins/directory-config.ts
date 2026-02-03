@@ -17,10 +17,7 @@ export type DirectoryConfigParams = {
 export async function listSlackDirectoryPeersFromConfig(
   params: DirectoryConfigParams,
 ): Promise<ChannelDirectoryEntry[]> {
-  const account = resolveSlackAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveSlackAccount({ cfg: params.cfg, accountId: params.accountId });
   const q = params.query?.trim().toLowerCase() || "";
   const ids = new Set<string>();
 
@@ -68,10 +65,7 @@ export async function listSlackDirectoryPeersFromConfig(
 export async function listSlackDirectoryGroupsFromConfig(
   params: DirectoryConfigParams,
 ): Promise<ChannelDirectoryEntry[]> {
-  const account = resolveSlackAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveSlackAccount({ cfg: params.cfg, accountId: params.accountId });
   const q = params.query?.trim().toLowerCase() || "";
   return Object.keys(account.config.channels ?? {})
     .map((raw) => raw.trim())
@@ -86,10 +80,7 @@ export async function listSlackDirectoryGroupsFromConfig(
 export async function listDiscordDirectoryPeersFromConfig(
   params: DirectoryConfigParams,
 ): Promise<ChannelDirectoryEntry[]> {
-  const account = resolveDiscordAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveDiscordAccount({ cfg: params.cfg, accountId: params.accountId });
   const q = params.query?.trim().toLowerCase() || "";
   const ids = new Set<string>();
 
@@ -143,10 +134,7 @@ export async function listDiscordDirectoryPeersFromConfig(
 export async function listDiscordDirectoryGroupsFromConfig(
   params: DirectoryConfigParams,
 ): Promise<ChannelDirectoryEntry[]> {
-  const account = resolveDiscordAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveDiscordAccount({ cfg: params.cfg, accountId: params.accountId });
   const q = params.query?.trim().toLowerCase() || "";
   const ids = new Set<string>();
   for (const guild of Object.values(account.config.guilds ?? {})) {
@@ -178,10 +166,7 @@ export async function listDiscordDirectoryGroupsFromConfig(
 export async function listTelegramDirectoryPeersFromConfig(
   params: DirectoryConfigParams,
 ): Promise<ChannelDirectoryEntry[]> {
-  const account = resolveTelegramAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveTelegramAccount({ cfg: params.cfg, accountId: params.accountId });
   const q = params.query?.trim().toLowerCase() || "";
   const raw = [
     ...(account.config.allowFrom ?? []).map((entry) => String(entry)),
@@ -215,10 +200,7 @@ export async function listTelegramDirectoryPeersFromConfig(
 export async function listTelegramDirectoryGroupsFromConfig(
   params: DirectoryConfigParams,
 ): Promise<ChannelDirectoryEntry[]> {
-  const account = resolveTelegramAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveTelegramAccount({ cfg: params.cfg, accountId: params.accountId });
   const q = params.query?.trim().toLowerCase() || "";
   return Object.keys(account.config.groups ?? {})
     .map((id) => id.trim())
@@ -231,10 +213,7 @@ export async function listTelegramDirectoryGroupsFromConfig(
 export async function listWhatsAppDirectoryPeersFromConfig(
   params: DirectoryConfigParams,
 ): Promise<ChannelDirectoryEntry[]> {
-  const account = resolveWhatsAppAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveWhatsAppAccount({ cfg: params.cfg, accountId: params.accountId });
   const q = params.query?.trim().toLowerCase() || "";
   return (account.allowFrom ?? [])
     .map((entry) => String(entry).trim())
@@ -250,10 +229,7 @@ export async function listWhatsAppDirectoryPeersFromConfig(
 export async function listWhatsAppDirectoryGroupsFromConfig(
   params: DirectoryConfigParams,
 ): Promise<ChannelDirectoryEntry[]> {
-  const account = resolveWhatsAppAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveWhatsAppAccount({ cfg: params.cfg, accountId: params.accountId });
   const q = params.query?.trim().toLowerCase() || "";
   return Object.keys(account.groups ?? {})
     .map((id) => id.trim())

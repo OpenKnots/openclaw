@@ -265,10 +265,7 @@ export async function buildContextReply(params: HandleCommandsParams): Promise<R
       30,
     );
     const perToolSummary = formatListTop(
-      report.tools.entries.map((t) => ({
-        name: t.name,
-        value: t.summaryChars,
-      })),
+      report.tools.entries.map((t) => ({ name: t.name, value: t.summaryChars })),
       30,
     );
     const toolPropsLines = report.tools.entries

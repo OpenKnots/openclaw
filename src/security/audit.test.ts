@@ -14,10 +14,7 @@ const isWindows = process.platform === "win32";
 describe("security audit", () => {
   it("includes an attack surface summary (info)", async () => {
     const cfg: OpenClawConfig = {
-      channels: {
-        whatsapp: { groupPolicy: "open" },
-        telegram: { groupPolicy: "allowlist" },
-      },
+      channels: { whatsapp: { groupPolicy: "open" }, telegram: { groupPolicy: "allowlist" } },
       tools: { elevated: { enabled: true, allowFrom: { whatsapp: ["+1"] } } },
       hooks: { enabled: true },
       browser: { enabled: true },
@@ -31,10 +28,7 @@ describe("security audit", () => {
 
     expect(res.findings).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({
-          checkId: "summary.attack_surface",
-          severity: "info",
-        }),
+        expect.objectContaining({ checkId: "summary.attack_surface", severity: "info" }),
       ]),
     );
   });
@@ -122,10 +116,7 @@ describe("security audit", () => {
 
     expect(res.findings).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({
-          checkId: "logging.redact_off",
-          severity: "warn",
-        }),
+        expect.objectContaining({ checkId: "logging.redact_off", severity: "warn" }),
       ]),
     );
   });
@@ -235,12 +226,7 @@ describe("security audit", () => {
 
   it("treats small models as safe when sandbox is on and web tools are disabled", async () => {
     const cfg: OpenClawConfig = {
-      agents: {
-        defaults: {
-          model: { primary: "ollama/mistral-8b" },
-          sandbox: { mode: "all" },
-        },
-      },
+      agents: { defaults: { model: { primary: "ollama/mistral-8b" }, sandbox: { mode: "all" } } },
       tools: {
         web: {
           search: { enabled: false },
@@ -304,10 +290,7 @@ describe("security audit", () => {
 
     expect(res.findings).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({
-          checkId: "browser.remote_cdp_http",
-          severity: "warn",
-        }),
+        expect.objectContaining({ checkId: "browser.remote_cdp_http", severity: "warn" }),
       ]),
     );
   });
@@ -410,10 +393,7 @@ describe("security audit", () => {
     const prevStateDir = process.env.OPENCLAW_STATE_DIR;
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-discord-"));
     process.env.OPENCLAW_STATE_DIR = tmp;
-    await fs.mkdir(path.join(tmp, "credentials"), {
-      recursive: true,
-      mode: 0o700,
-    });
+    await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
         channels: {
@@ -462,10 +442,7 @@ describe("security audit", () => {
       path.join(os.tmpdir(), "openclaw-security-audit-discord-allowfrom-snowflake-"),
     );
     process.env.OPENCLAW_STATE_DIR = tmp;
-    await fs.mkdir(path.join(tmp, "credentials"), {
-      recursive: true,
-      mode: 0o700,
-    });
+    await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
         channels: {
@@ -512,10 +489,7 @@ describe("security audit", () => {
     const prevStateDir = process.env.OPENCLAW_STATE_DIR;
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-discord-open-"));
     process.env.OPENCLAW_STATE_DIR = tmp;
-    await fs.mkdir(path.join(tmp, "credentials"), {
-      recursive: true,
-      mode: 0o700,
-    });
+    await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
         commands: { useAccessGroups: false },
@@ -563,10 +537,7 @@ describe("security audit", () => {
     const prevStateDir = process.env.OPENCLAW_STATE_DIR;
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-slack-"));
     process.env.OPENCLAW_STATE_DIR = tmp;
-    await fs.mkdir(path.join(tmp, "credentials"), {
-      recursive: true,
-      mode: 0o700,
-    });
+    await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
         channels: {
@@ -608,10 +579,7 @@ describe("security audit", () => {
     const prevStateDir = process.env.OPENCLAW_STATE_DIR;
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-slack-open-"));
     process.env.OPENCLAW_STATE_DIR = tmp;
-    await fs.mkdir(path.join(tmp, "credentials"), {
-      recursive: true,
-      mode: 0o700,
-    });
+    await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
         commands: { useAccessGroups: false },
@@ -654,10 +622,7 @@ describe("security audit", () => {
     const prevStateDir = process.env.OPENCLAW_STATE_DIR;
     const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-security-audit-telegram-"));
     process.env.OPENCLAW_STATE_DIR = tmp;
-    await fs.mkdir(path.join(tmp, "credentials"), {
-      recursive: true,
-      mode: 0o700,
-    });
+    await fs.mkdir(path.join(tmp, "credentials"), { recursive: true, mode: 0o700 });
     try {
       const cfg: OpenClawConfig = {
         channels: {
@@ -718,10 +683,7 @@ describe("security audit", () => {
 
     expect(res.findings).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({
-          checkId: "gateway.probe_failed",
-          severity: "warn",
-        }),
+        expect.objectContaining({ checkId: "gateway.probe_failed", severity: "warn" }),
       ]),
     );
   });
@@ -744,10 +706,7 @@ describe("security audit", () => {
     expect(res.deep?.gateway.error).toContain("probe boom");
     expect(res.findings).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({
-          checkId: "gateway.probe_failed",
-          severity: "warn",
-        }),
+        expect.objectContaining({ checkId: "gateway.probe_failed", severity: "warn" }),
       ]),
     );
   });
@@ -772,9 +731,7 @@ describe("security audit", () => {
 
   it("warns on weak model tiers", async () => {
     const cfg: OpenClawConfig = {
-      agents: {
-        defaults: { model: { primary: "anthropic/claude-haiku-4-5" } },
-      },
+      agents: { defaults: { model: { primary: "anthropic/claude-haiku-4-5" } } },
     };
 
     const res = await runSecurityAudit({
@@ -785,10 +742,7 @@ describe("security audit", () => {
 
     expect(res.findings).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({
-          checkId: "models.weak_tier",
-          severity: "warn",
-        }),
+        expect.objectContaining({ checkId: "models.weak_tier", severity: "warn" }),
       ]),
     );
   });
@@ -823,10 +777,7 @@ describe("security audit", () => {
 
     expect(res.findings).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({
-          checkId: "hooks.token_too_short",
-          severity: "warn",
-        }),
+        expect.objectContaining({ checkId: "hooks.token_too_short", severity: "warn" }),
       ]),
     );
   });
@@ -847,10 +798,7 @@ describe("security audit", () => {
 
       expect(res.findings).toEqual(
         expect.arrayContaining([
-          expect.objectContaining({
-            checkId: "hooks.token_reuse_gateway_token",
-            severity: "warn",
-          }),
+          expect.objectContaining({ checkId: "hooks.token_reuse_gateway_token", severity: "warn" }),
         ]),
       );
     } finally {
@@ -890,9 +838,7 @@ describe("security audit", () => {
     if (isWindows) {
       // Grant "Everyone" write access to trigger the perms_writable check on Windows
       const { execSync } = await import("node:child_process");
-      execSync(`icacls "${includePath}" /grant Everyone:W`, {
-        stdio: "ignore",
-      });
+      execSync(`icacls "${includePath}" /grant Everyone:W`, { stdio: "ignore" });
     } else {
       await fs.chmod(includePath, 0o644);
     }
@@ -938,10 +884,7 @@ describe("security audit", () => {
 
       expect(res.findings).toEqual(
         expect.arrayContaining([
-          expect.objectContaining({
-            checkId: expectedCheckId,
-            severity: "critical",
-          }),
+          expect.objectContaining({ checkId: expectedCheckId, severity: "critical" }),
         ]),
       );
     } finally {
@@ -978,10 +921,7 @@ describe("security audit", () => {
 
       expect(res.findings).toEqual(
         expect.arrayContaining([
-          expect.objectContaining({
-            checkId: "plugins.extensions_no_allowlist",
-            severity: "warn",
-          }),
+          expect.objectContaining({ checkId: "plugins.extensions_no_allowlist", severity: "warn" }),
         ]),
       );
     } finally {

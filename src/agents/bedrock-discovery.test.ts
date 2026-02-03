@@ -55,10 +55,7 @@ describe("bedrock discovery", () => {
       ],
     });
 
-    const models = await discoverBedrockModels({
-      region: "us-east-1",
-      clientFactory,
-    });
+    const models = await discoverBedrockModels({ region: "us-east-1", clientFactory });
     expect(models).toHaveLength(1);
     expect(models[0]).toMatchObject({
       id: "anthropic.claude-3-7-sonnet-20250219-v1:0",

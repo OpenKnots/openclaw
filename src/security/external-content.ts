@@ -112,14 +112,8 @@ function replaceMarkers(content: string): string {
   }
   const replacements: Array<{ start: number; end: number; value: string }> = [];
   const patterns: Array<{ regex: RegExp; value: string }> = [
-    {
-      regex: /<<<EXTERNAL_UNTRUSTED_CONTENT>>>/gi,
-      value: "[[MARKER_SANITIZED]]",
-    },
-    {
-      regex: /<<<END_EXTERNAL_UNTRUSTED_CONTENT>>>/gi,
-      value: "[[END_MARKER_SANITIZED]]",
-    },
+    { regex: /<<<EXTERNAL_UNTRUSTED_CONTENT>>>/gi, value: "[[MARKER_SANITIZED]]" },
+    { regex: /<<<END_EXTERNAL_UNTRUSTED_CONTENT>>>/gi, value: "[[END_MARKER_SANITIZED]]" },
   ];
 
   for (const pattern of patterns) {

@@ -27,19 +27,12 @@ describe("downloadGoogleChatMedia", () => {
     });
     const response = new Response(body, {
       status: 200,
-      headers: {
-        "content-length": "50",
-        "content-type": "application/octet-stream",
-      },
+      headers: { "content-length": "50", "content-type": "application/octet-stream" },
     });
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response));
 
     await expect(
-      downloadGoogleChatMedia({
-        account,
-        resourceName: "media/123",
-        maxBytes: 10,
-      }),
+      downloadGoogleChatMedia({ account, resourceName: "media/123", maxBytes: 10 }),
     ).rejects.toThrow(/max bytes/i);
   });
 
@@ -62,11 +55,7 @@ describe("downloadGoogleChatMedia", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(response));
 
     await expect(
-      downloadGoogleChatMedia({
-        account,
-        resourceName: "media/123",
-        maxBytes: 10,
-      }),
+      downloadGoogleChatMedia({ account, resourceName: "media/123", maxBytes: 10 }),
     ).rejects.toThrow(/max bytes/i);
   });
 });

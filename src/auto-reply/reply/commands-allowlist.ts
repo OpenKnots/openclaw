@@ -133,10 +133,7 @@ function parseAllowlistCommand(raw: string): AllowlistCommand | null {
   if (action === "add" || action === "remove") {
     const entry = entryTokens.join(" ").trim();
     if (!entry) {
-      return {
-        action: "error",
-        message: "Usage: /allowlist add|remove <entry>",
-      };
+      return { action: "error", message: "Usage: /allowlist add|remove <entry>" };
     }
     return { action, scope, entry, channel, account, resolve, target };
   }
@@ -184,11 +181,7 @@ function resolveAccountTarget(
   const hasAccounts = Boolean(channel.accounts && typeof channel.accounts === "object");
   const useAccount = normalizedAccountId !== DEFAULT_ACCOUNT_ID || hasAccounts;
   if (!useAccount) {
-    return {
-      target: channel,
-      pathPrefix: `channels.${channelId}`,
-      accountId: normalizedAccountId,
-    };
+    return { target: channel, pathPrefix: `channels.${channelId}`, accountId: normalizedAccountId };
   }
   const accounts = (channel.accounts ??= {}) as Record<string, unknown>;
   const account = (accounts[normalizedAccountId] ??= {}) as Record<string, unknown>;
@@ -292,18 +285,12 @@ async function resolveSlackNames(params: {
   accountId?: string | null;
   entries: string[];
 }) {
-  const account = resolveSlackAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveSlackAccount({ cfg: params.cfg, accountId: params.accountId });
   const token = account.config.userToken?.trim() || account.botToken?.trim();
   if (!token) {
     return new Map<string, string>();
   }
-  const resolved = await resolveSlackUserAllowlist({
-    token,
-    entries: params.entries,
-  });
+  const resolved = await resolveSlackUserAllowlist({ token, entries: params.entries });
   const map = new Map<string, string>();
   for (const entry of resolved) {
     if (entry.resolved && entry.name) {
@@ -318,18 +305,12 @@ async function resolveDiscordNames(params: {
   accountId?: string | null;
   entries: string[];
 }) {
-  const account = resolveDiscordAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveDiscordAccount({ cfg: params.cfg, accountId: params.accountId });
   const token = account.token?.trim();
   if (!token) {
     return new Map<string, string>();
   }
-  const resolved = await resolveDiscordUserAllowlist({
-    token,
-    entries: params.entries,
-  });
+  const resolved = await resolveDiscordUserAllowlist({ token, entries: params.entries });
   const map = new Map<string, string>();
   for (const entry of resolved) {
     if (entry.resolved && entry.name) {
@@ -399,10 +380,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
         for (const [topicId, topicCfg] of Object.entries(topics)) {
           const topicEntries = (topicCfg?.allowFrom ?? []).map(String).filter(Boolean);
           if (topicEntries.length > 0) {
-            groupOverrides.push({
-              label: `${groupId} topic ${topicId}`,
-              entries: topicEntries,
-            });
+            groupOverrides.push({ label: `${groupId} topic ${topicId}`, entries: topicEntries });
           }
         }
       }
@@ -479,17 +457,9 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
     });
     const resolvedDm =
       parsed.resolve && dmDisplay.length > 0 && channelId === "slack"
-        ? await resolveSlackNames({
-            cfg: params.cfg,
-            accountId,
-            entries: dmDisplay,
-          })
+        ? await resolveSlackNames({ cfg: params.cfg, accountId, entries: dmDisplay })
         : parsed.resolve && dmDisplay.length > 0 && channelId === "discord"
-          ? await resolveDiscordNames({
-              cfg: params.cfg,
-              accountId,
-              entries: dmDisplay,
-            })
+          ? await resolveDiscordNames({ cfg: params.cfg, accountId, entries: dmDisplay })
           : undefined;
     const resolvedGroup =
       parsed.resolve && groupOverrideDisplay.length > 0 && channelId === "slack"
@@ -553,9 +523,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
   if (params.cfg.commands?.config !== true) {
     return {
       shouldContinue: false,
-      reply: {
-        text: "⚠️ /allowlist edits are disabled. Set commands.config=true to enable.",
-      },
+      reply: { text: "⚠️ /allowlist edits are disabled. Set commands.config=true to enable." },
     };
   }
 
@@ -572,9 +540,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
       const hint = `channels.${channelId}.configWrites=true`;
       return {
         shouldContinue: false,
-        reply: {
-          text: `⚠️ Config writes are disabled for ${channelId}. Set ${hint} to enable.`,
-        },
+        reply: { text: `⚠️ Config writes are disabled for ${channelId}. Set ${hint} to enable.` },
       };
     }
 
@@ -592,9 +558,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
     if (!snapshot.valid || !snapshot.parsed || typeof snapshot.parsed !== "object") {
       return {
         shouldContinue: false,
-        reply: {
-          text: "⚠️ Config file is invalid; fix it before using /allowlist.",
-        },
+        reply: { text: "⚠️ Config file is invalid; fix it before using /allowlist." },
       };
     }
     const parsedConfig = structuredClone(snapshot.parsed as Record<string, unknown>);
@@ -672,9 +636,7 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
         const issue = validated.issues[0];
         return {
           shouldContinue: false,
-          reply: {
-            text: `⚠️ Config invalid after update (${issue.path}: ${issue.message}).`,
-          },
+          reply: { text: `⚠️ Config invalid after update (${issue.path}: ${issue.message}).` },
         };
       }
       await writeConfigFile(validated.config);
@@ -687,15 +649,9 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
 
     if (shouldTouchStore) {
       if (parsed.action === "add") {
-        await addChannelAllowFromStoreEntry({
-          channel: channelId,
-          entry: parsed.entry,
-        });
+        await addChannelAllowFromStoreEntry({ channel: channelId, entry: parsed.entry });
       } else if (parsed.action === "remove") {
-        await removeChannelAllowFromStoreEntry({
-          channel: channelId,
-          entry: parsed.entry,
-        });
+        await removeChannelAllowFromStoreEntry({ channel: channelId, entry: parsed.entry });
       }
     }
 
@@ -725,23 +681,15 @@ export const handleAllowlistCommand: CommandHandler = async (params, allowTextCo
   }
 
   if (parsed.action === "add") {
-    await addChannelAllowFromStoreEntry({
-      channel: channelId,
-      entry: parsed.entry,
-    });
+    await addChannelAllowFromStoreEntry({ channel: channelId, entry: parsed.entry });
   } else if (parsed.action === "remove") {
-    await removeChannelAllowFromStoreEntry({
-      channel: channelId,
-      entry: parsed.entry,
-    });
+    await removeChannelAllowFromStoreEntry({ channel: channelId, entry: parsed.entry });
   }
 
   const actionLabel = parsed.action === "add" ? "added" : "removed";
   const scopeLabel = scope === "dm" ? "DM" : "group";
   return {
     shouldContinue: false,
-    reply: {
-      text: `✅ ${scopeLabel} allowlist ${actionLabel} in pairing store.`,
-    },
+    reply: { text: `✅ ${scopeLabel} allowlist ${actionLabel} in pairing store.` },
   };
 };

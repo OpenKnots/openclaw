@@ -332,10 +332,7 @@ async function connectBrowser(cdpUrl: string): Promise<ConnectedBrowser> {
         const wsUrl = await getChromeWebSocketUrl(normalized, timeout).catch(() => null);
         const endpoint = wsUrl ?? normalized;
         const headers = getHeadersWithAuth(endpoint);
-        const browser = await chromium.connectOverCDP(endpoint, {
-          timeout,
-          headers,
-        });
+        const browser = await chromium.connectOverCDP(endpoint, { timeout, headers });
         const connected: ConnectedBrowser = { browser, cdpUrl: normalized };
         cached = connected;
         observeBrowser(browser);
@@ -404,9 +401,7 @@ async function findPageByTargetId(
         .replace(/^ws:/, "http:")
         .replace(/\/cdp$/, "");
       const listUrl = `${baseUrl}/json/list`;
-      const response = await fetch(listUrl, {
-        headers: getHeadersWithAuth(listUrl),
-      });
+      const response = await fetch(listUrl, { headers: getHeadersWithAuth(listUrl) });
       if (response.ok) {
         const targets = (await response.json()) as Array<{
           id: string;

@@ -331,10 +331,7 @@ describe("chrome extension relay server", () => {
       }),
     );
 
-    const first = JSON.parse(await q.next()) as {
-      method?: string;
-      params?: unknown;
-    };
+    const first = JSON.parse(await q.next()) as { method?: string; params?: unknown };
     expect(first.method).toBe("Target.attachedToTarget");
     expect(JSON.stringify(first.params ?? {})).toContain("t1");
 

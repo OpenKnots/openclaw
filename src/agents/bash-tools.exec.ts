@@ -1038,9 +1038,7 @@ export function createExecTool(
         const nodeEnv = params.env ? { ...params.env } : undefined;
 
         if (nodeEnv) {
-          applyPathPrepend(nodeEnv, defaultPathPrepend, {
-            requireExisting: true,
-          });
+          applyPathPrepend(nodeEnv, defaultPathPrepend, { requireExisting: true });
         }
         const baseAllowlistEval = evaluateShellAllowlist({
           command: params.command,
@@ -1128,9 +1126,7 @@ export function createExecTool(
           void (async () => {
             let decision: string | null = null;
             try {
-              const decisionResult = await callGatewayTool<{
-                decision: string;
-              }>(
+              const decisionResult = await callGatewayTool<{ decision: string }>(
                 "exec.approval.request",
                 { timeoutMs: DEFAULT_APPROVAL_REQUEST_TIMEOUT_MS },
                 {
@@ -1313,9 +1309,7 @@ export function createExecTool(
           void (async () => {
             let decision: string | null = null;
             try {
-              const decisionResult = await callGatewayTool<{
-                decision: string;
-              }>(
+              const decisionResult = await callGatewayTool<{ decision: string }>(
                 "exec.approval.request",
                 { timeoutMs: DEFAULT_APPROVAL_REQUEST_TIMEOUT_MS },
                 {
@@ -1456,10 +1450,7 @@ export function createExecTool(
             const summary = output
               ? `Exec finished (gateway id=${approvalId}, session=${run.session.id}, ${exitLabel})\n${output}`
               : `Exec finished (gateway id=${approvalId}, session=${run.session.id}, ${exitLabel})`;
-            emitExecSystemEvent(summary, {
-              sessionKey: notifySessionKey,
-              contextKey,
-            });
+            emitExecSystemEvent(summary, { sessionKey: notifySessionKey, contextKey });
           })();
 
           return {

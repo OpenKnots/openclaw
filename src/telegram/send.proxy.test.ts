@@ -43,9 +43,7 @@ vi.mock("grammy", () => ({
     catch = vi.fn();
     constructor(
       public token: string,
-      public options?: {
-        client?: { fetch?: typeof fetch; timeoutSeconds?: number };
-      },
+      public options?: { client?: { fetch?: typeof fetch; timeoutSeconds?: number } },
     ) {
       botCtorSpy(token, options);
     }
@@ -59,10 +57,7 @@ describe("telegram proxy client", () => {
   const proxyUrl = "http://proxy.test:8080";
 
   beforeEach(() => {
-    botApi.sendMessage.mockResolvedValue({
-      message_id: 1,
-      chat: { id: "123" },
-    });
+    botApi.sendMessage.mockResolvedValue({ message_id: 1, chat: { id: "123" } });
     botApi.setMessageReaction.mockResolvedValue(undefined);
     botApi.deleteMessage.mockResolvedValue(true);
     botCtorSpy.mockReset();
@@ -82,9 +77,7 @@ describe("telegram proxy client", () => {
     await sendMessageTelegram("123", "hi", { token: "tok", accountId: "foo" });
 
     expect(makeProxyFetch).toHaveBeenCalledWith(proxyUrl);
-    expect(resolveTelegramFetch).toHaveBeenCalledWith(proxyFetch, {
-      network: undefined,
-    });
+    expect(resolveTelegramFetch).toHaveBeenCalledWith(proxyFetch, { network: undefined });
     expect(botCtorSpy).toHaveBeenCalledWith(
       "tok",
       expect.objectContaining({
@@ -99,15 +92,10 @@ describe("telegram proxy client", () => {
     makeProxyFetch.mockReturnValue(proxyFetch as unknown as typeof fetch);
     resolveTelegramFetch.mockReturnValue(fetchImpl as unknown as typeof fetch);
 
-    await reactMessageTelegram("123", "456", "✅", {
-      token: "tok",
-      accountId: "foo",
-    });
+    await reactMessageTelegram("123", "456", "✅", { token: "tok", accountId: "foo" });
 
     expect(makeProxyFetch).toHaveBeenCalledWith(proxyUrl);
-    expect(resolveTelegramFetch).toHaveBeenCalledWith(proxyFetch, {
-      network: undefined,
-    });
+    expect(resolveTelegramFetch).toHaveBeenCalledWith(proxyFetch, { network: undefined });
     expect(botCtorSpy).toHaveBeenCalledWith(
       "tok",
       expect.objectContaining({
@@ -122,15 +110,10 @@ describe("telegram proxy client", () => {
     makeProxyFetch.mockReturnValue(proxyFetch as unknown as typeof fetch);
     resolveTelegramFetch.mockReturnValue(fetchImpl as unknown as typeof fetch);
 
-    await deleteMessageTelegram("123", "456", {
-      token: "tok",
-      accountId: "foo",
-    });
+    await deleteMessageTelegram("123", "456", { token: "tok", accountId: "foo" });
 
     expect(makeProxyFetch).toHaveBeenCalledWith(proxyUrl);
-    expect(resolveTelegramFetch).toHaveBeenCalledWith(proxyFetch, {
-      network: undefined,
-    });
+    expect(resolveTelegramFetch).toHaveBeenCalledWith(proxyFetch, { network: undefined });
     expect(botCtorSpy).toHaveBeenCalledWith(
       "tok",
       expect.objectContaining({

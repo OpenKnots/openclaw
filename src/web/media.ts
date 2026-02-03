@@ -63,11 +63,7 @@ function toJpegFileName(fileName?: string): string | undefined {
   }
   const parsed = path.parse(trimmed);
   if (!parsed.ext || HEIC_EXT_RE.test(parsed.ext)) {
-    return path.format({
-      dir: parsed.dir,
-      name: parsed.name || trimmed,
-      ext: ".jpg",
-    });
+    return path.format({ dir: parsed.dir, name: parsed.name || trimmed, ext: ".jpg" });
   }
   return path.format({ dir: parsed.dir, name: parsed.name, ext: ".jpg" });
 }
@@ -215,11 +211,7 @@ async function loadWebMediaInternal(
         : optimizeImages
           ? Math.max(maxBytes, defaultFetchCap)
           : maxBytes;
-    const fetched = await fetchRemoteMedia({
-      url: mediaUrl,
-      maxBytes: fetchCap,
-      ssrfPolicy,
-    });
+    const fetched = await fetchRemoteMedia({ url: mediaUrl, maxBytes: fetchCap, ssrfPolicy });
     const { buffer, contentType, fileName } = fetched;
     const kind = mediaKindFromMime(contentType);
     return await clampAndFinalize({ buffer, contentType, kind, fileName });
@@ -289,9 +281,7 @@ export async function optimizeImageToJpeg(
     try {
       source = await convertHeicToJpeg(buffer);
     } catch (err) {
-      throw new Error(`HEIC image conversion failed: ${String(err)}`, {
-        cause: err,
-      });
+      throw new Error(`HEIC image conversion failed: ${String(err)}`, { cause: err });
     }
   }
   const sides = [2048, 1536, 1280, 1024, 800];

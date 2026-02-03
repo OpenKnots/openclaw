@@ -8,11 +8,7 @@ import { resolvePluginTools } from "./tools.js";
 type TempPlugin = { dir: string; file: string; id: string };
 
 const tempDirs: string[] = [];
-const EMPTY_PLUGIN_SCHEMA = {
-  type: "object",
-  additionalProperties: false,
-  properties: {},
-};
+const EMPTY_PLUGIN_SCHEMA = { type: "object", additionalProperties: false, properties: {} };
 
 function makeTempDir() {
   const dir = path.join(os.tmpdir(), `openclaw-plugin-tools-${randomUUID()}`);

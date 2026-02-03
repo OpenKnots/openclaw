@@ -58,10 +58,7 @@ describe("config plugin validation", () => {
       const { validateConfigObjectWithPlugins } = await import("./config.js");
       const res = validateConfigObjectWithPlugins({
         agents: { list: [{ id: "pi" }] },
-        plugins: {
-          enabled: false,
-          entries: { "missing-plugin": { enabled: true } },
-        },
+        plugins: { enabled: false, entries: { "missing-plugin": { enabled: true } } },
       });
       expect(res.ok).toBe(false);
       if (!res.ok) {
@@ -91,15 +88,9 @@ describe("config plugin validation", () => {
       if (!res.ok) {
         expect(res.issues).toEqual(
           expect.arrayContaining([
-            {
-              path: "plugins.allow",
-              message: "plugin not found: missing-allow",
-            },
+            { path: "plugins.allow", message: "plugin not found: missing-allow" },
             { path: "plugins.deny", message: "plugin not found: missing-deny" },
-            {
-              path: "plugins.slots.memory",
-              message: "plugin not found: missing-slot",
-            },
+            { path: "plugins.slots.memory", message: "plugin not found: missing-slot" },
           ]),
         );
       }
@@ -172,10 +163,7 @@ describe("config plugin validation", () => {
       vi.resetModules();
       const { validateConfigObjectWithPlugins } = await import("./config.js");
       const res = validateConfigObjectWithPlugins({
-        agents: {
-          defaults: { heartbeat: { target: "bluebubbles" } },
-          list: [{ id: "pi" }],
-        },
+        agents: { defaults: { heartbeat: { target: "bluebubbles" } }, list: [{ id: "pi" }] },
         plugins: { enabled: false, load: { paths: [pluginDir] } },
       });
       expect(res.ok).toBe(true);
@@ -188,10 +176,7 @@ describe("config plugin validation", () => {
       vi.resetModules();
       const { validateConfigObjectWithPlugins } = await import("./config.js");
       const res = validateConfigObjectWithPlugins({
-        agents: {
-          defaults: { heartbeat: { target: "not-a-channel" } },
-          list: [{ id: "pi" }],
-        },
+        agents: { defaults: { heartbeat: { target: "not-a-channel" } }, list: [{ id: "pi" }] },
       });
       expect(res.ok).toBe(false);
       if (!res.ok) {

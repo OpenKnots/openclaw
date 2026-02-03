@@ -24,10 +24,7 @@ describeLive("browser (live): remote CDP tab persistence", () => {
     const pw = await import("./pw-ai.js");
     await pw.closePlaywrightBrowserConnection().catch(() => {});
 
-    const created = await pw.createPageViaPlaywright({
-      cdpUrl: CDP_URL,
-      url: "about:blank",
-    });
+    const created = await pw.createPageViaPlaywright({ cdpUrl: CDP_URL, url: "about:blank" });
     try {
       await waitFor(
         async () => {
@@ -37,15 +34,9 @@ describeLive("browser (live): remote CDP tab persistence", () => {
         { timeoutMs: 10_000, intervalMs: 250 },
       );
 
-      await pw.focusPageByTargetIdViaPlaywright({
-        cdpUrl: CDP_URL,
-        targetId: created.targetId,
-      });
+      await pw.focusPageByTargetIdViaPlaywright({ cdpUrl: CDP_URL, targetId: created.targetId });
 
-      await pw.closePageByTargetIdViaPlaywright({
-        cdpUrl: CDP_URL,
-        targetId: created.targetId,
-      });
+      await pw.closePageByTargetIdViaPlaywright({ cdpUrl: CDP_URL, targetId: created.targetId });
 
       await waitFor(
         async () => {

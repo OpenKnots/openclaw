@@ -116,10 +116,7 @@ export function loadPluginManifestRegistry(params: {
 }): PluginManifestRegistry {
   const config = params.config ?? {};
   const normalized = normalizePluginsConfig(config.plugins);
-  const cacheKey = buildCacheKey({
-    workspaceDir: params.workspaceDir,
-    plugins: normalized,
-  });
+  const cacheKey = buildCacheKey({ workspaceDir: params.workspaceDir, plugins: normalized });
   const env = params.env ?? process.env;
   const cacheEnabled = params.cache !== false && shouldUseManifestCache(env);
   if (cacheEnabled) {

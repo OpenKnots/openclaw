@@ -26,10 +26,7 @@ describe("resolveWorkspaceTemplateDir", () => {
     await fs.mkdir(distDir, { recursive: true });
     const moduleUrl = pathToFileURL(path.join(distDir, "model-selection.mjs")).toString();
 
-    const resolved = await resolveWorkspaceTemplateDir({
-      cwd: distDir,
-      moduleUrl,
-    });
+    const resolved = await resolveWorkspaceTemplateDir({ cwd: distDir, moduleUrl });
     expect(resolved).toBe(templatesDir);
   });
 });

@@ -162,10 +162,7 @@ describe("send", () => {
             data: [
               {
                 guid: "iMessage;+;group-123",
-                participants: [
-                  { address: "+15551234567" },
-                  { address: "+15550001111" },
-                ],
+                participants: [{ address: "+15551234567" }, { address: "+15550001111" }],
               },
               {
                 guid: "iMessage;-;+15551234567",
@@ -374,9 +371,9 @@ describe("send", () => {
     });
 
     it("throws when serverUrl is missing", async () => {
-      await expect(
-        sendMessageBlueBubbles("+15551234567", "Hello", {}),
-      ).rejects.toThrow("serverUrl is required");
+      await expect(sendMessageBlueBubbles("+15551234567", "Hello", {})).rejects.toThrow(
+        "serverUrl is required",
+      );
     });
 
     it("throws when password is missing", async () => {
@@ -425,14 +422,10 @@ describe("send", () => {
             ),
         });
 
-      const result = await sendMessageBlueBubbles(
-        "+15551234567",
-        "Hello world!",
-        {
-          serverUrl: "http://localhost:1234",
-          password: "test",
-        },
-      );
+      const result = await sendMessageBlueBubbles("+15551234567", "Hello world!", {
+        serverUrl: "http://localhost:1234",
+        password: "test",
+      });
 
       expect(result.messageId).toBe("msg-uuid-123");
       expect(mockFetch).toHaveBeenCalledTimes(2);
@@ -461,14 +454,10 @@ describe("send", () => {
             ),
         });
 
-      const result = await sendMessageBlueBubbles(
-        "+15550009999",
-        "Hello new chat",
-        {
-          serverUrl: "http://localhost:1234",
-          password: "test",
-        },
-      );
+      const result = await sendMessageBlueBubbles("+15550009999", "Hello new chat", {
+        serverUrl: "http://localhost:1234",
+        password: "test",
+      });
 
       expect(result.messageId).toBe("new-msg-guid");
       expect(mockFetch).toHaveBeenCalledTimes(2);
@@ -577,9 +566,7 @@ describe("send", () => {
       const sendCall = mockFetch.mock.calls[1];
       const body = JSON.parse(sendCall[1].body);
       expect(body.method).toBe("private-api");
-      expect(body.effectId).toBe(
-        "com.apple.MobileSMS.expressivesend.invisibleink",
-      );
+      expect(body.effectId).toBe("com.apple.MobileSMS.expressivesend.invisibleink");
     });
 
     it("sends message with chat_guid target directly", async () => {
@@ -768,8 +755,7 @@ describe("send", () => {
         })
         .mockResolvedValueOnce({
           ok: true,
-          text: () =>
-            Promise.resolve(JSON.stringify({ data: { guid: "msg-123" } })),
+          text: () => Promise.resolve(JSON.stringify({ data: { guid: "msg-123" } })),
         });
 
       const result = await sendMessageBlueBubbles("+15551234567", "Hello", {
@@ -804,8 +790,7 @@ describe("send", () => {
         })
         .mockResolvedValueOnce({
           ok: true,
-          text: () =>
-            Promise.resolve(JSON.stringify({ data: { guid: "msg" } })),
+          text: () => Promise.resolve(JSON.stringify({ data: { guid: "msg" } })),
         });
 
       await sendMessageBlueBubbles("+15551234567", "Hello", {

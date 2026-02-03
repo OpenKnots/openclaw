@@ -7,11 +7,7 @@ import { join, resolve } from "node:path";
 type PackFile = { path: string };
 type PackResult = { files?: PackFile[] };
 
-const requiredPaths = [
-  "dist/discord/send.js",
-  "dist/hooks/gmail.js",
-  "dist/whatsapp/normalize.js",
-];
+const requiredPaths = ["dist/discord/send.js", "dist/hooks/gmail.js", "dist/whatsapp/normalize.js"];
 const forbiddenPrefixes = ["dist/OpenClaw.app/"];
 
 type PackageJson = {
@@ -30,9 +26,7 @@ function runPackDry(): PackResult[] {
 
 function checkPluginVersions() {
   const rootPackagePath = resolve("package.json");
-  const rootPackage = JSON.parse(
-    readFileSync(rootPackagePath, "utf8"),
-  ) as PackageJson;
+  const rootPackage = JSON.parse(readFileSync(rootPackagePath, "utf8")) as PackageJson;
   const targetVersion = rootPackage.version;
 
   if (!targetVersion) {
@@ -41,8 +35,8 @@ function checkPluginVersions() {
   }
 
   const extensionsDir = resolve("extensions");
-  const entries = readdirSync(extensionsDir, { withFileTypes: true }).filter(
-    (entry) => entry.isDirectory(),
+  const entries = readdirSync(extensionsDir, { withFileTypes: true }).filter((entry) =>
+    entry.isDirectory(),
   );
 
   const mismatches: string[] = [];
@@ -66,15 +60,11 @@ function checkPluginVersions() {
   }
 
   if (mismatches.length > 0) {
-    console.error(
-      `release-check: plugin versions must match ${targetVersion}:`,
-    );
+    console.error(`release-check: plugin versions must match ${targetVersion}:`);
     for (const item of mismatches) {
       console.error(`  - ${item}`);
     }
-    console.error(
-      "release-check: run `pnpm plugins:sync` to align plugin versions.",
-    );
+    console.error("release-check: run `pnpm plugins:sync` to align plugin versions.");
     process.exit(1);
   }
 }

@@ -31,12 +31,7 @@ import { zalouserOnboardingAdapter } from "./onboarding.js";
 import { probeZalouser } from "./probe.js";
 import { sendMessageZalouser } from "./send.js";
 import { collectZalouserStatusIssues } from "./status-issues.js";
-import {
-  checkZcaInstalled,
-  parseJsonOutput,
-  runZca,
-  runZcaInteractive,
-} from "./zca.js";
+import { checkZcaInstalled, parseJsonOutput, runZca, runZcaInteractive } from "./zca.js";
 
 const meta = {
   id: "zalouser",
@@ -96,8 +91,8 @@ function resolveZalouserGroupToolPolicy(
   const groups = account.config.groups ?? {};
   const groupId = params.groupId?.trim();
   const groupChannel = params.groupChannel?.trim();
-  const candidates = [groupId, groupChannel, "*"].filter(
-    (value): value is string => Boolean(value),
+  const candidates = [groupId, groupChannel, "*"].filter((value): value is string =>
+    Boolean(value),
   );
   for (const key of candidates) {
     const entry = groups[key];
@@ -118,10 +113,9 @@ export const zalouserDock: ChannelDock = {
   outbound: { textChunkLimit: 2000 },
   config: {
     resolveAllowFrom: ({ cfg, accountId }) =>
-      (
-        resolveZalouserAccountSync({ cfg: cfg, accountId }).config.allowFrom ??
-        []
-      ).map((entry) => String(entry)),
+      (resolveZalouserAccountSync({ cfg: cfg, accountId }).config.allowFrom ?? []).map((entry) =>
+        String(entry),
+      ),
     formatAllowFrom: ({ allowFrom }) =>
       allowFrom
         .map((entry) => String(entry).trim())
@@ -155,8 +149,7 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
   configSchema: buildChannelConfigSchema(ZalouserConfigSchema),
   config: {
     listAccountIds: (cfg) => listZalouserAccountIds(cfg),
-    resolveAccount: (cfg, accountId) =>
-      resolveZalouserAccountSync({ cfg: cfg, accountId }),
+    resolveAccount: (cfg, accountId) => resolveZalouserAccountSync({ cfg: cfg, accountId }),
     defaultAccountId: (cfg) => resolveDefaultZalouserAccountId(cfg),
     setAccountEnabled: ({ cfg, accountId, enabled }) =>
       setAccountEnabledInConfigSection({
@@ -196,10 +189,9 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
       configured: undefined,
     }),
     resolveAllowFrom: ({ cfg, accountId }) =>
-      (
-        resolveZalouserAccountSync({ cfg: cfg, accountId }).config.allowFrom ??
-        []
-      ).map((entry) => String(entry)),
+      (resolveZalouserAccountSync({ cfg: cfg, accountId }).config.allowFrom ?? []).map((entry) =>
+        String(entry),
+      ),
     formatAllowFrom: ({ allowFrom }) =>
       allowFrom
         .map((entry) => String(entry).trim())
@@ -209,11 +201,8 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
   },
   security: {
     resolveDmPolicy: ({ cfg, accountId, account }) => {
-      const resolvedAccountId =
-        accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
-      const useAccountPath = Boolean(
-        cfg.channels?.zalouser?.accounts?.[resolvedAccountId],
-      );
+      const resolvedAccountId = accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
+      const useAccountPath = Boolean(cfg.channels?.zalouser?.accounts?.[resolvedAccountId]);
       const basePath = useAccountPath
         ? `channels.zalouser.accounts.${resolvedAccountId}.`
         : "channels.zalouser.";
@@ -340,13 +329,8 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
         throw new Error("Missing dependency: `zca` not found in PATH");
       }
       const account = resolveZalouserAccountSync({ cfg: cfg, accountId });
-      const args = query?.trim()
-        ? ["friend", "find", query.trim()]
-        : ["friend", "list", "-j"];
-      const result = await runZca(args, {
-        profile: account.profile,
-        timeout: 15000,
-      });
+      const args = query?.trim() ? ["friend", "find", query.trim()] : ["friend", "list", "-j"];
+      const result = await runZca(args, { profile: account.profile, timeout: 15000 });
       if (!result.ok) {
         throw new Error(result.stderr || "Failed to list peers");
       }
@@ -361,9 +345,7 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
             }),
           )
         : [];
-      return typeof limit === "number" && limit > 0
-        ? rows.slice(0, limit)
-        : rows;
+      return typeof limit === "number" && limit > 0 ? rows.slice(0, limit) : rows;
     },
     listGroups: async ({ cfg, accountId, query, limit }) => {
       const ok = await checkZcaInstalled();
@@ -390,13 +372,9 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
         : [];
       const q = query?.trim().toLowerCase();
       if (q) {
-        rows = rows.filter(
-          (g) => (g.name ?? "").toLowerCase().includes(q) || g.id.includes(q),
-        );
+        rows = rows.filter((g) => (g.name ?? "").toLowerCase().includes(q) || g.id.includes(q));
       }
-      return typeof limit === "number" && limit > 0
-        ? rows.slice(0, limit)
-        : rows;
+      return typeof limit === "number" && limit > 0 ? rows.slice(0, limit) : rows;
     },
     listGroupMembers: async ({ cfg, accountId, groupId, limit }) => {
       const ok = await checkZcaInstalled();
@@ -411,9 +389,9 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
       if (!result.ok) {
         throw new Error(result.stderr || "Failed to list group members");
       }
-      const parsed = parseJsonOutput<
-        Array<Partial<ZcaFriend> & { userId?: string | number }>
-      >(result.stdout);
+      const parsed = parseJsonOutput<Array<Partial<ZcaFriend> & { userId?: string | number }>>(
+        result.stdout,
+      );
       const rows = Array.isArray(parsed)
         ? parsed
             .map((m) => {
@@ -430,8 +408,7 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
             })
             .filter(Boolean)
         : [];
-      const sliced =
-        typeof limit === "number" && limit > 0 ? rows.slice(0, limit) : rows;
+      const sliced = typeof limit === "number" && limit > 0 ? rows.slice(0, limit) : rows;
       return sliced as ChannelDirectoryEntry[];
     },
   },
@@ -459,10 +436,7 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
                 ? ["friend", "find", trimmed]
                 : ["friend", "list", "-j"]
               : ["group", "list", "-j"];
-          const result = await runZca(args, {
-            profile: account.profile,
-            timeout: 15000,
-          });
+          const result = await runZca(args, { profile: account.profile, timeout: 15000 });
           if (!result.ok) {
             throw new Error(result.stderr || "zca lookup failed");
           }
@@ -480,10 +454,7 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
               resolved: Boolean(best?.id),
               id: best?.id,
               name: best?.name,
-              note:
-                matches.length > 1
-                  ? "multiple matches; chose first"
-                  : undefined,
+              note: matches.length > 1 ? "multiple matches; chose first" : undefined,
             });
           } else {
             const parsed = parseJsonOutput<ZcaGroup[]>(result.stdout) ?? [];
@@ -494,18 +465,13 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
                 }))
               : [];
             const best =
-              matches.find(
-                (g) => g.name?.toLowerCase() === trimmed.toLowerCase(),
-              ) ?? matches[0];
+              matches.find((g) => g.name?.toLowerCase() === trimmed.toLowerCase()) ?? matches[0];
             results.push({
               input,
               resolved: Boolean(best?.id),
               id: best?.id,
               name: best?.name,
-              note:
-                matches.length > 1
-                  ? "multiple matches; chose first"
-                  : undefined,
+              note: matches.length > 1 ? "multiple matches; chose first" : undefined,
             });
           }
         } catch (err) {
@@ -545,9 +511,7 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
       runtime.log(
         `Scan the QR code in this terminal to link Zalo Personal (account: ${account.accountId}, profile: ${account.profile}).`,
       );
-      const result = await runZcaInteractive(["auth", "login"], {
-        profile: account.profile,
-      });
+      const result = await runZcaInteractive(["auth", "login"], { profile: account.profile });
       if (!result.ok) {
         throw new Error(result.stderr || "Zalouser login failed");
       }
@@ -577,12 +541,8 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
         if (chunk.length > 0) {
           chunks.push(chunk);
         }
-        const brokeOnSeparator =
-          breakIdx < remaining.length && /\s/.test(remaining[breakIdx]);
-        const nextStart = Math.min(
-          remaining.length,
-          breakIdx + (brokeOnSeparator ? 1 : 0),
-        );
+        const brokeOnSeparator = breakIdx < remaining.length && /\s/.test(remaining[breakIdx]);
+        const nextStart = Math.min(remaining.length, breakIdx + (brokeOnSeparator ? 1 : 0));
         remaining = remaining.slice(nextStart).trimStart();
       }
       if (remaining.length) {
@@ -594,9 +554,7 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
     textChunkLimit: 2000,
     sendText: async ({ to, text, accountId, cfg }) => {
       const account = resolveZalouserAccountSync({ cfg: cfg, accountId });
-      const result = await sendMessageZalouser(to, text, {
-        profile: account.profile,
-      });
+      const result = await sendMessageZalouser(to, text, { profile: account.profile });
       return {
         channel: "zalouser",
         ok: result.ok,
@@ -636,16 +594,11 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
       probe: snapshot.probe,
       lastProbeAt: snapshot.lastProbeAt ?? null,
     }),
-    probeAccount: async ({ account, timeoutMs }) =>
-      probeZalouser(account.profile, timeoutMs),
+    probeAccount: async ({ account, timeoutMs }) => probeZalouser(account.profile, timeoutMs),
     buildAccountSnapshot: async ({ account, runtime }) => {
       const zcaInstalled = await checkZcaInstalled();
-      const configured = zcaInstalled
-        ? await checkZcaAuthenticated(account.profile)
-        : false;
-      const configError = zcaInstalled
-        ? "not authenticated"
-        : "zca CLI not found in PATH";
+      const configured = zcaInstalled ? await checkZcaAuthenticated(account.profile) : false;
+      const configError = zcaInstalled ? "not authenticated" : "zca CLI not found in PATH";
       return {
         accountId: account.accountId,
         name: account.name,
@@ -654,9 +607,7 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
         running: runtime?.running ?? false,
         lastStartAt: runtime?.lastStartAt ?? null,
         lastStopAt: runtime?.lastStopAt ?? null,
-        lastError: configured
-          ? (runtime?.lastError ?? null)
-          : (runtime?.lastError ?? configError),
+        lastError: configured ? (runtime?.lastError ?? null) : (runtime?.lastError ?? configError),
         lastInboundAt: runtime?.lastInboundAt ?? null,
         lastOutboundAt: runtime?.lastOutboundAt ?? null,
         dmPolicy: account.config.dmPolicy ?? "pairing",
@@ -679,17 +630,14 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
       } catch {
         // ignore probe errors
       }
-      ctx.log?.info(
-        `[${account.accountId}] starting zalouser provider${userLabel}`,
-      );
+      ctx.log?.info(`[${account.accountId}] starting zalouser provider${userLabel}`);
       const { monitorZalouserProvider } = await import("./monitor.js");
       return monitorZalouserProvider({
         account,
         config: ctx.cfg,
         runtime: ctx.runtime,
         abortSignal: ctx.abortSignal,
-        statusSink: (patch) =>
-          ctx.setStatus({ accountId: ctx.accountId, ...patch }),
+        statusSink: (patch) => ctx.setStatus({ accountId: ctx.accountId, ...patch }),
       });
     },
     loginWithQrStart: async (params) => {
@@ -703,9 +651,7 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
         return { message: result.stderr || "Failed to start QR login" };
       }
       // The stdout should contain the base64 QR data URL
-      const qrMatch = result.stdout.match(
-        /data:image\/png;base64,[A-Za-z0-9+/=]+/,
-      );
+      const qrMatch = result.stdout.match(/data:image\/png;base64,[A-Za-z0-9+/=]+/);
       if (qrMatch) {
         return { qrDataUrl: qrMatch[0], message: "Scan QR code with Zalo app" };
       }
@@ -720,9 +666,7 @@ export const zalouserPlugin: ChannelPlugin<ResolvedZalouserAccount> = {
       });
       return {
         connected: statusResult.ok,
-        message: statusResult.ok
-          ? "Login successful"
-          : statusResult.stderr || "Login pending",
+        message: statusResult.ok ? "Login successful" : statusResult.stderr || "Login pending",
       };
     },
     logoutAccount: async (ctx) => {

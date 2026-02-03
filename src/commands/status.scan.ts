@@ -33,11 +33,7 @@ function resolveMemoryPluginStatus(cfg: ReturnType<typeof loadConfig>): MemoryPl
   }
   const raw = typeof cfg.plugins?.slots?.memory === "string" ? cfg.plugins.slots.memory.trim() : "";
   if (raw && raw.toLowerCase() === "none") {
-    return {
-      enabled: false,
-      slot: null,
-      reason: 'plugins.slots.memory="none"',
-    };
+    return { enabled: false, slot: null, reason: 'plugins.slots.memory="none"' };
   }
   return { enabled: true, slot: raw || "memory-core" };
 }

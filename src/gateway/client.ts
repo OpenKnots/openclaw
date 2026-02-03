@@ -186,10 +186,7 @@ export class GatewayClient {
     }
     const role = this.opts.role ?? "operator";
     const storedToken = this.opts.deviceIdentity
-      ? loadDeviceAuthToken({
-          deviceId: this.opts.deviceIdentity.deviceId,
-          role,
-        })?.token
+      ? loadDeviceAuthToken({ deviceId: this.opts.deviceIdentity.deviceId, role })?.token
       : null;
     const authToken = storedToken ?? this.opts.token ?? undefined;
     const canFallbackToShared = Boolean(storedToken && this.opts.token);

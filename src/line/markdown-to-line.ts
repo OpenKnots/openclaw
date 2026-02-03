@@ -150,11 +150,7 @@ export function convertTableToFlexBubble(table: MarkdownTable): FlexBubble {
 
   const dataRows: FlexComponent[] = rowCells.slice(0, 10).map((row, rowIndex) => {
     const rowContents = table.headers.map((_, colIndex) => {
-      const cell = row[colIndex] ?? {
-        text: "-",
-        bold: false,
-        hasMarkup: false,
-      };
+      const cell = row[colIndex] ?? { text: "-", bold: false, hasMarkup: false };
       return {
         type: "text",
         text: cell.text,
@@ -275,10 +271,7 @@ export function convertCodeBlockToFlexBubble(block: CodeBlock): FlexBubble {
 /**
  * Extract markdown links from text
  */
-export function extractLinks(text: string): {
-  links: MarkdownLink[];
-  textWithLinks: string;
-} {
+export function extractLinks(text: string): { links: MarkdownLink[]; textWithLinks: string } {
   const links: MarkdownLink[] = [];
 
   // Reset regex state

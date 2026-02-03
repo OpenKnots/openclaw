@@ -48,10 +48,7 @@ export function wrapFetchWithAbortSignal(fetchImpl: typeof fetch): typeof fetch 
     } else {
       signal.addEventListener("abort", onAbort, { once: true });
     }
-    const response = fetchImpl(input, {
-      ...patchedInit,
-      signal: controller.signal,
-    });
+    const response = fetchImpl(input, { ...patchedInit, signal: controller.signal });
     if (typeof signal.removeEventListener === "function") {
       void response.finally(() => {
         signal.removeEventListener("abort", onAbort);

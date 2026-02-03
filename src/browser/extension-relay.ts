@@ -595,10 +595,7 @@ export async function ensureChromeExtensionRelayServer(opts: {
             if (changedTarget && prevTargetId) {
               broadcastToCdpClients({
                 method: "Target.detachedFromTarget",
-                params: {
-                  sessionId: attached.sessionId,
-                  targetId: prevTargetId,
-                },
+                params: { sessionId: attached.sessionId, targetId: prevTargetId },
                 sessionId: attached.sessionId,
               });
             }
@@ -621,9 +618,7 @@ export async function ensureChromeExtensionRelayServer(opts: {
         // Keep cached tab metadata fresh for /json/list.
         // After navigation, Chrome updates URL/title via Target.targetInfoChanged.
         if (method === "Target.targetInfoChanged") {
-          const changed = (params ?? {}) as {
-            targetInfo?: { targetId?: string; type?: string };
-          };
+          const changed = (params ?? {}) as { targetInfo?: { targetId?: string; type?: string } };
           const targetInfo = changed?.targetInfo;
           const targetId = targetInfo?.targetId;
           if (targetId && (targetInfo?.type ?? "page") === "page") {

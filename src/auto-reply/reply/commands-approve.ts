@@ -29,17 +29,11 @@ function parseApproveCommand(raw: string): ParsedApproveCommand | null {
   }
   const rest = trimmed.slice(COMMAND.length).trim();
   if (!rest) {
-    return {
-      ok: false,
-      error: "Usage: /approve <id> allow-once|allow-always|deny",
-    };
+    return { ok: false, error: "Usage: /approve <id> allow-once|allow-always|deny" };
   }
   const tokens = rest.split(/\s+/).filter(Boolean);
   if (tokens.length < 2) {
-    return {
-      ok: false,
-      error: "Usage: /approve <id> allow-once|allow-always|deny",
-    };
+    return { ok: false, error: "Usage: /approve <id> allow-once|allow-always|deny" };
   }
 
   const first = tokens[0].toLowerCase();
@@ -59,10 +53,7 @@ function parseApproveCommand(raw: string): ParsedApproveCommand | null {
       id: tokens[0],
     };
   }
-  return {
-    ok: false,
-    error: "Usage: /approve <id> allow-once|allow-always|deny",
-  };
+  return { ok: false, error: "Usage: /approve <id> allow-once|allow-always|deny" };
 }
 
 function buildResolvedByLabel(params: Parameters<CommandHandler>[0]): string {
@@ -111,8 +102,6 @@ export const handleApproveCommand: CommandHandler = async (params, allowTextComm
 
   return {
     shouldContinue: false,
-    reply: {
-      text: `✅ Exec approval ${parsed.decision} submitted for ${parsed.id}.`,
-    },
+    reply: { text: `✅ Exec approval ${parsed.decision} submitted for ${parsed.id}.` },
   };
 };

@@ -30,15 +30,9 @@ const processSchema = Type.Object({
   sessionId: Type.Optional(Type.String({ description: "Session id for actions other than list" })),
   data: Type.Optional(Type.String({ description: "Data to write for write" })),
   keys: Type.Optional(
-    Type.Array(Type.String(), {
-      description: "Key tokens to send for send-keys",
-    }),
+    Type.Array(Type.String(), { description: "Key tokens to send for send-keys" }),
   ),
-  hex: Type.Optional(
-    Type.Array(Type.String(), {
-      description: "Hex bytes to send for send-keys",
-    }),
-  ),
+  hex: Type.Optional(Type.Array(Type.String(), { description: "Hex bytes to send for send-keys" })),
   literal: Type.Optional(Type.String({ description: "Literal string for send-keys" })),
   text: Type.Optional(Type.String({ description: "Text to paste for paste" })),
   bracketed: Type.Optional(Type.Boolean({ description: "Wrap paste in bracketed mode" })),

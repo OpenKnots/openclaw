@@ -1,9 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  resolveChannelMediaMaxBytes,
-  type OpenClawConfig,
-} from "openclaw/plugin-sdk";
+import { resolveChannelMediaMaxBytes, type OpenClawConfig } from "openclaw/plugin-sdk";
 import { sendBlueBubblesAttachment } from "./attachments.js";
 import { resolveBlueBubblesMessageId } from "./monitor.js";
 import { getBlueBubblesRuntime } from "./runtime.js";
@@ -102,9 +99,7 @@ export async function sendBlueBubblesMedia(params: {
     if (!resolvedContentType) {
       const hint = mediaPath ?? mediaUrl;
       const detected = await core.media.detectMime({
-        buffer: Buffer.isBuffer(mediaBuffer)
-          ? mediaBuffer
-          : Buffer.from(mediaBuffer),
+        buffer: Buffer.isBuffer(mediaBuffer) ? mediaBuffer : Buffer.from(mediaBuffer),
         filePath: hint,
       });
       resolvedContentType = detected ?? undefined;
@@ -115,19 +110,15 @@ export async function sendBlueBubblesMedia(params: {
   } else {
     const source = mediaPath ?? mediaUrl;
     if (!source) {
-      throw new Error(
-        "BlueBubbles media delivery requires mediaUrl, mediaPath, or mediaBuffer.",
-      );
+      throw new Error("BlueBubbles media delivery requires mediaUrl, mediaPath, or mediaBuffer.");
     }
     if (HTTP_URL_RE.test(source)) {
       const fetched = await core.channel.media.fetchRemoteMedia({
         url: source,
-        maxBytes:
-          typeof maxBytes === "number" && maxBytes > 0 ? maxBytes : undefined,
+        maxBytes: typeof maxBytes === "number" && maxBytes > 0 ? maxBytes : undefined,
       });
       buffer = fetched.buffer;
-      resolvedContentType =
-        resolvedContentType ?? fetched.contentType ?? undefined;
+      resolvedContentType = resolvedContentType ?? fetched.contentType ?? undefined;
       resolvedFilename = resolvedFilename ?? fetched.fileName;
     } else {
       const localPath = resolveLocalMediaPath(source);
@@ -154,9 +145,7 @@ export async function sendBlueBubblesMedia(params: {
 
   // Resolve short ID (e.g., "5") to full UUID
   const replyToMessageGuid = replyToId?.trim()
-    ? resolveBlueBubblesMessageId(replyToId.trim(), {
-        requireKnownShortId: true,
-      })
+    ? resolveBlueBubblesMessageId(replyToId.trim(), { requireKnownShortId: true })
     : undefined;
 
   const attachmentResult = await sendBlueBubblesAttachment({

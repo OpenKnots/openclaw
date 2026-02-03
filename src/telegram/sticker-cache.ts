@@ -124,11 +124,7 @@ export function getAllCachedStickers(): CachedSticker[] {
 /**
  * Get cache statistics.
  */
-export function getCacheStats(): {
-  count: number;
-  oldestAt?: string;
-  newestAt?: string;
-} {
+export function getCacheStats(): { count: number; oldestAt?: string; newestAt?: string } {
   const cache = loadCache();
   const stickers = Object.values(cache.stickers);
   if (stickers.length === 0) {
@@ -171,10 +167,7 @@ export async function describeStickerImage(params: DescribeStickerParams): Promi
     const entry = findModelInCatalog(catalog, defaultModel.provider, defaultModel.model);
     const supportsVision = modelSupportsVision(entry);
     if (supportsVision) {
-      activeModel = {
-        provider: defaultModel.provider,
-        model: defaultModel.model,
-      };
+      activeModel = { provider: defaultModel.provider, model: defaultModel.model };
     }
   } catch {
     // Ignore catalog failures; fall back to auto selection.

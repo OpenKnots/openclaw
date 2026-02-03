@@ -238,9 +238,7 @@ export function loadExecApprovals(): ExecApprovalsFile {
 export function saveExecApprovals(file: ExecApprovalsFile) {
   const filePath = resolveExecApprovalsPath();
   ensureDir(filePath);
-  fs.writeFileSync(filePath, `${JSON.stringify(file, null, 2)}\n`, {
-    mode: 0o600,
-  });
+  fs.writeFileSync(filePath, `${JSON.stringify(file, null, 2)}\n`, { mode: 0o600 });
   try {
     fs.chmodSync(filePath, 0o600);
   } catch {
@@ -698,11 +696,7 @@ function iterateQuoteAware(
   return { ok: true, parts, hasSplit };
 }
 
-function splitShellPipeline(command: string): {
-  ok: boolean;
-  reason?: string;
-  segments: string[];
-} {
+function splitShellPipeline(command: string): { ok: boolean; reason?: string; segments: string[] } {
   let emptySegment = false;
   const result = iterateQuoteAware(command, (ch, next) => {
     if (ch === "|" && next === "|") {
@@ -848,11 +842,7 @@ export function analyzeShellCommand(params: {
       }
       const segments = parseSegmentsFromParts(pipelineSplit.segments, params.cwd, params.env);
       if (!segments) {
-        return {
-          ok: false,
-          reason: "unable to parse shell segment",
-          segments: [],
-        };
+        return { ok: false, reason: "unable to parse shell segment", segments: [] };
       }
       chains.push(segments);
       allSegments.push(...segments);
@@ -1074,10 +1064,7 @@ export function evaluateExecAllowlist(params: {
     skillBins: params.skillBins,
     autoAllowSkills: params.autoAllowSkills,
   });
-  return {
-    allowlistSatisfied: result.satisfied,
-    allowlistMatches: result.matches,
-  };
+  return { allowlistSatisfied: result.satisfied, allowlistMatches: result.matches };
 }
 
 /**
@@ -1338,22 +1325,14 @@ export function addAllowlistEntry(
   if (allowlist.some((entry) => entry.pattern === trimmed)) {
     return;
   }
-  allowlist.push({
-    id: crypto.randomUUID(),
-    pattern: trimmed,
-    lastUsedAt: Date.now(),
-  });
+  allowlist.push({ id: crypto.randomUUID(), pattern: trimmed, lastUsedAt: Date.now() });
   agents[target] = { ...existing, allowlist };
   approvals.agents = agents;
   saveExecApprovals(approvals);
 }
 
 export function minSecurity(a: ExecSecurity, b: ExecSecurity): ExecSecurity {
-  const order: Record<ExecSecurity, number> = {
-    deny: 0,
-    allowlist: 1,
-    full: 2,
-  };
+  const order: Record<ExecSecurity, number> = { deny: 0, allowlist: 1, full: 2 };
   return order[a] <= order[b] ? a : b;
 }
 
@@ -1415,10 +1394,7 @@ export async function requestExecApprovalViaSocket(params: {
           continue;
         }
         try {
-          const msg = JSON.parse(line) as {
-            type?: string;
-            decision?: ExecApprovalDecision;
-          };
+          const msg = JSON.parse(line) as { type?: string; decision?: ExecApprovalDecision };
           if (msg?.type === "decision" && msg.decision) {
             clearTimeout(timer);
             finish(msg.decision);

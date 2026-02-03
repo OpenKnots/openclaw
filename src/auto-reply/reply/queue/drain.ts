@@ -67,10 +67,7 @@ export function scheduleFollowupDrain(
           }
 
           const items = queue.items.splice(0, queue.items.length);
-          const summary = buildQueueSummaryPrompt({
-            state: queue,
-            noun: "message",
-          });
+          const summary = buildQueueSummaryPrompt({ state: queue, noun: "message" });
           const run = items.at(-1)?.run ?? queue.lastRun;
           if (!run) {
             break;
@@ -104,10 +101,7 @@ export function scheduleFollowupDrain(
           continue;
         }
 
-        const summaryPrompt = buildQueueSummaryPrompt({
-          state: queue,
-          noun: "message",
-        });
+        const summaryPrompt = buildQueueSummaryPrompt({ state: queue, noun: "message" });
         if (summaryPrompt) {
           const run = queue.lastRun;
           if (!run) {

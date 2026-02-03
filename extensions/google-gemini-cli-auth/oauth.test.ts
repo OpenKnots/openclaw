@@ -11,14 +11,10 @@ vi.mock("node:fs", async (importOriginal) => {
   const actual = await importOriginal<typeof import("node:fs")>();
   return {
     ...actual,
-    existsSync: (...args: Parameters<typeof actual.existsSync>) =>
-      mockExistsSync(...args),
-    readFileSync: (...args: Parameters<typeof actual.readFileSync>) =>
-      mockReadFileSync(...args),
-    realpathSync: (...args: Parameters<typeof actual.realpathSync>) =>
-      mockRealpathSync(...args),
-    readdirSync: (...args: Parameters<typeof actual.readdirSync>) =>
-      mockReaddirSync(...args),
+    existsSync: (...args: Parameters<typeof actual.existsSync>) => mockExistsSync(...args),
+    readFileSync: (...args: Parameters<typeof actual.readFileSync>) => mockReadFileSync(...args),
+    realpathSync: (...args: Parameters<typeof actual.realpathSync>) => mockRealpathSync(...args),
+    readdirSync: (...args: Parameters<typeof actual.readdirSync>) => mockReaddirSync(...args),
   };
 });
 
@@ -49,8 +45,7 @@ describe("extractGeminiCliCredentials", () => {
     process.env.PATH = "/nonexistent";
     mockExistsSync.mockReturnValue(false);
 
-    const { extractGeminiCliCredentials, clearCredentialsCache } =
-      await import("./oauth.js");
+    const { extractGeminiCliCredentials, clearCredentialsCache } = await import("./oauth.js");
     clearCredentialsCache();
     expect(extractGeminiCliCredentials()).toBeNull();
   });
@@ -99,8 +94,7 @@ describe("extractGeminiCliCredentials", () => {
     mockRealpathSync.mockReturnValue(fakeResolvedPath);
     mockReadFileSync.mockReturnValue(FAKE_OAUTH2_CONTENT);
 
-    const { extractGeminiCliCredentials, clearCredentialsCache } =
-      await import("./oauth.js");
+    const { extractGeminiCliCredentials, clearCredentialsCache } = await import("./oauth.js");
     clearCredentialsCache();
     const result = extractGeminiCliCredentials();
 
@@ -132,8 +126,7 @@ describe("extractGeminiCliCredentials", () => {
     mockRealpathSync.mockReturnValue(fakeResolvedPath);
     mockReaddirSync.mockReturnValue([]); // Empty directory for recursive search
 
-    const { extractGeminiCliCredentials, clearCredentialsCache } =
-      await import("./oauth.js");
+    const { extractGeminiCliCredentials, clearCredentialsCache } = await import("./oauth.js");
     clearCredentialsCache();
     expect(extractGeminiCliCredentials()).toBeNull();
   });
@@ -182,8 +175,7 @@ describe("extractGeminiCliCredentials", () => {
     mockRealpathSync.mockReturnValue(fakeResolvedPath);
     mockReadFileSync.mockReturnValue("// no credentials here");
 
-    const { extractGeminiCliCredentials, clearCredentialsCache } =
-      await import("./oauth.js");
+    const { extractGeminiCliCredentials, clearCredentialsCache } = await import("./oauth.js");
     clearCredentialsCache();
     expect(extractGeminiCliCredentials()).toBeNull();
   });
@@ -232,8 +224,7 @@ describe("extractGeminiCliCredentials", () => {
     mockRealpathSync.mockReturnValue(fakeResolvedPath);
     mockReadFileSync.mockReturnValue(FAKE_OAUTH2_CONTENT);
 
-    const { extractGeminiCliCredentials, clearCredentialsCache } =
-      await import("./oauth.js");
+    const { extractGeminiCliCredentials, clearCredentialsCache } = await import("./oauth.js");
     clearCredentialsCache();
 
     // First call

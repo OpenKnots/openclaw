@@ -276,11 +276,7 @@ When a user invokes `prose update`, check for legacy file structures and migrate
    - If exists, read the JSON content
    - Convert to `.env` format:
      ```json
-     {
-       "OPENPROSE_TELEMETRY": "enabled",
-       "USER_ID": "user-xxx",
-       "SESSION_ID": "sess-xxx"
-     }
+     { "OPENPROSE_TELEMETRY": "enabled", "USER_ID": "user-xxx", "SESSION_ID": "sess-xxx" }
      ```
      becomes:
      ```env

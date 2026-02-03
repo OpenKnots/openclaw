@@ -101,10 +101,7 @@ describe("updateConfigFormValue", () => {
   it("seeds from snapshot when form is null", () => {
     const state = createState();
     state.configSnapshot = {
-      config: {
-        channels: { telegram: { botToken: "t" } },
-        gateway: { mode: "local" },
-      },
+      config: { channels: { telegram: { botToken: "t" } }, gateway: { mode: "local" } },
       valid: true,
       issues: [],
       raw: "{}",

@@ -162,12 +162,7 @@ async function safeAclReset(params: {
     }
     const exec = params.exec ?? runExec;
     await exec(cmd.command, cmd.args);
-    return {
-      kind: "icacls",
-      path: params.path,
-      command: cmd.display,
-      ok: true,
-    };
+    return { kind: "icacls", path: params.path, command: cmd.display, ok: true };
   } catch (err) {
     const code = (err as { code?: string }).code;
     if (code === "ENOENT") {
@@ -448,22 +443,12 @@ async function chmodCredentialsAndAgentState(params: {
 
     // eslint-disable-next-line no-await-in-loop
     params.actions.push(
-      await params.applyPerms({
-        path: sessionsDir,
-        mode: 0o700,
-        require: "dir",
-      }),
+      await params.applyPerms({ path: sessionsDir, mode: 0o700, require: "dir" }),
     );
 
     const storePath = path.join(sessionsDir, "sessions.json");
     // eslint-disable-next-line no-await-in-loop
-    params.actions.push(
-      await params.applyPerms({
-        path: storePath,
-        mode: 0o600,
-        require: "file",
-      }),
-    );
+    params.actions.push(await params.applyPerms({ path: storePath, mode: 0o600, require: "file" }));
   }
 }
 
@@ -518,11 +503,7 @@ export async function fixSecurityFootguns(opts?: {
   const applyPerms = (params: { path: string; mode: number; require: "dir" | "file" }) =>
     isWindows
       ? safeAclReset({ path: params.path, require: params.require, env, exec })
-      : safeChmod({
-          path: params.path,
-          mode: params.mode,
-          require: params.require,
-        });
+      : safeChmod({ path: params.path, mode: params.mode, require: params.require });
 
   actions.push(await applyPerms({ path: stateDir, mode: 0o700, require: "dir" }));
   actions.push(await applyPerms({ path: configPath, mode: 0o600, require: "file" }));

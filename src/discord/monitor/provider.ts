@@ -78,9 +78,7 @@ async function deployDiscordCommands(params: {
   if (!params.enabled) {
     return;
   }
-  const runWithRetry = createDiscordRetryRunner({
-    verbose: shouldLogVerbose(),
-  });
+  const runWithRetry = createDiscordRetryRunner({ verbose: shouldLogVerbose() });
   try {
     await runWithRetry(() => params.client.handleDeployRequest(), "command deploy");
   } catch (err) {
@@ -214,11 +212,7 @@ export async function monitorDiscordProvider(opts: MonitorDiscordOpts = {}) {
   if (token) {
     if (guildEntries && Object.keys(guildEntries).length > 0) {
       try {
-        const entries: Array<{
-          input: string;
-          guildKey: string;
-          channelKey?: string;
-        }> = [];
+        const entries: Array<{ input: string; guildKey: string; channelKey?: string }> = [];
         for (const [guildKey, guildCfg] of Object.entries(guildEntries)) {
           if (guildKey === "*") {
             continue;
@@ -261,15 +255,8 @@ export async function monitorDiscordProvider(opts: MonitorDiscordOpts = {}) {
                 : `${entry.input}→${entry.guildId}`,
             );
             const existing = nextGuilds[entry.guildId] ?? {};
-            const mergedChannels = {
-              ...sourceGuild.channels,
-              ...existing.channels,
-            };
-            const mergedGuild = {
-              ...sourceGuild,
-              ...existing,
-              channels: mergedChannels,
-            };
+            const mergedChannels = { ...sourceGuild.channels, ...existing.channels };
+            const mergedGuild = { ...sourceGuild, ...existing, channels: mergedChannels };
             nextGuilds[entry.guildId] = mergedGuild;
             if (source.channelKey && entry.channelId) {
               const sourceChannel = sourceGuild.channels?.[source.channelKey];
@@ -444,18 +431,12 @@ export async function monitorDiscordProvider(opts: MonitorDiscordOpts = {}) {
   let skillCommands =
     nativeEnabled && nativeSkillsEnabled ? listSkillCommandsForAgents({ cfg }) : [];
   let commandSpecs = nativeEnabled
-    ? listNativeCommandSpecsForConfig(cfg, {
-        skillCommands,
-        provider: "discord",
-      })
+    ? listNativeCommandSpecsForConfig(cfg, { skillCommands, provider: "discord" })
     : [];
   const initialCommandCount = commandSpecs.length;
   if (nativeEnabled && nativeSkillsEnabled && commandSpecs.length > maxDiscordCommands) {
     skillCommands = [];
-    commandSpecs = listNativeCommandSpecsForConfig(cfg, {
-      skillCommands: [],
-      provider: "discord",
-    });
+    commandSpecs = listNativeCommandSpecsForConfig(cfg, { skillCommands: [], provider: "discord" });
     runtime.log?.(
       warn(
         `discord: ${initialCommandCount} commands exceeds limit; removing per-skill commands and keeping /skill.`,

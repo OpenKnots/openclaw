@@ -381,9 +381,7 @@ describe("handleSlackAction", () => {
 
     const result = await handleSlackAction({ action: "listPins", channelId: "C1" }, cfg);
     const payload = result.details as {
-      pins: Array<{
-        message?: { timestampMs?: number; timestampUtc?: string };
-      }>;
+      pins: Array<{ message?: { timestampMs?: number; timestampUtc?: string } }>;
     };
 
     const expectedMs = Math.round(1735689600.789 * 1000);

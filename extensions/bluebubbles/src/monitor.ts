@@ -8,18 +8,12 @@ import {
   resolveControlCommandGate,
 } from "openclaw/plugin-sdk";
 import type { ResolvedBlueBubblesAccount } from "./accounts.js";
-import type {
-  BlueBubblesAccountConfig,
-  BlueBubblesAttachment,
-} from "./types.js";
+import type { BlueBubblesAccountConfig, BlueBubblesAttachment } from "./types.js";
 import { downloadBlueBubblesAttachment } from "./attachments.js";
 import { markBlueBubblesChatRead, sendBlueBubblesTyping } from "./chat.js";
 import { sendBlueBubblesMedia } from "./media-send.js";
 import { fetchBlueBubblesServerInfo } from "./probe.js";
-import {
-  normalizeBlueBubblesReactionInput,
-  sendBlueBubblesReaction,
-} from "./reactions.js";
+import { normalizeBlueBubblesReactionInput, sendBlueBubblesReaction } from "./reactions.js";
 import { getBlueBubblesRuntime } from "./runtime.js";
 import { resolveChatGuidForTarget, sendMessageBlueBubbles } from "./send.js";
 import {
@@ -38,10 +32,7 @@ export type BlueBubblesMonitorOptions = {
   config: OpenClawConfig;
   runtime: BlueBubblesRuntimeEnv;
   abortSignal: AbortSignal;
-  statusSink?: (patch: {
-    lastInboundAt?: number;
-    lastOutboundAt?: number;
-  }) => void;
+  statusSink?: (patch: { lastInboundAt?: number; lastOutboundAt?: number }) => void;
   webhookPath?: string;
 };
 
@@ -65,10 +56,7 @@ type BlueBubblesReplyCacheEntry = {
 };
 
 // Best-effort cache for resolving reply context when BlueBubbles webhooks omit sender/body.
-const blueBubblesReplyCacheByMessageId = new Map<
-  string,
-  BlueBubblesReplyCacheEntry
->();
+const blueBubblesReplyCacheByMessageId = new Map<string, BlueBubblesReplyCacheEntry>();
 
 // Bidirectional maps for short ID ↔ message GUID resolution (token savings optimization)
 const blueBubblesShortIdToUuid = new Map<string, string>();
@@ -101,11 +89,7 @@ function rememberBlueBubblesReplyCache(
     blueBubblesUuidToShortId.set(messageId, shortId);
   }
 
-  const fullEntry: BlueBubblesReplyCacheEntry = {
-    ...entry,
-    messageId,
-    shortId,
-  };
+  const fullEntry: BlueBubblesReplyCacheEntry = { ...entry, messageId, shortId };
 
   // Refresh insertion order.
   blueBubblesReplyCacheByMessageId.delete(messageId);
@@ -126,9 +110,7 @@ function rememberBlueBubblesReplyCache(
     break;
   }
   while (blueBubblesReplyCacheByMessageId.size > REPLY_CACHE_MAX) {
-    const oldest = blueBubblesReplyCacheByMessageId.keys().next().value as
-      | string
-      | undefined;
+    const oldest = blueBubblesReplyCacheByMessageId.keys().next().value as string | undefined;
     if (!oldest) {
       break;
     }
@@ -223,8 +205,7 @@ function resolveReplyContextFromCache(params: {
   const cachedChatGuid = trimOrUndefined(cached.chatGuid);
   const cachedChatIdentifier = trimOrUndefined(cached.chatIdentifier);
   const chatId = typeof params.chatId === "number" ? params.chatId : undefined;
-  const cachedChatId =
-    typeof cached.chatId === "number" ? cached.chatId : undefined;
+  const cachedChatId = typeof cached.chatId === "number" ? cached.chatId : undefined;
 
   // Avoid cross-chat collisions if we have identifiers.
   if (chatGuid && cachedChatGuid && chatGuid !== cachedChatGuid) {
@@ -238,13 +219,7 @@ function resolveReplyContextFromCache(params: {
   ) {
     return null;
   }
-  if (
-    !chatGuid &&
-    !chatIdentifier &&
-    chatId &&
-    cachedChatId &&
-    chatId !== cachedChatId
-  ) {
+  if (!chatGuid && !chatIdentifier && chatId && cachedChatId && chatId !== cachedChatId) {
     return null;
   }
 
@@ -298,10 +273,7 @@ type WebhookTarget = {
   runtime: BlueBubblesRuntimeEnv;
   core: BlueBubblesCoreRuntime;
   path: string;
-  statusSink?: (patch: {
-    lastInboundAt?: number;
-    lastOutboundAt?: number;
-  }) => void;
+  statusSink?: (patch: { lastInboundAt?: number; lastOutboundAt?: number }) => void;
 };
 
 /**
@@ -324,9 +296,7 @@ const DEFAULT_INBOUND_DEBOUNCE_MS = 500;
  * Combines multiple debounced messages into a single message for processing.
  * Used when multiple webhook events arrive within the debounce window.
  */
-function combineDebounceEntries(
-  entries: BlueBubblesDebounceEntry[],
-): NormalizedWebhookMessage {
+function combineDebounceEntries(entries: BlueBubblesDebounceEntry[]): NormalizedWebhookMessage {
   if (entries.length === 0) {
     throw new Error("Cannot combine empty entries");
   }
@@ -362,8 +332,7 @@ function combineDebounceEntries(
   const timestamps = entries
     .map((e) => e.message.timestamp)
     .filter((t): t is number => typeof t === "number");
-  const latestTimestamp =
-    timestamps.length > 0 ? Math.max(...timestamps) : first.timestamp;
+  const latestTimestamp = timestamps.length > 0 ? Math.max(...timestamps) : first.timestamp;
 
   // Collect all message IDs for reference
   const messageIds = entries
@@ -397,9 +366,7 @@ const webhookTargets = new Map<string, WebhookTarget[]>();
  */
 const targetDebouncers = new Map<
   WebhookTarget,
-  ReturnType<
-    BlueBubblesCoreRuntime["channel"]["debounce"]["createInboundDebouncer"]
-  >
+  ReturnType<BlueBubblesCoreRuntime["channel"]["debounce"]["createInboundDebouncer"]>
 >();
 
 function resolveBlueBubblesDebounceMs(
@@ -408,15 +375,11 @@ function resolveBlueBubblesDebounceMs(
 ): number {
   const inbound = config.messages?.inbound;
   const hasExplicitDebounce =
-    typeof inbound?.debounceMs === "number" ||
-    typeof inbound?.byChannel?.bluebubbles === "number";
+    typeof inbound?.debounceMs === "number" || typeof inbound?.byChannel?.bluebubbles === "number";
   if (!hasExplicitDebounce) {
     return DEFAULT_INBOUND_DEBOUNCE_MS;
   }
-  return core.channel.debounce.resolveInboundDebounceMs({
-    cfg: config,
-    channel: "bluebubbles",
-  });
+  return core.channel.debounce.resolveInboundDebounceMs({ cfg: config, channel: "bluebubbles" });
 }
 
 /**
@@ -430,81 +393,78 @@ function getOrCreateDebouncer(target: WebhookTarget) {
 
   const { account, config, runtime, core } = target;
 
-  const debouncer =
-    core.channel.debounce.createInboundDebouncer<BlueBubblesDebounceEntry>({
-      debounceMs: resolveBlueBubblesDebounceMs(config, core),
-      buildKey: (entry) => {
-        const msg = entry.message;
-        // Prefer stable, shared identifiers to coalesce rapid-fire webhook events for the
-        // same message (e.g., text-only then text+attachment).
-        //
-        // For balloons (URL previews, stickers, etc), BlueBubbles often uses a different
-        // messageId than the originating text. When present, key by associatedMessageGuid
-        // to keep text + balloon coalescing working.
-        const balloonBundleId = msg.balloonBundleId?.trim();
-        const associatedMessageGuid = msg.associatedMessageGuid?.trim();
-        if (balloonBundleId && associatedMessageGuid) {
-          return `bluebubbles:${account.accountId}:balloon:${associatedMessageGuid}`;
-        }
+  const debouncer = core.channel.debounce.createInboundDebouncer<BlueBubblesDebounceEntry>({
+    debounceMs: resolveBlueBubblesDebounceMs(config, core),
+    buildKey: (entry) => {
+      const msg = entry.message;
+      // Prefer stable, shared identifiers to coalesce rapid-fire webhook events for the
+      // same message (e.g., text-only then text+attachment).
+      //
+      // For balloons (URL previews, stickers, etc), BlueBubbles often uses a different
+      // messageId than the originating text. When present, key by associatedMessageGuid
+      // to keep text + balloon coalescing working.
+      const balloonBundleId = msg.balloonBundleId?.trim();
+      const associatedMessageGuid = msg.associatedMessageGuid?.trim();
+      if (balloonBundleId && associatedMessageGuid) {
+        return `bluebubbles:${account.accountId}:balloon:${associatedMessageGuid}`;
+      }
 
-        const messageId = msg.messageId?.trim();
-        if (messageId) {
-          return `bluebubbles:${account.accountId}:msg:${messageId}`;
-        }
+      const messageId = msg.messageId?.trim();
+      if (messageId) {
+        return `bluebubbles:${account.accountId}:msg:${messageId}`;
+      }
 
-        const chatKey =
-          msg.chatGuid?.trim() ??
-          msg.chatIdentifier?.trim() ??
-          (msg.chatId ? String(msg.chatId) : "dm");
-        return `bluebubbles:${account.accountId}:${chatKey}:${msg.senderId}`;
-      },
-      shouldDebounce: (entry) => {
-        const msg = entry.message;
-        // Skip debouncing for from-me messages (they're just cached, not processed)
-        if (msg.fromMe) {
-          return false;
-        }
-        // Skip debouncing for control commands - process immediately
-        if (core.channel.text.hasControlCommand(msg.text, config)) {
-          return false;
-        }
-        // Debounce all other messages to coalesce rapid-fire webhook events
-        // (e.g., text+image arriving as separate webhooks for the same messageId)
-        return true;
-      },
-      onFlush: async (entries) => {
-        if (entries.length === 0) {
-          return;
-        }
+      const chatKey =
+        msg.chatGuid?.trim() ??
+        msg.chatIdentifier?.trim() ??
+        (msg.chatId ? String(msg.chatId) : "dm");
+      return `bluebubbles:${account.accountId}:${chatKey}:${msg.senderId}`;
+    },
+    shouldDebounce: (entry) => {
+      const msg = entry.message;
+      // Skip debouncing for from-me messages (they're just cached, not processed)
+      if (msg.fromMe) {
+        return false;
+      }
+      // Skip debouncing for control commands - process immediately
+      if (core.channel.text.hasControlCommand(msg.text, config)) {
+        return false;
+      }
+      // Debounce all other messages to coalesce rapid-fire webhook events
+      // (e.g., text+image arriving as separate webhooks for the same messageId)
+      return true;
+    },
+    onFlush: async (entries) => {
+      if (entries.length === 0) {
+        return;
+      }
 
-        // Use target from first entry (all entries have same target due to key structure)
-        const flushTarget = entries[0].target;
+      // Use target from first entry (all entries have same target due to key structure)
+      const flushTarget = entries[0].target;
 
-        if (entries.length === 1) {
-          // Single message - process normally
-          await processMessage(entries[0].message, flushTarget);
-          return;
-        }
+      if (entries.length === 1) {
+        // Single message - process normally
+        await processMessage(entries[0].message, flushTarget);
+        return;
+      }
 
-        // Multiple messages - combine and process
-        const combined = combineDebounceEntries(entries);
+      // Multiple messages - combine and process
+      const combined = combineDebounceEntries(entries);
 
-        if (core.logging.shouldLogVerbose()) {
-          const count = entries.length;
-          const preview = combined.text.slice(0, 50);
-          runtime.log?.(
-            `[bluebubbles] coalesced ${count} messages: "${preview}${combined.text.length > 50 ? "..." : ""}"`,
-          );
-        }
-
-        await processMessage(combined, flushTarget);
-      },
-      onError: (err) => {
-        runtime.error?.(
-          `[${account.accountId}] [bluebubbles] debounce flush failed: ${String(err)}`,
+      if (core.logging.shouldLogVerbose()) {
+        const count = entries.length;
+        const preview = combined.text.slice(0, 50);
+        runtime.log?.(
+          `[bluebubbles] coalesced ${count} messages: "${preview}${combined.text.length > 50 ? "..." : ""}"`,
         );
-      },
-    });
+      }
+
+      await processMessage(combined, flushTarget);
+    },
+    onError: (err) => {
+      runtime.error?.(`[${account.accountId}] [bluebubbles] debounce flush failed: ${String(err)}`);
+    },
+  });
 
   targetDebouncers.set(target, debouncer);
   return debouncer;
@@ -529,18 +489,14 @@ function normalizeWebhookPath(raw: string): string {
   return withSlash;
 }
 
-export function registerBlueBubblesWebhookTarget(
-  target: WebhookTarget,
-): () => void {
+export function registerBlueBubblesWebhookTarget(target: WebhookTarget): () => void {
   const key = normalizeWebhookPath(target.path);
   const normalizedTarget = { ...target, path: key };
   const existing = webhookTargets.get(key) ?? [];
   const next = [...existing, normalizedTarget];
   webhookTargets.set(key, next);
   return () => {
-    const updated = (webhookTargets.get(key) ?? []).filter(
-      (entry) => entry !== normalizedTarget,
-    );
+    const updated = (webhookTargets.get(key) ?? []).filter((entry) => entry !== normalizedTarget);
     if (updated.length > 0) {
       webhookTargets.set(key, updated);
     } else {
@@ -554,54 +510,43 @@ export function registerBlueBubblesWebhookTarget(
 async function readJsonBody(req: IncomingMessage, maxBytes: number) {
   const chunks: Buffer[] = [];
   let total = 0;
-  return await new Promise<{ ok: boolean; value?: unknown; error?: string }>(
-    (resolve) => {
-      req.on("data", (chunk: Buffer) => {
-        total += chunk.length;
-        if (total > maxBytes) {
-          resolve({ ok: false, error: "payload too large" });
-          req.destroy();
+  return await new Promise<{ ok: boolean; value?: unknown; error?: string }>((resolve) => {
+    req.on("data", (chunk: Buffer) => {
+      total += chunk.length;
+      if (total > maxBytes) {
+        resolve({ ok: false, error: "payload too large" });
+        req.destroy();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on("end", () => {
+      try {
+        const raw = Buffer.concat(chunks).toString("utf8");
+        if (!raw.trim()) {
+          resolve({ ok: false, error: "empty payload" });
           return;
         }
-        chunks.push(chunk);
-      });
-      req.on("end", () => {
         try {
-          const raw = Buffer.concat(chunks).toString("utf8");
-          if (!raw.trim()) {
-            resolve({ ok: false, error: "empty payload" });
+          resolve({ ok: true, value: JSON.parse(raw) as unknown });
+          return;
+        } catch {
+          const params = new URLSearchParams(raw);
+          const payload = params.get("payload") ?? params.get("data") ?? params.get("message");
+          if (payload) {
+            resolve({ ok: true, value: JSON.parse(payload) as unknown });
             return;
           }
-          try {
-            resolve({ ok: true, value: JSON.parse(raw) as unknown });
-            return;
-          } catch {
-            const params = new URLSearchParams(raw);
-            const payload =
-              params.get("payload") ??
-              params.get("data") ??
-              params.get("message");
-            if (payload) {
-              resolve({ ok: true, value: JSON.parse(payload) as unknown });
-              return;
-            }
-            throw new Error("invalid json");
-          }
-        } catch (err) {
-          resolve({
-            ok: false,
-            error: err instanceof Error ? err.message : String(err),
-          });
+          throw new Error("invalid json");
         }
-      });
-      req.on("error", (err) => {
-        resolve({
-          ok: false,
-          error: err instanceof Error ? err.message : String(err),
-        });
-      });
-    },
-  );
+      } catch (err) {
+        resolve({ ok: false, error: err instanceof Error ? err.message : String(err) });
+      }
+    });
+    req.on("error", (err) => {
+      resolve({ ok: false, error: err instanceof Error ? err.message : String(err) });
+    });
+  });
 }
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -610,10 +555,7 @@ function asRecord(value: unknown): Record<string, unknown> | null {
     : null;
 }
 
-function readString(
-  record: Record<string, unknown> | null,
-  key: string,
-): string | undefined {
+function readString(record: Record<string, unknown> | null, key: string): string | undefined {
   if (!record) {
     return undefined;
   }
@@ -621,23 +563,15 @@ function readString(
   return typeof value === "string" ? value : undefined;
 }
 
-function readNumber(
-  record: Record<string, unknown> | null,
-  key: string,
-): number | undefined {
+function readNumber(record: Record<string, unknown> | null, key: string): number | undefined {
   if (!record) {
     return undefined;
   }
   const value = record[key];
-  return typeof value === "number" && Number.isFinite(value)
-    ? value
-    : undefined;
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
 
-function readBoolean(
-  record: Record<string, unknown> | null,
-  key: string,
-): boolean | undefined {
+function readBoolean(record: Record<string, unknown> | null, key: string): boolean | undefined {
   if (!record) {
     return undefined;
   }
@@ -645,9 +579,7 @@ function readBoolean(
   return typeof value === "boolean" ? value : undefined;
 }
 
-function extractAttachments(
-  message: Record<string, unknown>,
-): BlueBubblesAttachment[] {
+function extractAttachments(message: Record<string, unknown>): BlueBubblesAttachment[] {
   const raw = message["attachments"];
   if (!Array.isArray(raw)) {
     return [];
@@ -661,27 +593,18 @@ function extractAttachments(
     out.push({
       guid: readString(record, "guid"),
       uti: readString(record, "uti"),
-      mimeType:
-        readString(record, "mimeType") ?? readString(record, "mime_type"),
-      transferName:
-        readString(record, "transferName") ??
-        readString(record, "transfer_name"),
-      totalBytes:
-        readNumberLike(record, "totalBytes") ??
-        readNumberLike(record, "total_bytes"),
+      mimeType: readString(record, "mimeType") ?? readString(record, "mime_type"),
+      transferName: readString(record, "transferName") ?? readString(record, "transfer_name"),
+      totalBytes: readNumberLike(record, "totalBytes") ?? readNumberLike(record, "total_bytes"),
       height: readNumberLike(record, "height"),
       width: readNumberLike(record, "width"),
-      originalROWID:
-        readNumberLike(record, "originalROWID") ??
-        readNumberLike(record, "rowid"),
+      originalROWID: readNumberLike(record, "originalROWID") ?? readNumberLike(record, "rowid"),
     });
   }
   return out;
 }
 
-function buildAttachmentPlaceholder(
-  attachments: BlueBubblesAttachment[],
-): string {
+function buildAttachmentPlaceholder(attachments: BlueBubblesAttachment[]): string {
   if (attachments.length === 0) {
     return "";
   }
@@ -696,21 +619,13 @@ function buildAttachmentPlaceholder(
       : allAudio
         ? "<media:audio>"
         : "<media:attachment>";
-  const label = allImages
-    ? "image"
-    : allVideos
-      ? "video"
-      : allAudio
-        ? "audio"
-        : "file";
+  const label = allImages ? "image" : allVideos ? "video" : allAudio ? "audio" : "file";
   const suffix = attachments.length === 1 ? label : `${label}s`;
   return `${tag} (${attachments.length} ${suffix})`;
 }
 
 function buildMessagePlaceholder(message: NormalizedWebhookMessage): string {
-  const attachmentPlaceholder = buildAttachmentPlaceholder(
-    message.attachments ?? [],
-  );
+  const attachmentPlaceholder = buildAttachmentPlaceholder(message.attachments ?? []);
   if (attachmentPlaceholder) {
     return attachmentPlaceholder;
   }
@@ -721,10 +636,7 @@ function buildMessagePlaceholder(message: NormalizedWebhookMessage): string {
 }
 
 // Returns inline reply tag like "[[reply_to:4]]" for prepending to message body
-function formatReplyTag(message: {
-  replyToId?: string;
-  replyToShortId?: string;
-}): string | null {
+function formatReplyTag(message: { replyToId?: string; replyToShortId?: string }): string | null {
   // Prefer short ID
   const rawId = message.replyToShortId || message.replyToId;
   if (!rawId) {
@@ -733,10 +645,7 @@ function formatReplyTag(message: {
   return `[[reply_to:${rawId}]]`;
 }
 
-function readNumberLike(
-  record: Record<string, unknown> | null,
-  key: string,
-): number | undefined {
+function readNumberLike(record: Record<string, unknown> | null, key: string): number | undefined {
   if (!record) {
     return undefined;
   }
@@ -769,9 +678,7 @@ function extractReplyMetadata(message: Record<string, unknown>): {
     message["reply"];
   const replyRecord = asRecord(replyRaw);
   const replyHandle =
-    asRecord(replyRecord?.["handle"]) ??
-    asRecord(replyRecord?.["sender"]) ??
-    null;
+    asRecord(replyRecord?.["handle"]) ?? asRecord(replyRecord?.["sender"]) ?? null;
   const replySenderRaw =
     readString(replyHandle, "address") ??
     readString(replyHandle, "handle") ??
@@ -812,8 +719,7 @@ function extractReplyMetadata(message: Record<string, unknown>): {
   const isReactionAssociation =
     typeof associatedType === "number" && REACTION_TYPE_MAP.has(associatedType);
 
-  const replyToId =
-    directReplyId ?? (!isReactionAssociation ? associatedGuid : undefined);
+  const replyToId = directReplyId ?? (!isReactionAssociation ? associatedGuid : undefined);
   const threadOriginatorGuid = readString(message, "threadOriginatorGuid");
   const messageGuid = readString(message, "guid");
   const fallbackReplyId =
@@ -828,9 +734,7 @@ function extractReplyMetadata(message: Record<string, unknown>): {
   };
 }
 
-function readFirstChatRecord(
-  message: Record<string, unknown>,
-): Record<string, unknown> | null {
+function readFirstChatRecord(message: Record<string, unknown>): Record<string, unknown> | null {
   const chats = message["chats"];
   if (!Array.isArray(chats) || chats.length === 0) {
     return null;
@@ -839,9 +743,7 @@ function readFirstChatRecord(
   return asRecord(first);
 }
 
-function normalizeParticipantEntry(
-  entry: unknown,
-): BlueBubblesParticipant | null {
+function normalizeParticipantEntry(entry: unknown): BlueBubblesParticipant | null {
   if (typeof entry === "string" || typeof entry === "number") {
     const raw = String(entry).trim();
     if (!raw) {
@@ -855,10 +757,7 @@ function normalizeParticipantEntry(
     return null;
   }
   const nestedHandle =
-    asRecord(record["handle"]) ??
-    asRecord(record["sender"]) ??
-    asRecord(record["contact"]) ??
-    null;
+    asRecord(record["handle"]) ?? asRecord(record["sender"]) ?? asRecord(record["contact"]) ?? null;
   const idRaw =
     readString(record, "address") ??
     readString(record, "handle") ??
@@ -875,9 +774,7 @@ function normalizeParticipantEntry(
     readString(record, "title") ??
     readString(nestedHandle, "displayName") ??
     readString(nestedHandle, "name");
-  const normalizedId = idRaw
-    ? normalizeBlueBubblesHandle(idRaw) || idRaw.trim()
-    : "";
+  const normalizedId = idRaw ? normalizeBlueBubblesHandle(idRaw) || idRaw.trim() : "";
   if (!normalizedId) {
     return null;
   }
@@ -929,14 +826,10 @@ function formatGroupMembers(params: {
   if (ordered.length === 0) {
     return undefined;
   }
-  return ordered
-    .map((entry) => (entry.name ? `${entry.name} (${entry.id})` : entry.id))
-    .join(", ");
+  return ordered.map((entry) => (entry.name ? `${entry.name} (${entry.id})` : entry.id)).join(", ");
 }
 
-function resolveGroupFlagFromChatGuid(
-  chatGuid?: string | null,
-): boolean | undefined {
+function resolveGroupFlagFromChatGuid(chatGuid?: string | null): boolean | undefined {
   const guid = chatGuid?.trim();
   if (!guid) {
     return undefined;
@@ -959,9 +852,7 @@ function resolveGroupFlagFromChatGuid(
   return undefined;
 }
 
-function extractChatIdentifierFromChatGuid(
-  chatGuid?: string | null,
-): string | undefined {
+function extractChatIdentifierFromChatGuid(chatGuid?: string | null): string | undefined {
   const guid = chatGuid?.trim();
   if (!guid) {
     return undefined;
@@ -1038,10 +929,7 @@ type NormalizedWebhookReaction = {
   fromMe?: boolean;
 };
 
-const REACTION_TYPE_MAP = new Map<
-  number,
-  { emoji: string; action: "added" | "removed" }
->([
+const REACTION_TYPE_MAP = new Map<number, { emoji: string; action: "added" | "removed" }>([
   [2000, { emoji: "❤️", action: "added" }],
   [2001, { emoji: "👍", action: "added" }],
   [2002, { emoji: "👎", action: "added" }],
@@ -1057,10 +945,7 @@ const REACTION_TYPE_MAP = new Map<
 ]);
 
 // Maps tapback text patterns (e.g., "Loved", "Liked") to emoji + action
-const TAPBACK_TEXT_MAP = new Map<
-  string,
-  { emoji: string; action: "added" | "removed" }
->([
+const TAPBACK_TEXT_MAP = new Map<string, { emoji: string; action: "added" | "removed" }>([
   ["loved", { emoji: "❤️", action: "added" }],
   ["liked", { emoji: "👍", action: "added" }],
   ["disliked", { emoji: "👎", action: "added" }],
@@ -1090,17 +975,10 @@ function extractQuotedTapbackText(text: string): string | null {
 }
 
 function isTapbackAssociatedType(type: number | undefined): boolean {
-  return (
-    typeof type === "number" &&
-    Number.isFinite(type) &&
-    type >= 2000 &&
-    type < 4000
-  );
+  return typeof type === "number" && Number.isFinite(type) && type >= 2000 && type < 4000;
 }
 
-function resolveTapbackActionHint(
-  type: number | undefined,
-): "added" | "removed" | undefined {
+function resolveTapbackActionHint(type: number | undefined): "added" | "removed" | undefined {
   if (typeof type !== "number" || !Number.isFinite(type)) {
     return undefined;
   }
@@ -1120,19 +998,14 @@ function resolveTapbackContext(message: NormalizedWebhookMessage): {
 } | null {
   const associatedType = message.associatedMessageType;
   const hasTapbackType = isTapbackAssociatedType(associatedType);
-  const hasTapbackMarker =
-    Boolean(message.associatedMessageEmoji) || Boolean(message.isTapback);
+  const hasTapbackMarker = Boolean(message.associatedMessageEmoji) || Boolean(message.isTapback);
   if (!hasTapbackType && !hasTapbackMarker) {
     return null;
   }
-  const replyToId =
-    message.associatedMessageGuid?.trim() ||
-    message.replyToId?.trim() ||
-    undefined;
+  const replyToId = message.associatedMessageGuid?.trim() || message.replyToId?.trim() || undefined;
   const actionHint = resolveTapbackActionHint(associatedType);
   const emojiHint =
-    message.associatedMessageEmoji?.trim() ||
-    REACTION_TYPE_MAP.get(associatedType ?? -1)?.emoji;
+    message.associatedMessageEmoji?.trim() || REACTION_TYPE_MAP.get(associatedType ?? -1)?.emoji;
   return { emojiHint, actionHint, replyToId };
 }
 
@@ -1165,9 +1038,7 @@ function parseTapbackText(params: {
         return { emoji, action, quotedText: strictMatch[1] };
       }
       const quotedText =
-        extractQuotedTapbackText(afterPattern) ??
-        extractQuotedTapbackText(trimmed) ??
-        afterPattern;
+        extractQuotedTapbackText(afterPattern) ?? extractQuotedTapbackText(trimmed) ?? afterPattern;
       return { emoji, action, quotedText };
     }
   }
@@ -1182,11 +1053,7 @@ function parseTapbackText(params: {
       return null;
     }
     const fallback = trimmed.slice("reacted".length).trim();
-    return {
-      emoji,
-      action: params.actionHint ?? "added",
-      quotedText: quotedText ?? fallback,
-    };
+    return { emoji, action: params.actionHint ?? "added", quotedText: quotedText ?? fallback };
   }
 
   if (lower.startsWith("removed")) {
@@ -1199,11 +1066,7 @@ function parseTapbackText(params: {
       return null;
     }
     const fallback = trimmed.slice("removed".length).trim();
-    return {
-      emoji,
-      action: params.actionHint ?? "removed",
-      quotedText: quotedText ?? fallback,
-    };
+    return { emoji, action: params.actionHint ?? "removed", quotedText: quotedText ?? fallback };
   }
   return null;
 }
@@ -1242,21 +1105,15 @@ function resolveBlueBubblesAckReaction(params: {
   }
 }
 
-function extractMessagePayload(
-  payload: Record<string, unknown>,
-): Record<string, unknown> | null {
+function extractMessagePayload(payload: Record<string, unknown>): Record<string, unknown> | null {
   const dataRaw = payload.data ?? payload.payload ?? payload.event;
   const data =
     asRecord(dataRaw) ??
-    (typeof dataRaw === "string"
-      ? (asRecord(JSON.parse(dataRaw)) ?? null)
-      : null);
+    (typeof dataRaw === "string" ? (asRecord(JSON.parse(dataRaw)) ?? null) : null);
   const messageRaw = payload.message ?? data?.message ?? data;
   const message =
     asRecord(messageRaw) ??
-    (typeof messageRaw === "string"
-      ? (asRecord(JSON.parse(messageRaw)) ?? null)
-      : null);
+    (typeof messageRaw === "string" ? (asRecord(JSON.parse(messageRaw)) ?? null) : null);
   if (!message) {
     return null;
   }
@@ -1279,8 +1136,7 @@ function normalizeWebhookMessage(
 
   const handleValue = message.handle ?? message.sender;
   const handle =
-    asRecord(handleValue) ??
-    (typeof handleValue === "string" ? { address: handleValue } : null);
+    asRecord(handleValue) ?? (typeof handleValue === "string" ? { address: handleValue } : null);
   const senderId =
     readString(handle, "address") ??
     readString(handle, "handle") ??
@@ -1336,9 +1192,7 @@ function normalizeWebhookMessage(
 
   const chatParticipants = chat ? chat["participants"] : undefined;
   const messageParticipants = message["participants"];
-  const chatsParticipants = chatFromList
-    ? chatFromList["participants"]
-    : undefined;
+  const chatsParticipants = chatFromList ? chatFromList["participants"] : undefined;
   const participants = Array.isArray(chatParticipants)
     ? chatParticipants
     : Array.isArray(messageParticipants)
@@ -1359,8 +1213,7 @@ function normalizeWebhookMessage(
       ? groupFromChatGuid
       : (explicitIsGroup ?? participantsCount > 2);
 
-  const fromMe =
-    readBoolean(message, "isFromMe") ?? readBoolean(message, "is_from_me");
+  const fromMe = readBoolean(message, "isFromMe") ?? readBoolean(message, "is_from_me");
   const messageId =
     readString(message, "guid") ??
     readString(message, "id") ??
@@ -1454,15 +1307,12 @@ function normalizeWebhookReaction(
     readString(message, "associated_message_emoji") ??
     readString(message, "reactionEmoji") ??
     readString(message, "reaction_emoji");
-  const emoji =
-    (associatedEmoji?.trim() || mapping?.emoji) ?? `reaction:${associatedType}`;
-  const action =
-    mapping?.action ?? resolveTapbackActionHint(associatedType) ?? "added";
+  const emoji = (associatedEmoji?.trim() || mapping?.emoji) ?? `reaction:${associatedType}`;
+  const action = mapping?.action ?? resolveTapbackActionHint(associatedType) ?? "added";
 
   const handleValue = message.handle ?? message.sender;
   const handle =
-    asRecord(handleValue) ??
-    (typeof handleValue === "string" ? { address: handleValue } : null);
+    asRecord(handleValue) ?? (typeof handleValue === "string" ? { address: handleValue } : null);
   const senderId =
     readString(handle, "address") ??
     readString(handle, "handle") ??
@@ -1517,9 +1367,7 @@ function normalizeWebhookReaction(
 
   const chatParticipants = chat ? chat["participants"] : undefined;
   const messageParticipants = message["participants"];
-  const chatsParticipants = chatFromList
-    ? chatFromList["participants"]
-    : undefined;
+  const chatsParticipants = chatFromList ? chatFromList["participants"] : undefined;
   const participants = Array.isArray(chatParticipants)
     ? chatParticipants
     : Array.isArray(messageParticipants)
@@ -1539,8 +1387,7 @@ function normalizeWebhookReaction(
       ? groupFromChatGuid
       : (explicitIsGroup ?? participantsCount > 2);
 
-  const fromMe =
-    readBoolean(message, "isFromMe") ?? readBoolean(message, "is_from_me");
+  const fromMe = readBoolean(message, "isFromMe") ?? readBoolean(message, "is_from_me");
   const timestampRaw =
     readNumberLike(message, "date") ??
     readNumberLike(message, "dateCreated") ??
@@ -1595,9 +1442,7 @@ export async function handleBlueBubblesWebhookRequest(
   if (!body.ok) {
     res.statusCode = body.error === "payload too large" ? 413 : 400;
     res.end(body.error ?? "invalid payload");
-    console.warn(
-      `[bluebubbles] webhook rejected: ${body.error ?? "invalid payload"}`,
-    );
+    console.warn(`[bluebubbles] webhook rejected: ${body.error ?? "invalid payload"}`);
     return true;
   }
 
@@ -1622,11 +1467,7 @@ export async function handleBlueBubblesWebhookRequest(
     res.statusCode = 200;
     res.end("ok");
     if (firstTarget) {
-      logVerbose(
-        firstTarget.core,
-        firstTarget.runtime,
-        `webhook ignored type=${eventType}`,
-      );
+      logVerbose(firstTarget.core, firstTarget.runtime, `webhook ignored type=${eventType}`);
     }
     return true;
   }
@@ -1652,9 +1493,7 @@ export async function handleBlueBubblesWebhookRequest(
   if (!message && !reaction) {
     res.statusCode = 400;
     res.end("invalid payload");
-    console.warn(
-      "[bluebubbles] webhook rejected: unable to parse message payload",
-    );
+    console.warn("[bluebubbles] webhook rejected: unable to parse message payload");
     return true;
   }
 
@@ -1663,26 +1502,18 @@ export async function handleBlueBubblesWebhookRequest(
     if (!token) {
       return true;
     }
-    const guidParam =
-      url.searchParams.get("guid") ?? url.searchParams.get("password");
+    const guidParam = url.searchParams.get("guid") ?? url.searchParams.get("password");
     const headerToken =
       req.headers["x-guid"] ??
       req.headers["x-password"] ??
       req.headers["x-bluebubbles-guid"] ??
       req.headers["authorization"];
-    const guid =
-      (Array.isArray(headerToken) ? headerToken[0] : headerToken) ??
-      guidParam ??
-      "";
+    const guid = (Array.isArray(headerToken) ? headerToken[0] : headerToken) ?? guidParam ?? "";
     if (guid && guid.trim() === token) {
       return true;
     }
     const remote = req.socket?.remoteAddress ?? "";
-    if (
-      remote === "127.0.0.1" ||
-      remote === "::1" ||
-      remote === "::ffff:127.0.0.1"
-    ) {
+    if (remote === "127.0.0.1" || remote === "::1" || remote === "::ffff:127.0.0.1") {
       return true;
     }
     return false;
@@ -1804,12 +1635,8 @@ async function processMessage(
 
   const dmPolicy = account.config.dmPolicy ?? "pairing";
   const groupPolicy = account.config.groupPolicy ?? "allowlist";
-  const configAllowFrom = (account.config.allowFrom ?? []).map((entry) =>
-    String(entry),
-  );
-  const configGroupAllowFrom = (account.config.groupAllowFrom ?? []).map(
-    (entry) => String(entry),
-  );
+  const configAllowFrom = (account.config.allowFrom ?? []).map((entry) => String(entry));
+  const configGroupAllowFrom = (account.config.groupAllowFrom ?? []).map((entry) => String(entry));
   const storeAllowFrom = await core.channel.pairing
     .readAllowFromStore("bluebubbles")
     .catch(() => []);
@@ -1817,9 +1644,7 @@ async function processMessage(
     .map((entry) => String(entry).trim())
     .filter(Boolean);
   const effectiveGroupAllowFrom = [
-    ...(configGroupAllowFrom.length > 0
-      ? configGroupAllowFrom
-      : configAllowFrom),
+    ...(configGroupAllowFrom.length > 0 ? configGroupAllowFrom : configAllowFrom),
     ...storeAllowFrom,
   ]
     .map((entry) => String(entry).trim())
@@ -1833,11 +1658,7 @@ async function processMessage(
 
   if (isGroup) {
     if (groupPolicy === "disabled") {
-      logVerbose(
-        core,
-        runtime,
-        "Blocked BlueBubbles group message (groupPolicy=disabled)",
-      );
+      logVerbose(core, runtime, "Blocked BlueBubbles group message (groupPolicy=disabled)");
       logGroupAllowlistHint({
         runtime,
         reason: "groupPolicy=disabled",
@@ -1849,11 +1670,7 @@ async function processMessage(
     }
     if (groupPolicy === "allowlist") {
       if (effectiveGroupAllowFrom.length === 0) {
-        logVerbose(
-          core,
-          runtime,
-          "Blocked BlueBubbles group message (no allowlist)",
-        );
+        logVerbose(core, runtime, "Blocked BlueBubbles group message (no allowlist)");
         logGroupAllowlistHint({
           runtime,
           reason: "groupPolicy=allowlist (empty allowlist)",
@@ -1893,16 +1710,8 @@ async function processMessage(
     }
   } else {
     if (dmPolicy === "disabled") {
-      logVerbose(
-        core,
-        runtime,
-        `Blocked BlueBubbles DM from ${message.senderId}`,
-      );
-      logVerbose(
-        core,
-        runtime,
-        `drop: dmPolicy disabled sender=${message.senderId}`,
-      );
+      logVerbose(core, runtime, `Blocked BlueBubbles DM from ${message.senderId}`);
+      logVerbose(core, runtime, `drop: dmPolicy disabled sender=${message.senderId}`);
       return;
     }
     if (dmPolicy !== "open") {
@@ -1915,21 +1724,16 @@ async function processMessage(
       });
       if (!allowed) {
         if (dmPolicy === "pairing") {
-          const { code, created } =
-            await core.channel.pairing.upsertPairingRequest({
-              channel: "bluebubbles",
-              id: message.senderId,
-              meta: { name: message.senderName },
-            });
+          const { code, created } = await core.channel.pairing.upsertPairingRequest({
+            channel: "bluebubbles",
+            id: message.senderId,
+            meta: { name: message.senderName },
+          });
           runtime.log?.(
             `[bluebubbles] pairing request sender=${message.senderId} created=${created}`,
           );
           if (created) {
-            logVerbose(
-              core,
-              runtime,
-              `bluebubbles pairing request sender=${message.senderId}`,
-            );
+            logVerbose(core, runtime, `bluebubbles pairing request sender=${message.senderId}`);
             try {
               await sendMessageBlueBubbles(
                 message.senderId,
@@ -1988,10 +1792,7 @@ async function processMessage(
 
   // Mention gating for group chats (parity with iMessage/WhatsApp)
   const messageText = text;
-  const mentionRegexes = core.channel.mentions.buildMentionRegexes(
-    config,
-    route.agentId,
-  );
+  const mentionRegexes = core.channel.mentions.buildMentionRegexes(config, route.agentId);
   const wasMentioned = isGroup
     ? core.channel.mentions.matchesMentionPatterns(messageText, mentionRegexes)
     : true;
@@ -2005,10 +1806,7 @@ async function processMessage(
 
   // Command gating (parity with iMessage/WhatsApp)
   const useAccessGroups = config.commands?.useAccessGroups !== false;
-  const hasControlCmd = core.channel.text.hasControlCommand(
-    messageText,
-    config,
-  );
+  const hasControlCmd = core.channel.text.hasControlCommand(messageText, config);
   const ownerAllowedForCommands =
     effectiveAllowFrom.length > 0
       ? isAllowedBlueBubblesSender({
@@ -2033,21 +1831,13 @@ async function processMessage(
   const commandGate = resolveControlCommandGate({
     useAccessGroups,
     authorizers: [
-      {
-        configured: effectiveAllowFrom.length > 0,
-        allowed: ownerAllowedForCommands,
-      },
-      {
-        configured: effectiveGroupAllowFrom.length > 0,
-        allowed: groupAllowedForCommands,
-      },
+      { configured: effectiveAllowFrom.length > 0, allowed: ownerAllowedForCommands },
+      { configured: effectiveGroupAllowFrom.length > 0, allowed: groupAllowedForCommands },
     ],
     allowTextCommands: true,
     hasControlCommand: hasControlCmd,
   });
-  const commandAuthorized = isGroup
-    ? commandGate.commandAuthorized
-    : dmAuthorized;
+  const commandAuthorized = isGroup ? commandGate.commandAuthorized : dmAuthorized;
 
   // Block control commands from unauthorized senders in groups
   if (isGroup && commandGate.shouldBlock) {
@@ -2062,26 +1852,12 @@ async function processMessage(
 
   // Allow control commands to bypass mention gating when authorized (parity with iMessage)
   const shouldBypassMention =
-    isGroup &&
-    requireMention &&
-    !wasMentioned &&
-    commandAuthorized &&
-    hasControlCmd;
+    isGroup && requireMention && !wasMentioned && commandAuthorized && hasControlCmd;
   const effectiveWasMentioned = wasMentioned || shouldBypassMention;
 
   // Skip group messages that require mention but weren't mentioned
-  if (
-    isGroup &&
-    requireMention &&
-    canDetectMention &&
-    !wasMentioned &&
-    !shouldBypassMention
-  ) {
-    logVerbose(
-      core,
-      runtime,
-      `bluebubbles: skipping group message (no mention)`,
-    );
+  if (isGroup && requireMention && canDetectMention && !wasMentioned && !shouldBypassMention) {
+    logVerbose(core, runtime, `bluebubbles: skipping group message (no mention)`);
     return;
   }
 
@@ -2101,11 +1877,7 @@ async function processMessage(
   let mediaTypes: string[] = [];
   if (attachments.length > 0) {
     if (!baseUrl || !password) {
-      logVerbose(
-        core,
-        runtime,
-        "attachment download skipped (missing serverUrl/password)",
-      );
+      logVerbose(core, runtime, "attachment download skipped (missing serverUrl/password)");
     } else {
       for (const attachment of attachments) {
         if (!attachment.guid) {
@@ -2196,28 +1968,18 @@ async function processMessage(
       ? `${rawBody} ${replyTag}`
       : `${replyTag} ${rawBody}`
     : rawBody;
-  const fromLabel = isGroup
-    ? undefined
-    : message.senderName || `user:${message.senderId}`;
-  const groupSubject = isGroup
-    ? message.chatName?.trim() || undefined
-    : undefined;
+  const fromLabel = isGroup ? undefined : message.senderName || `user:${message.senderId}`;
+  const groupSubject = isGroup ? message.chatName?.trim() || undefined : undefined;
   const groupMembers = isGroup
     ? formatGroupMembers({
         participants: message.participants,
-        fallback: message.senderId
-          ? { id: message.senderId, name: message.senderName }
-          : undefined,
+        fallback: message.senderId ? { id: message.senderId, name: message.senderName } : undefined,
       })
     : undefined;
-  const storePath = core.channel.session.resolveStorePath(
-    config.session?.store,
-    {
-      agentId: route.agentId,
-    },
-  );
-  const envelopeOptions =
-    core.channel.reply.resolveEnvelopeFormatOptions(config);
+  const storePath = core.channel.session.resolveStorePath(config.session?.store, {
+    agentId: route.agentId,
+  });
+  const envelopeOptions = core.channel.reply.resolveEnvelopeFormatOptions(config);
   const previousTimestamp = core.channel.session.readSessionUpdatedAt({
     storePath,
     sessionKey: route.sessionKey,
@@ -2236,10 +1998,7 @@ async function processMessage(
       isGroup && (chatId || chatIdentifier)
         ? chatId
           ? ({ kind: "chat_id", chatId } as const)
-          : ({
-              kind: "chat_identifier",
-              chatIdentifier: chatIdentifier ?? "",
-            } as const)
+          : ({ kind: "chat_identifier", chatIdentifier: chatIdentifier ?? "" } as const)
         : ({ kind: "handle", address: message.senderId } as const);
     if (target.kind !== "chat_identifier" || target.chatIdentifier) {
       chatGuidForActions =
@@ -2251,8 +2010,7 @@ async function processMessage(
     }
   }
 
-  const ackReactionScope =
-    config.messages?.ackReactionScope ?? "group-mentions";
+  const ackReactionScope = config.messages?.ackReactionScope ?? "group-mentions";
   const removeAckAfterReply = config.messages?.removeAckAfterReply ?? false;
   const ackReactionValue = resolveBlueBubblesAckReaction({
     cfg: config,
@@ -2276,10 +2034,7 @@ async function processMessage(
     );
   const ackMessageId = message.messageId?.trim() || "";
   const ackReactionPromise =
-    shouldAckReaction() &&
-    ackMessageId &&
-    chatGuidForActions &&
-    ackReactionValue
+    shouldAckReaction() && ackMessageId && chatGuidForActions && ackReactionValue
       ? sendBlueBubblesReaction({
           chatGuid: chatGuidForActions,
           messageGuid: ackMessageId,
@@ -2313,11 +2068,7 @@ async function processMessage(
   } else if (!sendReadReceipts) {
     logVerbose(core, runtime, "mark read skipped (sendReadReceipts=false)");
   } else {
-    logVerbose(
-      core,
-      runtime,
-      "mark read skipped (missing chatGuid or credentials)",
-    );
+    logVerbose(core, runtime, "mark read skipped (missing chatGuid or credentials)");
   }
 
   const outboundTarget = isGroup
@@ -2330,10 +2081,7 @@ async function processMessage(
       ? formatBlueBubblesChatTarget({ chatGuid: chatGuidForActions })
       : message.senderId;
 
-  const maybeEnqueueOutboundMessageId = (
-    messageId?: string,
-    snippet?: string,
-  ) => {
+  const maybeEnqueueOutboundMessageId = (messageId?: string, snippet?: string) => {
     const trimmed = messageId?.trim();
     if (!trimmed || trimmed === "ok" || trimmed === "unknown") {
       return;
@@ -2350,16 +2098,11 @@ async function processMessage(
       timestamp: Date.now(),
     });
     const displayId = cacheEntry.shortId || trimmed;
-    const preview = snippet
-      ? ` "${snippet.slice(0, 12)}${snippet.length > 12 ? "…" : ""}"`
-      : "";
-    core.system.enqueueSystemEvent(
-      `Assistant sent${preview} [message_id:${displayId}]`,
-      {
-        sessionKey: route.sessionKey,
-        contextKey: `bluebubbles:outbound:${outboundTarget}:${trimmed}`,
-      },
-    );
+    const preview = snippet ? ` "${snippet.slice(0, 12)}${snippet.length > 12 ? "…" : ""}"` : "";
+    core.system.enqueueSystemEvent(`Assistant sent${preview} [message_id:${displayId}]`, {
+      sessionKey: route.sessionKey,
+      contextKey: `bluebubbles:outbound:${outboundTarget}:${trimmed}`,
+    });
   };
 
   const ctxPayload = {
@@ -2436,14 +2179,10 @@ async function processMessage(
       dispatcherOptions: {
         deliver: async (payload, info) => {
           const rawReplyToId =
-            typeof payload.replyToId === "string"
-              ? payload.replyToId.trim()
-              : "";
+            typeof payload.replyToId === "string" ? payload.replyToId.trim() : "";
           // Resolve short ID (e.g., "5") to full UUID
           const replyToMessageGuid = rawReplyToId
-            ? resolveBlueBubblesMessageId(rawReplyToId, {
-                requireKnownShortId: true,
-              })
+            ? resolveBlueBubblesMessageId(rawReplyToId, { requireKnownShortId: true })
             : "";
           const mediaList = payload.mediaUrls?.length
             ? payload.mediaUrls
@@ -2456,10 +2195,7 @@ async function processMessage(
               channel: "bluebubbles",
               accountId: account.accountId,
             });
-            const text = core.channel.text.convertMarkdownTables(
-              payload.text ?? "",
-              tableMode,
-            );
+            const text = core.channel.text.convertMarkdownTables(payload.text ?? "", tableMode);
             let first = true;
             for (const mediaUrl of mediaList) {
               const caption = first ? text : undefined;
@@ -2493,10 +2229,7 @@ async function processMessage(
             channel: "bluebubbles",
             accountId: account.accountId,
           });
-          const text = core.channel.text.convertMarkdownTables(
-            payload.text ?? "",
-            tableMode,
-          );
+          const text = core.channel.text.convertMarkdownTables(payload.text ?? "", tableMode);
           const chunks =
             chunkMode === "newline"
               ? core.channel.text.chunkTextWithMode(text, textLimit, chunkMode)
@@ -2537,9 +2270,7 @@ async function processMessage(
               accountId: account.accountId,
             });
           } catch (err) {
-            runtime.error?.(
-              `[bluebubbles] typing start failed: ${String(err)}`,
-            );
+            runtime.error?.(`[bluebubbles] typing start failed: ${String(err)}`);
           }
         },
         onIdle: async () => {
@@ -2553,9 +2284,7 @@ async function processMessage(
           // after the run completes to avoid flicker between paragraph blocks.
         },
         onError: (err, info) => {
-          runtime.error?.(
-            `BlueBubbles ${info.kind} reply failed: ${String(err)}`,
-          );
+          runtime.error?.(`BlueBubbles ${info.kind} reply failed: ${String(err)}`);
         },
       },
       replyOptions: {
@@ -2567,8 +2296,7 @@ async function processMessage(
     });
   } finally {
     const shouldStopTyping =
-      Boolean(chatGuidForActions && baseUrl && password) &&
-      (streamingActive || !sentMessage);
+      Boolean(chatGuidForActions && baseUrl && password) && (streamingActive || !sentMessage);
     streamingActive = false;
     clearTypingRestartTimer();
     if (sentMessage && chatGuidForActions && ackMessageId) {
@@ -2623,12 +2351,8 @@ async function processReaction(
 
   const dmPolicy = account.config.dmPolicy ?? "pairing";
   const groupPolicy = account.config.groupPolicy ?? "allowlist";
-  const configAllowFrom = (account.config.allowFrom ?? []).map((entry) =>
-    String(entry),
-  );
-  const configGroupAllowFrom = (account.config.groupAllowFrom ?? []).map(
-    (entry) => String(entry),
-  );
+  const configAllowFrom = (account.config.allowFrom ?? []).map((entry) => String(entry));
+  const configGroupAllowFrom = (account.config.groupAllowFrom ?? []).map((entry) => String(entry));
   const storeAllowFrom = await core.channel.pairing
     .readAllowFromStore("bluebubbles")
     .catch(() => []);
@@ -2636,9 +2360,7 @@ async function processReaction(
     .map((entry) => String(entry).trim())
     .filter(Boolean);
   const effectiveGroupAllowFrom = [
-    ...(configGroupAllowFrom.length > 0
-      ? configGroupAllowFrom
-      : configAllowFrom),
+    ...(configGroupAllowFrom.length > 0 ? configGroupAllowFrom : configAllowFrom),
     ...storeAllowFrom,
   ]
     .map((entry) => String(entry).trim())
@@ -2701,8 +2423,7 @@ async function processReaction(
   const senderLabel = reaction.senderName || reaction.senderId;
   const chatLabel = reaction.isGroup ? ` in group:${peerId}` : "";
   // Use short ID for token savings
-  const messageDisplayId =
-    getShortIdForUuid(reaction.messageId) || reaction.messageId;
+  const messageDisplayId = getShortIdForUuid(reaction.messageId) || reaction.messageId;
   // Format: "Tyler reacted with ❤️ [[reply_to:5]]" or "Tyler removed ❤️ reaction [[reply_to:5]]"
   const text =
     reaction.action === "removed"
@@ -2730,9 +2451,7 @@ export async function monitorBlueBubblesProvider(
     timeoutMs: 5000,
   }).catch(() => null);
   if (serverInfo?.os_version) {
-    runtime.log?.(
-      `[${account.accountId}] BlueBubbles server macOS ${serverInfo.os_version}`,
-    );
+    runtime.log?.(`[${account.accountId}] BlueBubbles server macOS ${serverInfo.os_version}`);
   }
 
   const unregister = registerBlueBubblesWebhookTarget({
@@ -2762,9 +2481,7 @@ export async function monitorBlueBubblesProvider(
   });
 }
 
-export function resolveWebhookPathFromConfig(
-  config?: BlueBubblesAccountConfig,
-): string {
+export function resolveWebhookPathFromConfig(config?: BlueBubblesAccountConfig): string {
   const raw = config?.webhookPath?.trim();
   if (raw) {
     return normalizeWebhookPath(raw);

@@ -193,10 +193,7 @@ export async function prepareSlackMessage(params: {
   });
 
   const baseSessionKey = route.sessionKey;
-  const threadContext = resolveSlackThreadContext({
-    message,
-    replyToMode: ctx.replyToMode,
-  });
+  const threadContext = resolveSlackThreadContext({ message, replyToMode: ctx.replyToMode });
   const threadTs = threadContext.incomingThreadTs;
   const isThreadReply = threadContext.isThreadReply;
   const threadKeys = resolveThreadSessionKeys({
@@ -273,10 +270,7 @@ export async function prepareSlackMessage(params: {
     useAccessGroups: ctx.useAccessGroups,
     authorizers: [
       { configured: allowFromLower.length > 0, allowed: ownerAuthorized },
-      {
-        configured: channelUsersAllowlistConfigured,
-        allowed: channelCommandAuthorized,
-      },
+      { configured: channelUsersAllowlistConfigured, allowed: channelCommandAuthorized },
     ],
     allowTextCommands,
     hasControlCommand: hasControlCommandInMessage,

@@ -32,9 +32,7 @@ export default function (pi: ExtensionAPI) {
       }
 
       // Get changed files from git status
-      const result = await pi.exec("git", ["status", "--porcelain"], {
-        cwd: ctx.cwd,
-      });
+      const result = await pi.exec("git", ["status", "--porcelain"], { cwd: ctx.cwd });
 
       if (result.code !== 0) {
         ctx.ui.notify(`git status failed: ${result.stderr}`, "error");
@@ -105,8 +103,7 @@ export default function (pi: ExtensionAPI) {
             await pi.exec("code", ["-g", fileInfo.file], { cwd: ctx.cwd });
           }
         } catch (error) {
-          const message =
-            error instanceof Error ? error.message : String(error);
+          const message = error instanceof Error ? error.message : String(error);
           ctx.ui.notify(`Failed to open ${fileInfo.file}: ${message}`, "error");
         }
       };
@@ -116,18 +113,10 @@ export default function (pi: ExtensionAPI) {
         const container = new Container();
 
         // Top border
-        container.addChild(
-          new DynamicBorder((s: string) => theme.fg("accent", s)),
-        );
+        container.addChild(new DynamicBorder((s: string) => theme.fg("accent", s)));
 
         // Title
-        container.addChild(
-          new Text(
-            theme.fg("accent", theme.bold(" Select file to diff")),
-            0,
-            0,
-          ),
-        );
+        container.addChild(new Text(theme.fg("accent", theme.bold(" Select file to diff")), 0, 0));
 
         // Build select items with colored status
         const items: SelectItem[] = files.map((f) => {
@@ -175,17 +164,11 @@ export default function (pi: ExtensionAPI) {
 
         // Help text
         container.addChild(
-          new Text(
-            theme.fg("dim", " ↑↓ navigate • ←→ page • enter open • esc close"),
-            0,
-            0,
-          ),
+          new Text(theme.fg("dim", " ↑↓ navigate • ←→ page • enter open • esc close"), 0, 0),
         );
 
         // Bottom border
-        container.addChild(
-          new DynamicBorder((s: string) => theme.fg("accent", s)),
-        );
+        container.addChild(new DynamicBorder((s: string) => theme.fg("accent", s)));
 
         return {
           render: (w) => container.render(w),
@@ -198,10 +181,7 @@ export default function (pi: ExtensionAPI) {
               selectList.setSelectedIndex(currentIndex);
             } else if (matchesKey(data, Key.right)) {
               // Page down - clamp to last
-              currentIndex = Math.min(
-                items.length - 1,
-                currentIndex + visibleRows,
-              );
+              currentIndex = Math.min(items.length - 1, currentIndex + visibleRows);
               selectList.setSelectedIndex(currentIndex);
             } else {
               selectList.handleInput(data);

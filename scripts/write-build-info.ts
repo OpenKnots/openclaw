@@ -3,10 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const rootDir = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "..",
-);
+const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = path.join(rootDir, "dist");
 const pkgPath = path.join(rootDir, "package.json");
 
@@ -21,8 +18,7 @@ const readPackageVersion = () => {
 };
 
 const resolveCommit = () => {
-  const envCommit =
-    process.env.GIT_COMMIT?.trim() || process.env.GIT_SHA?.trim();
+  const envCommit = process.env.GIT_COMMIT?.trim() || process.env.GIT_SHA?.trim();
   if (envCommit) {
     return envCommit;
   }
@@ -48,7 +44,4 @@ const buildInfo = {
 };
 
 fs.mkdirSync(distDir, { recursive: true });
-fs.writeFileSync(
-  path.join(distDir, "build-info.json"),
-  `${JSON.stringify(buildInfo, null, 2)}\n`,
-);
+fs.writeFileSync(path.join(distDir, "build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`);

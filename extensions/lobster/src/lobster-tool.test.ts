@@ -2,16 +2,10 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import type {
-  OpenClawPluginApi,
-  OpenClawPluginToolContext,
-} from "../../../src/plugins/types.js";
+import type { OpenClawPluginApi, OpenClawPluginToolContext } from "../../../src/plugins/types.js";
 import { createLobsterTool } from "./lobster-tool.js";
 
-async function writeFakeLobsterScript(
-  scriptBody: string,
-  prefix = "openclaw-lobster-plugin-",
-) {
+async function writeFakeLobsterScript(scriptBody: string, prefix = "openclaw-lobster-plugin-") {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), prefix));
   const isWindows = process.platform === "win32";
 
@@ -37,9 +31,7 @@ async function writeFakeLobster(params: { payload: unknown }) {
   return await writeFakeLobsterScript(scriptBody);
 }
 
-function fakeApi(
-  overrides: Partial<OpenClawPluginApi> = {},
-): OpenClawPluginApi {
+function fakeApi(overrides: Partial<OpenClawPluginApi> = {}): OpenClawPluginApi {
   return {
     id: "lobster",
     name: "lobster",
@@ -65,9 +57,7 @@ function fakeApi(
   };
 }
 
-function fakeCtx(
-  overrides: Partial<OpenClawPluginToolContext> = {},
-): OpenClawPluginToolContext {
+function fakeCtx(overrides: Partial<OpenClawPluginToolContext> = {}): OpenClawPluginToolContext {
   return {
     config: {},
     workspaceDir: "/tmp",
@@ -84,12 +74,7 @@ function fakeCtx(
 describe("lobster plugin tool", () => {
   it("runs lobster and returns parsed envelope in details", async () => {
     const fake = await writeFakeLobster({
-      payload: {
-        ok: true,
-        status: "ok",
-        output: [{ hello: "world" }],
-        requiresApproval: null,
-      },
+      payload: { ok: true, status: "ok", output: [{ hello: "world" }], requiresApproval: null },
     });
 
     const originalPath = process.env.PATH;
@@ -110,12 +95,7 @@ describe("lobster plugin tool", () => {
   });
 
   it("tolerates noisy stdout before the JSON envelope", async () => {
-    const payload = {
-      ok: true,
-      status: "ok",
-      output: [],
-      requiresApproval: null,
-    };
+    const payload = { ok: true, status: "ok", output: [], requiresApproval: null };
     const { dir } = await writeFakeLobsterScript(
       `const payload = ${JSON.stringify(payload)};\n` +
         `console.log("noise before json");\n` +
@@ -142,12 +122,7 @@ describe("lobster plugin tool", () => {
 
   it("requires absolute lobsterPath when provided (even though it is ignored)", async () => {
     const fake = await writeFakeLobster({
-      payload: {
-        ok: true,
-        status: "ok",
-        output: [{ hello: "world" }],
-        requiresApproval: null,
-      },
+      payload: { ok: true, status: "ok", output: [{ hello: "world" }], requiresApproval: null },
     });
 
     const originalPath = process.env.PATH;
@@ -169,12 +144,7 @@ describe("lobster plugin tool", () => {
 
   it("rejects lobsterPath (deprecated) when invalid", async () => {
     const fake = await writeFakeLobster({
-      payload: {
-        ok: true,
-        status: "ok",
-        output: [{ hello: "world" }],
-        requiresApproval: null,
-      },
+      payload: { ok: true, status: "ok", output: [{ hello: "world" }], requiresApproval: null },
     });
 
     const originalPath = process.env.PATH;
@@ -218,12 +188,7 @@ describe("lobster plugin tool", () => {
 
   it("uses pluginConfig.lobsterPath when provided", async () => {
     const fake = await writeFakeLobster({
-      payload: {
-        ok: true,
-        status: "ok",
-        output: [{ hello: "world" }],
-        requiresApproval: null,
-      },
+      payload: { ok: true, status: "ok", output: [{ hello: "world" }], requiresApproval: null },
     });
 
     // Ensure `lobster` is NOT discoverable via PATH, while still allowing our
@@ -232,9 +197,7 @@ describe("lobster plugin tool", () => {
     process.env.PATH = path.dirname(process.execPath);
 
     try {
-      const tool = createLobsterTool(
-        fakeApi({ pluginConfig: { lobsterPath: fake.binPath } }),
-      );
+      const tool = createLobsterTool(fakeApi({ pluginConfig: { lobsterPath: fake.binPath } }));
       const res = await tool.execute("call-plugin-config", {
         action: "run",
         pipeline: "noop",

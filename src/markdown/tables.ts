@@ -36,12 +36,7 @@ export function convertMarkdownTables(markdown: string, mode: MarkdownTableMode)
       if (!label) {
         return null;
       }
-      return {
-        start: link.start,
-        end: link.end,
-        open: "[",
-        close: `](${href})`,
-      };
+      return { start: link.start, end: link.end, open: "[", close: `](${href})` };
     },
   });
 }

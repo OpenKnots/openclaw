@@ -75,16 +75,10 @@ export function installTestEnv(): { cleanup: () => void; tempHome: string } {
     { key: "OPENCLAW_STATE_DIR", value: process.env.OPENCLAW_STATE_DIR },
     { key: "OPENCLAW_CONFIG_PATH", value: process.env.OPENCLAW_CONFIG_PATH },
     { key: "OPENCLAW_GATEWAY_PORT", value: process.env.OPENCLAW_GATEWAY_PORT },
-    {
-      key: "OPENCLAW_BRIDGE_ENABLED",
-      value: process.env.OPENCLAW_BRIDGE_ENABLED,
-    },
+    { key: "OPENCLAW_BRIDGE_ENABLED", value: process.env.OPENCLAW_BRIDGE_ENABLED },
     { key: "OPENCLAW_BRIDGE_HOST", value: process.env.OPENCLAW_BRIDGE_HOST },
     { key: "OPENCLAW_BRIDGE_PORT", value: process.env.OPENCLAW_BRIDGE_PORT },
-    {
-      key: "OPENCLAW_CANVAS_HOST_PORT",
-      value: process.env.OPENCLAW_CANVAS_HOST_PORT,
-    },
+    { key: "OPENCLAW_CANVAS_HOST_PORT", value: process.env.OPENCLAW_CANVAS_HOST_PORT },
     { key: "OPENCLAW_TEST_HOME", value: process.env.OPENCLAW_TEST_HOME },
     { key: "TELEGRAM_BOT_TOKEN", value: process.env.TELEGRAM_BOT_TOKEN },
     { key: "DISCORD_BOT_TOKEN", value: process.env.DISCORD_BOT_TOKEN },
@@ -148,9 +142,6 @@ export function installTestEnv(): { cleanup: () => void; tempHome: string } {
   return { cleanup, tempHome };
 }
 
-export function withIsolatedTestHome(): {
-  cleanup: () => void;
-  tempHome: string;
-} {
+export function withIsolatedTestHome(): { cleanup: () => void; tempHome: string } {
   return installTestEnv();
 }

@@ -59,10 +59,7 @@ export function extractNextcloudTalkHeaders(
 /**
  * Generate signature headers for an outbound request to Nextcloud Talk.
  */
-export function generateNextcloudTalkSignature(params: {
-  body: string;
-  secret: string;
-}): {
+export function generateNextcloudTalkSignature(params: { body: string; secret: string }): {
   random: string;
   signature: string;
 } {

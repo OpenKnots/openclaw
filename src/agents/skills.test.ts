@@ -127,11 +127,7 @@ describe("buildWorkspaceSkillCommandSpecs", () => {
 
     const commands = buildWorkspaceSkillCommandSpecs(workspaceDir);
     const cmd = commands.find((entry) => entry.skillName === "tool-dispatch");
-    expect(cmd?.dispatch).toEqual({
-      kind: "tool",
-      toolName: "sessions_send",
-      argMode: "raw",
-    });
+    expect(cmd?.dispatch).toEqual({ kind: "tool", toolName: "sessions_send", argMode: "raw" });
   });
 });
 

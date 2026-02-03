@@ -57,10 +57,7 @@ export async function promptRemoteGatewayConfig(
       configDomain: cfg.discovery?.wideArea?.domain,
     });
     const spin = prompter.progress("Searching for gateways…");
-    const beacons = await discoverGatewayBeacons({
-      timeoutMs: 2000,
-      wideAreaDomain,
-    });
+    const beacons = await discoverGatewayBeacons({ timeoutMs: 2000, wideAreaDomain });
     spin.stop(beacons.length > 0 ? `Found ${beacons.length} gateway(s)` : "No gateways found");
 
     if (beacons.length > 0) {

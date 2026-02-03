@@ -93,8 +93,7 @@ describe("msteams attachments", () => {
         buildMSTeamsAttachmentPlaceholder([
           {
             contentType: "text/html",
-            content:
-              '<img src="https://x/a.png" /><img src="https://x/b.png" />',
+            content: '<img src="https://x/a.png" /><img src="https://x/b.png" />',
           },
         ]),
       ).toBe("<media:image> (2 images)");
@@ -112,9 +111,7 @@ describe("msteams attachments", () => {
       });
 
       const media = await downloadMSTeamsAttachments({
-        attachments: [
-          { contentType: "image/png", contentUrl: "https://x/img" },
-        ],
+        attachments: [{ contentType: "image/png", contentUrl: "https://x/img" }],
         maxBytes: 1024 * 1024,
         allowHosts: ["x"],
         fetchFn: fetchMock as unknown as typeof fetch,
@@ -166,9 +163,7 @@ describe("msteams attachments", () => {
       });
 
       const media = await downloadMSTeamsAttachments({
-        attachments: [
-          { contentType: "application/pdf", contentUrl: "https://x/doc.pdf" },
-        ],
+        attachments: [{ contentType: "application/pdf", contentUrl: "https://x/doc.pdf" }],
         maxBytes: 1024 * 1024,
         allowHosts: ["x"],
         fetchFn: fetchMock as unknown as typeof fetch,
@@ -242,9 +237,7 @@ describe("msteams attachments", () => {
       });
 
       const media = await downloadMSTeamsAttachments({
-        attachments: [
-          { contentType: "image/png", contentUrl: "https://x/img" },
-        ],
+        attachments: [{ contentType: "image/png", contentUrl: "https://x/img" }],
         maxBytes: 1024 * 1024,
         tokenProvider: { getAccessToken: vi.fn(async () => "token") },
         allowHosts: ["x"],
@@ -278,10 +271,7 @@ describe("msteams attachments", () => {
 
       const media = await downloadMSTeamsAttachments({
         attachments: [
-          {
-            contentType: "image/png",
-            contentUrl: "https://attacker.azureedge.net/img",
-          },
+          { contentType: "image/png", contentUrl: "https://attacker.azureedge.net/img" },
         ],
         maxBytes: 1024 * 1024,
         tokenProvider,
@@ -299,9 +289,7 @@ describe("msteams attachments", () => {
       const { downloadMSTeamsAttachments } = await load();
       const fetchMock = vi.fn();
       const media = await downloadMSTeamsAttachments({
-        attachments: [
-          { contentType: "image/png", contentUrl: "https://evil.test/img" },
-        ],
+        attachments: [{ contentType: "image/png", contentUrl: "https://evil.test/img" }],
         maxBytes: 1024 * 1024,
         allowHosts: ["graph.microsoft.com"],
         fetchFn: fetchMock as unknown as typeof fetch,
@@ -374,8 +362,7 @@ describe("msteams attachments", () => {
       });
 
       const media = await downloadMSTeamsGraphMedia({
-        messageUrl:
-          "https://graph.microsoft.com/v1.0/chats/19%3Achat/messages/123",
+        messageUrl: "https://graph.microsoft.com/v1.0/chats/19%3Achat/messages/123",
         tokenProvider: { getAccessToken: vi.fn(async () => "token") },
         maxBytes: 1024 * 1024,
         fetchFn: fetchMock as unknown as typeof fetch,
@@ -445,8 +432,7 @@ describe("msteams attachments", () => {
       });
 
       const media = await downloadMSTeamsGraphMedia({
-        messageUrl:
-          "https://graph.microsoft.com/v1.0/chats/19%3Achat/messages/123",
+        messageUrl: "https://graph.microsoft.com/v1.0/chats/19%3Achat/messages/123",
         tokenProvider: { getAccessToken: vi.fn(async () => "token") },
         maxBytes: 1024 * 1024,
         fetchFn: fetchMock as unknown as typeof fetch,

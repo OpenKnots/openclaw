@@ -4,13 +4,7 @@ import { z } from "zod";
 /**
  * Twitch user roles that can be allowed to interact with the bot
  */
-const TwitchRoleSchema = z.enum([
-  "moderator",
-  "owner",
-  "vip",
-  "subscriber",
-  "all",
-]);
+const TwitchRoleSchema = z.enum(["moderator", "owner", "vip", "subscriber", "all"]);
 
 /**
  * Twitch account configuration schema
@@ -57,10 +51,7 @@ const TwitchConfigBaseSchema = z.object({
  * Use this for single-account setups. Properties are at the top level,
  * creating an implicit "default" account.
  */
-const SimplifiedSchema = z.intersection(
-  TwitchConfigBaseSchema,
-  TwitchAccountSchema,
-);
+const SimplifiedSchema = z.intersection(TwitchConfigBaseSchema, TwitchAccountSchema);
 
 /**
  * Multi-account configuration schema
@@ -88,7 +79,4 @@ const MultiAccountSchema = z.intersection(
  *
  * The union ensures clear discrimination between the two modes.
  */
-export const TwitchConfigSchema = z.union([
-  SimplifiedSchema,
-  MultiAccountSchema,
-]);
+export const TwitchConfigSchema = z.union([SimplifiedSchema, MultiAccountSchema]);

@@ -320,10 +320,7 @@ export function registerPluginsCli(program: Command) {
         if (opts.link) {
           const existing = cfg.plugins?.load?.paths ?? [];
           const merged = Array.from(new Set([...existing, resolved]));
-          const probe = await installPluginFromPath({
-            path: resolved,
-            dryRun: true,
-          });
+          const probe = await installPluginFromPath({ path: resolved, dryRun: true });
           if (!probe.ok) {
             defaultRuntime.error(probe.error);
             process.exit(1);

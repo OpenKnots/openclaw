@@ -177,10 +177,7 @@ export async function resolveMediaDurationMs(params: {
       skipCovers: true,
     });
     const durationSeconds = metadata.format.duration;
-    if (
-      typeof durationSeconds === "number" &&
-      Number.isFinite(durationSeconds)
-    ) {
+    if (typeof durationSeconds === "number" && Number.isFinite(durationSeconds)) {
       return Math.max(0, Math.round(durationSeconds * 1000));
     }
   } catch {
@@ -213,17 +210,12 @@ export async function uploadMediaMaybeEncrypted(
   },
 ): Promise<{ url: string; file?: EncryptedFile }> {
   // Check if room is encrypted and crypto is available
-  const isEncrypted =
-    client.crypto && (await client.crypto.isRoomEncrypted(roomId));
+  const isEncrypted = client.crypto && (await client.crypto.isRoomEncrypted(roomId));
 
   if (isEncrypted && client.crypto) {
     // Encrypt the media before uploading
     const encrypted = await client.crypto.encryptMedia(buffer);
-    const mxc = await client.uploadContent(
-      encrypted.buffer,
-      params.contentType,
-      params.filename,
-    );
+    const mxc = await client.uploadContent(encrypted.buffer, params.contentType, params.filename);
     const file: EncryptedFile = { url: mxc, ...encrypted.file };
     return {
       url: mxc,

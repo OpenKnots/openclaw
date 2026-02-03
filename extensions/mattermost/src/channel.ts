@@ -21,10 +21,7 @@ import { normalizeMattermostBaseUrl } from "./mattermost/client.js";
 import { monitorMattermostProvider } from "./mattermost/monitor.js";
 import { probeMattermost } from "./mattermost/probe.js";
 import { sendMessageMattermost } from "./mattermost/send.js";
-import {
-  looksLikeMattermostTargetId,
-  normalizeMattermostMessagingTarget,
-} from "./normalize.js";
+import { looksLikeMattermostTargetId, normalizeMattermostMessagingTarget } from "./normalize.js";
 import { mattermostOnboardingAdapter } from "./onboarding.js";
 import { getMattermostRuntime } from "./runtime.js";
 
@@ -86,8 +83,7 @@ export const mattermostPlugin: ChannelPlugin<ResolvedMattermostAccount> = {
   configSchema: buildChannelConfigSchema(MattermostConfigSchema),
   config: {
     listAccountIds: (cfg) => listMattermostAccountIds(cfg),
-    resolveAccount: (cfg, accountId) =>
-      resolveMattermostAccount({ cfg, accountId }),
+    resolveAccount: (cfg, accountId) => resolveMattermostAccount({ cfg, accountId }),
     defaultAccountId: (cfg) => resolveDefaultMattermostAccountId(cfg),
     setAccountEnabled: ({ cfg, accountId, enabled }) =>
       setAccountEnabledInConfigSection({
@@ -114,19 +110,16 @@ export const mattermostPlugin: ChannelPlugin<ResolvedMattermostAccount> = {
       baseUrl: account.baseUrl,
     }),
     resolveAllowFrom: ({ cfg, accountId }) =>
-      (resolveMattermostAccount({ cfg, accountId }).config.allowFrom ?? []).map(
-        (entry) => String(entry),
+      (resolveMattermostAccount({ cfg, accountId }).config.allowFrom ?? []).map((entry) =>
+        String(entry),
       ),
     formatAllowFrom: ({ allowFrom }) =>
       allowFrom.map((entry) => formatAllowEntry(String(entry))).filter(Boolean),
   },
   security: {
     resolveDmPolicy: ({ cfg, accountId, account }) => {
-      const resolvedAccountId =
-        accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
-      const useAccountPath = Boolean(
-        cfg.channels?.mattermost?.accounts?.[resolvedAccountId],
-      );
+      const resolvedAccountId = accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
+      const useAccountPath = Boolean(cfg.channels?.mattermost?.accounts?.[resolvedAccountId]);
       const basePath = useAccountPath
         ? `channels.mattermost.accounts.${resolvedAccountId}.`
         : "channels.mattermost.";
@@ -141,8 +134,7 @@ export const mattermostPlugin: ChannelPlugin<ResolvedMattermostAccount> = {
     },
     collectWarnings: ({ account, cfg }) => {
       const defaultGroupPolicy = cfg.channels?.defaults?.groupPolicy;
-      const groupPolicy =
-        account.config.groupPolicy ?? defaultGroupPolicy ?? "allowlist";
+      const groupPolicy = account.config.groupPolicy ?? defaultGroupPolicy ?? "allowlist";
       if (groupPolicy !== "open") {
         return [];
       }
@@ -163,8 +155,7 @@ export const mattermostPlugin: ChannelPlugin<ResolvedMattermostAccount> = {
   },
   outbound: {
     deliveryMode: "direct",
-    chunker: (text, limit) =>
-      getMattermostRuntime().channel.text.chunkMarkdownText(text, limit),
+    chunker: (text, limit) => getMattermostRuntime().channel.text.chunkMarkdownText(text, limit),
     chunkerMode: "markdown",
     textChunkLimit: 4000,
     resolveTarget: ({ to }) => {
@@ -339,8 +330,7 @@ export const mattermostPlugin: ChannelPlugin<ResolvedMattermostAccount> = {
         config: ctx.cfg,
         runtime: ctx.runtime,
         abortSignal: ctx.abortSignal,
-        statusSink: (patch) =>
-          ctx.setStatus({ accountId: ctx.accountId, ...patch }),
+        statusSink: (patch) => ctx.setStatus({ accountId: ctx.accountId, ...patch }),
       });
     },
   },

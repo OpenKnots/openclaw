@@ -70,10 +70,7 @@ describe("model-selection", () => {
         provider: "anthropic",
         model: "claude-3-5-sonnet",
       });
-      expect(index.byAlias.get("smart")?.ref).toEqual({
-        provider: "openai",
-        model: "gpt-4o",
-      });
+      expect(index.byAlias.get("smart")?.ref).toEqual({ provider: "openai", model: "gpt-4o" });
       expect(index.byKey.get(modelKey("anthropic", "claude-3-5-sonnet"))).toEqual(["fast"]);
     });
   });
@@ -123,10 +120,7 @@ describe("model-selection", () => {
         defaultModel: "gemini-pro",
       });
 
-      expect(result).toEqual({
-        provider: "anthropic",
-        model: "claude-3-5-sonnet",
-      });
+      expect(result).toEqual({ provider: "anthropic", model: "claude-3-5-sonnet" });
       expect(warnSpy).toHaveBeenCalledWith(
         expect.stringContaining('Falling back to "anthropic/claude-3-5-sonnet"'),
       );

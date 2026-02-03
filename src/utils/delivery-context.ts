@@ -96,9 +96,7 @@ export function normalizeSessionDeliveryFields(source?: DeliveryContextSessionSo
 }
 
 export function deliveryContextFromSession(
-  entry?: DeliveryContextSessionSource & {
-    origin?: { threadId?: string | number };
-  },
+  entry?: DeliveryContextSessionSource & { origin?: { threadId?: string | number } },
 ): DeliveryContext | undefined {
   if (!entry) {
     return undefined;

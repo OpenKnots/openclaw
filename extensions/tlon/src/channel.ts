@@ -78,8 +78,9 @@ function applyTlonSetupConfig(params: {
         accounts: {
           ...(base as { accounts?: Record<string, unknown> }).accounts,
           [accountId]: {
-            ...(base as { accounts?: Record<string, Record<string, unknown>> })
-              .accounts?.[accountId],
+            ...(base as { accounts?: Record<string, Record<string, unknown>> }).accounts?.[
+              accountId
+            ],
             enabled: true,
             ...payload,
           },
@@ -134,8 +135,7 @@ const tlonOutbound: ChannelOutboundAdapter = {
           text,
         });
       }
-      const replyId =
-        (replyToId ?? threadId) ? String(replyToId ?? threadId) : undefined;
+      const replyId = (replyToId ?? threadId) ? String(replyToId ?? threadId) : undefined;
       return await sendGroupMessage({
         api,
         fromShip,
@@ -152,15 +152,7 @@ const tlonOutbound: ChannelOutboundAdapter = {
       }
     }
   },
-  sendMedia: async ({
-    cfg,
-    to,
-    text,
-    mediaUrl,
-    accountId,
-    replyToId,
-    threadId,
-  }) => {
+  sendMedia: async ({ cfg, to, text, mediaUrl, accountId, replyToId, threadId }) => {
     const mergedText = buildMediaText(text, mediaUrl);
     return await tlonOutbound.sendText({
       cfg,
@@ -196,8 +188,7 @@ export const tlonPlugin: ChannelPlugin = {
   configSchema: tlonChannelConfigSchema,
   config: {
     listAccountIds: (cfg) => listTlonAccountIds(cfg),
-    resolveAccount: (cfg, accountId) =>
-      resolveTlonAccount(cfg, accountId ?? undefined),
+    resolveAccount: (cfg, accountId) => resolveTlonAccount(cfg, accountId ?? undefined),
     defaultAccountId: () => "default",
     setAccountEnabled: ({ cfg, accountId, enabled }) => {
       const useDefault = !accountId || accountId === "default";
@@ -246,8 +237,7 @@ export const tlonPlugin: ChannelPlugin = {
       }
       // @ts-expect-error
       // oxlint-disable-next-line no-unused-vars
-      const { [accountId]: removed, ...remainingAccounts } =
-        cfg.channels?.tlon?.accounts ?? {};
+      const { [accountId]: removed, ...remainingAccounts } = cfg.channels?.tlon?.accounts ?? {};
       return {
         ...cfg,
         channels: {
@@ -348,12 +338,7 @@ export const tlonPlugin: ChannelPlugin = {
       url: snapshot.url ?? null,
     }),
     probeAccount: async ({ account }) => {
-      if (
-        !account.configured ||
-        !account.ship ||
-        !account.url ||
-        !account.code
-      ) {
+      if (!account.configured || !account.ship || !account.url || !account.code) {
         return { ok: false, error: "Not configured" };
       }
       try {
@@ -396,9 +381,7 @@ export const tlonPlugin: ChannelPlugin = {
         ship: account.ship,
         url: account.url,
       });
-      ctx.log?.info(
-        `[${account.accountId}] starting Tlon provider for ${account.ship ?? "tlon"}`,
-      );
+      ctx.log?.info(`[${account.accountId}] starting Tlon provider for ${account.ship ?? "tlon"}`);
       return monitorTlonProvider({
         runtime: ctx.runtime,
         abortSignal: ctx.abortSignal,

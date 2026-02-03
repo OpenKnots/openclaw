@@ -367,10 +367,7 @@ export function resolveSlackGroupToolPolicy(
     normalizedName,
   ].filter(Boolean);
   let matched:
-    | {
-        tools?: GroupToolPolicyConfig;
-        toolsBySender?: GroupToolPolicyBySenderConfig;
-      }
+    | { tools?: GroupToolPolicyConfig; toolsBySender?: GroupToolPolicyBySenderConfig }
     | undefined;
   for (const candidate of candidates) {
     if (candidate && channels[candidate]) {

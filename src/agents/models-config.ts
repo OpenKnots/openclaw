@@ -94,10 +94,7 @@ export async function ensureOpenClawModelsJson(
     implicit: implicitProviders,
     explicit: explicitProviders,
   });
-  const implicitBedrock = await resolveImplicitBedrockProvider({
-    agentDir,
-    config: cfg,
-  });
+  const implicitBedrock = await resolveImplicitBedrockProvider({ agentDir, config: cfg });
   if (implicitBedrock) {
     const existing = providers["amazon-bedrock"];
     providers["amazon-bedrock"] = existing

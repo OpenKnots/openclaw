@@ -777,10 +777,7 @@ describe("telegram text fragments", () => {
       await vi.advanceTimersByTimeAsync(TEXT_FRAGMENT_FLUSH_MS);
 
       expect(replySpy).toHaveBeenCalledTimes(1);
-      const payload = replySpy.mock.calls[0][0] as {
-        RawBody?: string;
-        Body?: string;
-      };
+      const payload = replySpy.mock.calls[0][0] as { RawBody?: string; Body?: string };
       expect(payload.RawBody).toContain(part1.slice(0, 32));
       expect(payload.RawBody).toContain(part2.slice(0, 32));
     },

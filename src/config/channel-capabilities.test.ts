@@ -157,11 +157,7 @@ const createStubPlugin = (id: string): ChannelPlugin => ({
 });
 
 const baseRegistry = createRegistry([
-  {
-    pluginId: "telegram",
-    source: "test",
-    plugin: createStubPlugin("telegram"),
-  },
+  { pluginId: "telegram", source: "test", plugin: createStubPlugin("telegram") },
   { pluginId: "slack", source: "test", plugin: createStubPlugin("slack") },
 ]);
 

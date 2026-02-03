@@ -86,9 +86,7 @@ export async function removeMatrixReactions(
     if (toRemove.length === 0) {
       return { removed: 0 };
     }
-    await Promise.all(
-      toRemove.map((id) => client.redactEvent(resolvedRoom, id)),
-    );
+    await Promise.all(toRemove.map((id) => client.redactEvent(resolvedRoom, id)));
     return { removed: toRemove.length };
   } finally {
     if (stopOnDone) {

@@ -125,12 +125,12 @@ OPENAI_API_KEY=sk-... pnpm docs:chat:serve:vector
 
 **Optional environment variables**:
 
-| Variable          | Default | Description                                                                                                                        |
-| ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `PORT`            | `3001`  | Server port                                                                                                                        |
-| `RATE_LIMIT`      | `20`    | Max requests per window per IP (Upstash only)                                                                                      |
-| `RATE_WINDOW_MS`  | `60000` | Rate limit window in milliseconds (Upstash only)                                                                                   |
-| `TRUST_PROXY`     | `0`     | Set to `1` to trust `X-Forwarded-For` (behind a reverse proxy)                                                                     |
+| Variable          | Default | Description                                                      |
+| ----------------- | ------- | ---------------------------------------------------------------- |
+| `PORT`            | `3001`  | Server port                                                      |
+| `RATE_LIMIT`      | `20`    | Max requests per window per IP (Upstash only)                    |
+| `RATE_WINDOW_MS`  | `60000` | Rate limit window in milliseconds (Upstash only)                 |
+| `TRUST_PROXY`     | `0`     | Set to `1` to trust `X-Forwarded-For` (behind a reverse proxy)   |
 | `ALLOWED_ORIGINS` | (none)  | Comma-separated allowed origins for CORS (e.g. `https://docs.openclaw.ai,http://localhost:3000`). Use `*` for any (local dev only) |
 
 > **Note:** Rate limiting is only enforced in Upstash (production) mode. Local

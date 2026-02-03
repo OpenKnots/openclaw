@@ -14,12 +14,7 @@ describe("normalizeOutboundPayloadsForJson", () => {
         { text: "multi", mediaUrls: ["https://x.test/1.png"] },
       ]),
     ).toEqual([
-      {
-        text: "hi",
-        mediaUrl: null,
-        mediaUrls: undefined,
-        channelData: undefined,
-      },
+      { text: "hi", mediaUrl: null, mediaUrls: undefined, channelData: undefined },
       {
         text: "photo",
         mediaUrl: "https://x.test/a.jpg",
@@ -55,9 +50,7 @@ describe("normalizeOutboundPayloadsForJson", () => {
 
 describe("normalizeOutboundPayloads", () => {
   it("keeps channelData-only payloads", () => {
-    const channelData = {
-      line: { flexMessage: { altText: "Card", contents: {} } },
-    };
+    const channelData = { line: { flexMessage: { altText: "Card", contents: {} } } };
     const normalized = normalizeOutboundPayloads([{ channelData }]);
     expect(normalized).toEqual([{ text: "", mediaUrls: [], channelData }]);
   });

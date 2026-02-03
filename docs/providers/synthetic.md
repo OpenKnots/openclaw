@@ -34,9 +34,7 @@ synthetic/hf:MiniMaxAI/MiniMax-M2.1
   agents: {
     defaults: {
       model: { primary: "synthetic/hf:MiniMaxAI/MiniMax-M2.1" },
-      models: {
-        "synthetic/hf:MiniMaxAI/MiniMax-M2.1": { alias: "MiniMax M2.1" },
-      },
+      models: { "synthetic/hf:MiniMaxAI/MiniMax-M2.1": { alias: "MiniMax M2.1" } },
     },
   },
   models: {

@@ -29,11 +29,7 @@ import { importProfileFromRelays } from "./nostr-profile-import.js";
 // Test Helpers
 // ============================================================================
 
-function createMockRequest(
-  method: string,
-  url: string,
-  body?: unknown,
-): IncomingMessage {
+function createMockRequest(method: string, url: string, body?: unknown): IncomingMessage {
   const socket = new Socket();
   const req = new IncomingMessage(socket);
   req.method = method;
@@ -85,24 +81,17 @@ function createMockResponse(): ServerResponse & {
   });
 
   (res as unknown as { _getData: () => string })._getData = () => data;
-  (res as unknown as { _getStatusCode: () => number })._getStatusCode = () =>
-    statusCode;
+  (res as unknown as { _getStatusCode: () => number })._getStatusCode = () => statusCode;
 
-  return res as ServerResponse & {
-    _getData: () => string;
-    _getStatusCode: () => number;
-  };
+  return res as ServerResponse & { _getData: () => string; _getStatusCode: () => number };
 }
 
-function createMockContext(
-  overrides?: Partial<NostrProfileHttpContext>,
-): NostrProfileHttpContext {
+function createMockContext(overrides?: Partial<NostrProfileHttpContext>): NostrProfileHttpContext {
   return {
     getConfigProfile: vi.fn().mockReturnValue(undefined),
     updateConfigProfile: vi.fn().mockResolvedValue(undefined),
     getAccountInfo: vi.fn().mockReturnValue({
-      pubkey:
-        "abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234",
+      pubkey: "abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234",
       relays: ["wss://relay.damus.io"],
     }),
     log: {
@@ -149,10 +138,7 @@ describe("nostr-profile-http", () => {
     it("handles /api/channels/nostr/:accountId/profile", async () => {
       const ctx = createMockContext();
       const handler = createNostrProfileHttpHandler(ctx);
-      const req = createMockRequest(
-        "GET",
-        "/api/channels/nostr/default/profile",
-      );
+      const req = createMockRequest("GET", "/api/channels/nostr/default/profile");
       const res = createMockResponse();
 
       vi.mocked(getNostrProfileState).mockResolvedValue(null);
@@ -172,10 +158,7 @@ describe("nostr-profile-http", () => {
         }),
       });
       const handler = createNostrProfileHttpHandler(ctx);
-      const req = createMockRequest(
-        "GET",
-        "/api/channels/nostr/default/profile",
-      );
+      const req = createMockRequest("GET", "/api/channels/nostr/default/profile");
       const res = createMockResponse();
 
       vi.mocked(getNostrProfileState).mockResolvedValue({
@@ -198,15 +181,11 @@ describe("nostr-profile-http", () => {
     it("validates profile and publishes", async () => {
       const ctx = createMockContext();
       const handler = createNostrProfileHttpHandler(ctx);
-      const req = createMockRequest(
-        "PUT",
-        "/api/channels/nostr/default/profile",
-        {
-          name: "satoshi",
-          displayName: "Satoshi Nakamoto",
-          about: "Creator of Bitcoin",
-        },
-      );
+      const req = createMockRequest("PUT", "/api/channels/nostr/default/profile", {
+        name: "satoshi",
+        displayName: "Satoshi Nakamoto",
+        about: "Creator of Bitcoin",
+      });
       const res = createMockResponse();
 
       vi.mocked(publishNostrProfile).mockResolvedValue({
@@ -230,14 +209,10 @@ describe("nostr-profile-http", () => {
     it("rejects private IP in picture URL (SSRF protection)", async () => {
       const ctx = createMockContext();
       const handler = createNostrProfileHttpHandler(ctx);
-      const req = createMockRequest(
-        "PUT",
-        "/api/channels/nostr/default/profile",
-        {
-          name: "hacker",
-          picture: "https://127.0.0.1/evil.jpg",
-        },
-      );
+      const req = createMockRequest("PUT", "/api/channels/nostr/default/profile", {
+        name: "hacker",
+        picture: "https://127.0.0.1/evil.jpg",
+      });
       const res = createMockResponse();
 
       await handler(req, res);
@@ -251,14 +226,10 @@ describe("nostr-profile-http", () => {
     it("rejects non-https URLs", async () => {
       const ctx = createMockContext();
       const handler = createNostrProfileHttpHandler(ctx);
-      const req = createMockRequest(
-        "PUT",
-        "/api/channels/nostr/default/profile",
-        {
-          name: "test",
-          picture: "http://example.com/pic.jpg",
-        },
-      );
+      const req = createMockRequest("PUT", "/api/channels/nostr/default/profile", {
+        name: "test",
+        picture: "http://example.com/pic.jpg",
+      });
       const res = createMockResponse();
 
       await handler(req, res);
@@ -275,13 +246,9 @@ describe("nostr-profile-http", () => {
     it("does not persist if all relays fail", async () => {
       const ctx = createMockContext();
       const handler = createNostrProfileHttpHandler(ctx);
-      const req = createMockRequest(
-        "PUT",
-        "/api/channels/nostr/default/profile",
-        {
-          name: "test",
-        },
-      );
+      const req = createMockRequest("PUT", "/api/channels/nostr/default/profile", {
+        name: "test",
+      });
       const res = createMockResponse();
 
       vi.mocked(publishNostrProfile).mockResolvedValue({
@@ -312,13 +279,9 @@ describe("nostr-profile-http", () => {
 
       // Make 6 requests (limit is 5/min)
       for (let i = 0; i < 6; i++) {
-        const req = createMockRequest(
-          "PUT",
-          "/api/channels/nostr/rate-test/profile",
-          {
-            name: `user${i}`,
-          },
-        );
+        const req = createMockRequest("PUT", "/api/channels/nostr/rate-test/profile", {
+          name: `user${i}`,
+        });
         const res = createMockResponse();
         await handler(req, res);
 
@@ -337,11 +300,7 @@ describe("nostr-profile-http", () => {
     it("imports profile from relays", async () => {
       const ctx = createMockContext();
       const handler = createNostrProfileHttpHandler(ctx);
-      const req = createMockRequest(
-        "POST",
-        "/api/channels/nostr/default/profile/import",
-        {},
-      );
+      const req = createMockRequest("POST", "/api/channels/nostr/default/profile/import", {});
       const res = createMockResponse();
 
       vi.mocked(importProfileFromRelays).mockResolvedValue({
@@ -352,8 +311,7 @@ describe("nostr-profile-http", () => {
         },
         event: {
           id: "evt123",
-          pubkey:
-            "abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234",
+          pubkey: "abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234",
           created_at: 1234567890,
         },
         relaysQueried: ["wss://relay.damus.io"],
@@ -374,13 +332,9 @@ describe("nostr-profile-http", () => {
         getConfigProfile: vi.fn().mockReturnValue({ about: "local bio" }),
       });
       const handler = createNostrProfileHttpHandler(ctx);
-      const req = createMockRequest(
-        "POST",
-        "/api/channels/nostr/default/profile/import",
-        {
-          autoMerge: true,
-        },
-      );
+      const req = createMockRequest("POST", "/api/channels/nostr/default/profile/import", {
+        autoMerge: true,
+      });
       const res = createMockResponse();
 
       vi.mocked(importProfileFromRelays).mockResolvedValue({
@@ -391,8 +345,7 @@ describe("nostr-profile-http", () => {
         },
         event: {
           id: "evt123",
-          pubkey:
-            "abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234",
+          pubkey: "abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234",
           created_at: 1234567890,
         },
         relaysQueried: ["wss://relay.damus.io"],
@@ -412,11 +365,7 @@ describe("nostr-profile-http", () => {
         getAccountInfo: vi.fn().mockReturnValue(null),
       });
       const handler = createNostrProfileHttpHandler(ctx);
-      const req = createMockRequest(
-        "POST",
-        "/api/channels/nostr/unknown/profile/import",
-        {},
-      );
+      const req = createMockRequest("POST", "/api/channels/nostr/unknown/profile/import", {});
       const res = createMockResponse();
 
       await handler(req, res);

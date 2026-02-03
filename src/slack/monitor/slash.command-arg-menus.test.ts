@@ -80,10 +80,7 @@ function createHarness() {
     resolveUserName: async () => ({ name: "Ada" }),
   } as unknown;
 
-  const account = {
-    accountId: "acct",
-    config: { commands: { native: true } },
-  } as unknown;
+  const account = { accountId: "acct", config: { commands: { native: true } } } as unknown;
 
   return { commands, actions, postEphemeral, ctx, account };
 }
@@ -102,10 +99,7 @@ beforeEach(() => {
 describe("Slack native command argument menus", () => {
   it("shows a button menu when required args are omitted", async () => {
     const { commands, ctx, account } = createHarness();
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = commands.get("/usage");
     if (!handler) {
@@ -129,19 +123,14 @@ describe("Slack native command argument menus", () => {
     });
 
     expect(respond).toHaveBeenCalledTimes(1);
-    const payload = respond.mock.calls[0]?.[0] as {
-      blocks?: Array<{ type: string }>;
-    };
+    const payload = respond.mock.calls[0]?.[0] as { blocks?: Array<{ type: string }> };
     expect(payload.blocks?.[0]?.type).toBe("section");
     expect(payload.blocks?.[1]?.type).toBe("actions");
   });
 
   it("dispatches the command when a menu button is clicked", async () => {
     const { actions, ctx, account } = createHarness();
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = actions.get("openclaw_cmdarg");
     if (!handler) {
@@ -152,12 +141,7 @@ describe("Slack native command argument menus", () => {
     await handler({
       ack: vi.fn().mockResolvedValue(undefined),
       action: {
-        value: encodeValue({
-          command: "usage",
-          arg: "mode",
-          value: "tokens",
-          userId: "U1",
-        }),
+        value: encodeValue({ command: "usage", arg: "mode", value: "tokens", userId: "U1" }),
       },
       body: {
         user: { id: "U1", name: "Ada" },
@@ -174,10 +158,7 @@ describe("Slack native command argument menus", () => {
 
   it("rejects menu clicks from other users", async () => {
     const { actions, ctx, account } = createHarness();
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = actions.get("openclaw_cmdarg");
     if (!handler) {
@@ -188,12 +169,7 @@ describe("Slack native command argument menus", () => {
     await handler({
       ack: vi.fn().mockResolvedValue(undefined),
       action: {
-        value: encodeValue({
-          command: "usage",
-          arg: "mode",
-          value: "tokens",
-          userId: "U1",
-        }),
+        value: encodeValue({ command: "usage", arg: "mode", value: "tokens", userId: "U1" }),
       },
       body: {
         user: { id: "U2", name: "Eve" },
@@ -212,10 +188,7 @@ describe("Slack native command argument menus", () => {
 
   it("falls back to postEphemeral with token when respond is unavailable", async () => {
     const { actions, postEphemeral, ctx, account } = createHarness();
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = actions.get("openclaw_cmdarg");
     if (!handler) {
@@ -239,10 +212,7 @@ describe("Slack native command argument menus", () => {
 
   it("treats malformed percent-encoding as an invalid button (no throw)", async () => {
     const { actions, postEphemeral, ctx, account } = createHarness();
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = actions.get("openclaw_cmdarg");
     if (!handler) {

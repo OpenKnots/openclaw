@@ -1,9 +1,5 @@
 import type { GatewayBrowserClient } from "../gateway";
-import type {
-  ConfigSchemaResponse,
-  ConfigSnapshot,
-  ConfigUiHints,
-} from "../types";
+import type { ConfigSchemaResponse, ConfigSnapshot, ConfigUiHints } from "../types";
 import {
   cloneConfigObject,
   removePathValue,
@@ -72,19 +68,13 @@ export async function loadConfigSchema(state: ConfigState) {
   }
 }
 
-export function applyConfigSchema(
-  state: ConfigState,
-  res: ConfigSchemaResponse,
-) {
+export function applyConfigSchema(state: ConfigState, res: ConfigSchemaResponse) {
   state.configSchema = res.schema ?? null;
   state.configUiHints = res.uiHints ?? {};
   state.configSchemaVersion = res.version ?? null;
 }
 
-export function applyConfigSnapshot(
-  state: ConfigState,
-  snapshot: ConfigSnapshot,
-) {
+export function applyConfigSnapshot(state: ConfigState, snapshot: ConfigSnapshot) {
   state.configSnapshot = snapshot;
   const rawFromSnapshot =
     typeof snapshot.raw === "string"
@@ -99,8 +89,7 @@ export function applyConfigSnapshot(
   } else {
     state.configRaw = rawFromSnapshot;
   }
-  state.configValid =
-    typeof snapshot.valid === "boolean" ? snapshot.valid : null;
+  state.configValid = typeof snapshot.valid === "boolean" ? snapshot.valid : null;
   state.configIssues = Array.isArray(snapshot.issues) ? snapshot.issues : [];
 
   if (!state.configFormDirty) {
@@ -188,9 +177,7 @@ export function updateConfigFormValue(
   path: Array<string | number>,
   value: unknown,
 ) {
-  const base = cloneConfigObject(
-    state.configForm ?? state.configSnapshot?.config ?? {},
-  );
+  const base = cloneConfigObject(state.configForm ?? state.configSnapshot?.config ?? {});
   setPathValue(base, path, value);
   state.configForm = base;
   state.configFormDirty = true;
@@ -199,13 +186,8 @@ export function updateConfigFormValue(
   }
 }
 
-export function removeConfigFormValue(
-  state: ConfigState,
-  path: Array<string | number>,
-) {
-  const base = cloneConfigObject(
-    state.configForm ?? state.configSnapshot?.config ?? {},
-  );
+export function removeConfigFormValue(state: ConfigState, path: Array<string | number>) {
+  const base = cloneConfigObject(state.configForm ?? state.configSnapshot?.config ?? {});
   removePathValue(base, path);
   state.configForm = base;
   state.configFormDirty = true;

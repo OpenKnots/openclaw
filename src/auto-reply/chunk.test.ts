@@ -370,9 +370,7 @@ describe("resolveChunkMode", () => {
   });
 
   it("returns length for internal channel", () => {
-    const cfg = {
-      channels: { bluebubbles: { chunkMode: "newline" as const } },
-    };
+    const cfg = { channels: { bluebubbles: { chunkMode: "newline" as const } } };
     expect(resolveChunkMode(cfg, "__internal__")).toBe("length");
   });
 

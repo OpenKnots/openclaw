@@ -40,9 +40,7 @@ function createOAuthHandler(region: MiniMaxRegion) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return async (ctx: any) => {
-    const progress = ctx.prompter.progress(
-      `Starting MiniMax OAuth (${regionLabel})…`,
-    );
+    const progress = ctx.prompter.progress(`Starting MiniMax OAuth (${regionLabel})…`);
     try {
       const result = await loginMiniMaxPortalOAuth({
         openUrl: ctx.openUrl,
@@ -99,9 +97,7 @@ function createOAuthHandler(region: MiniMaxRegion) {
             defaults: {
               models: {
                 [modelRef("MiniMax-M2.1")]: { alias: "minimax-m2.1" },
-                [modelRef("MiniMax-M2.1-lightning")]: {
-                  alias: "minimax-m2.1-lightning",
-                },
+                [modelRef("MiniMax-M2.1-lightning")]: { alias: "minimax-m2.1-lightning" },
               },
             },
           },

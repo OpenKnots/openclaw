@@ -74,12 +74,7 @@ export function collectTwitchStatusIssues(
       continue;
     }
 
-    if (
-      account &&
-      account.username &&
-      account.accessToken &&
-      !account.clientId
-    ) {
+    if (account && account.username && account.accessToken && !account.clientId) {
       issues.push({
         channel: "twitch",
         accountId,
@@ -90,9 +85,7 @@ export function collectTwitchStatusIssues(
     }
 
     const tokenResolution = cfg
-      ? resolveTwitchToken(cfg as Parameters<typeof resolveTwitchToken>[0], {
-          accountId,
-        })
+      ? resolveTwitchToken(cfg as Parameters<typeof resolveTwitchToken>[0], { accountId })
       : { token: "", source: "none" };
     if (account && isAccountConfigured(account, tokenResolution.token)) {
       if (account.accessToken?.startsWith("oauth:")) {
@@ -134,8 +127,7 @@ export function collectTwitchStatusIssues(
           channel: "twitch",
           accountId,
           kind: "intent",
-          message:
-            "allowedRoles is set to 'all' but allowFrom is also configured",
+          message: "allowedRoles is set to 'all' but allowFrom is also configured",
           fix: "When allowedRoles is 'all', the allowFrom list is not needed. Remove allowFrom or set allowedRoles to specific roles.",
         });
       }

@@ -247,11 +247,7 @@ async function extractPdfContent(params: {
       viewport: scaled,
     }).promise;
     const png = canvas.toBuffer("image/png");
-    images.push({
-      type: "image",
-      data: png.toString("base64"),
-      mimeType: "image/png",
-    });
+    images.push({ type: "image", data: png.toString("base64"), mimeType: "image/png" });
   }
 
   return { text, images };
@@ -291,11 +287,7 @@ export async function extractImageContentFromSource(
     if (!limits.allowedMimes.has(result.mimeType)) {
       throw new Error(`Unsupported image MIME type from URL: ${result.mimeType}`);
     }
-    return {
-      type: "image",
-      data: result.buffer.toString("base64"),
-      mimeType: result.mimeType,
-    };
+    return { type: "image", data: result.buffer.toString("base64"), mimeType: result.mimeType };
   }
 
   throw new Error("input_image must have 'source.url' or 'source.data'");

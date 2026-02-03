@@ -15,10 +15,7 @@ const distRoot = path.join(cwd, "dist");
 const distEntry = path.join(distRoot, "/entry.js");
 const buildStampPath = path.join(distRoot, ".buildstamp");
 const srcRoot = path.join(cwd, "src");
-const configFiles = [
-  path.join(cwd, "tsconfig.json"),
-  path.join(cwd, "package.json"),
-];
+const configFiles = [path.join(cwd, "tsconfig.json"), path.join(cwd, "package.json")];
 
 const statMtime = (filePath) => {
   try {
@@ -132,9 +129,7 @@ const writeBuildStamp = () => {
     fs.writeFileSync(buildStampPath, `${Date.now()}\n`);
   } catch (error) {
     // Best-effort stamp; still allow the runner to start.
-    logRunner(
-      `Failed to write build stamp: ${error?.message ?? "unknown error"}`,
-    );
+    logRunner(`Failed to write build stamp: ${error?.message ?? "unknown error"}`);
   }
 };
 
@@ -145,9 +140,7 @@ if (!shouldBuild()) {
   const pnpmArgs = ["exec", compiler, ...projectArgs];
   const buildCmd = process.platform === "win32" ? "cmd.exe" : "pnpm";
   const buildArgs =
-    process.platform === "win32"
-      ? ["/d", "/s", "/c", "pnpm", ...pnpmArgs]
-      : pnpmArgs;
+    process.platform === "win32" ? ["/d", "/s", "/c", "pnpm", ...pnpmArgs] : pnpmArgs;
   const build = spawn(buildCmd, buildArgs, {
     cwd,
     env,

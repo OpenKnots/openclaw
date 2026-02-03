@@ -21,8 +21,5 @@ export function formatRelativeTime(timestamp: number): string {
   if (days < 7) {
     return `${days}d ago`;
   }
-  return new Date(timestamp).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-  });
+  return new Date(timestamp).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }

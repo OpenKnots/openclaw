@@ -61,10 +61,10 @@ describe("gateway config.patch", () => {
         params: {},
       }),
     );
-    const getRes = await onceMessage<{
-      ok: boolean;
-      payload?: { hash?: string; raw?: string };
-    }>(ws, (o) => o.type === "res" && o.id === getId);
+    const getRes = await onceMessage<{ ok: boolean; payload?: { hash?: string; raw?: string } }>(
+      ws,
+      (o) => o.type === "res" && o.id === getId,
+    );
     expect(getRes.ok).toBe(true);
     const baseHash = resolveConfigSnapshotHash({
       hash: getRes.payload?.hash,
@@ -110,10 +110,7 @@ describe("gateway config.patch", () => {
     const get2Res = await onceMessage<{
       ok: boolean;
       payload?: {
-        config?: {
-          gateway?: { mode?: string };
-          channels?: { telegram?: { botToken?: string } };
-        };
+        config?: { gateway?: { mode?: string }; channels?: { telegram?: { botToken?: string } } };
       };
     }>(ws, (o) => o.type === "res" && o.id === get2Id);
     expect(get2Res.ok).toBe(true);
@@ -151,10 +148,10 @@ describe("gateway config.patch", () => {
         params: {},
       }),
     );
-    const getRes = await onceMessage<{
-      ok: boolean;
-      payload?: { hash?: string; raw?: string };
-    }>(ws, (o) => o.type === "res" && o.id === getId);
+    const getRes = await onceMessage<{ ok: boolean; payload?: { hash?: string; raw?: string } }>(
+      ws,
+      (o) => o.type === "res" && o.id === getId,
+    );
     expect(getRes.ok).toBe(true);
     const baseHash = resolveConfigSnapshotHash({
       hash: getRes.payload?.hash,
@@ -237,10 +234,10 @@ describe("gateway config.patch", () => {
         },
       }),
     );
-    const patchRes = await onceMessage<{
-      ok: boolean;
-      error?: { message?: string };
-    }>(ws, (o) => o.type === "res" && o.id === patchId);
+    const patchRes = await onceMessage<{ ok: boolean; error?: { message?: string } }>(
+      ws,
+      (o) => o.type === "res" && o.id === patchId,
+    );
     expect(patchRes.ok).toBe(false);
     expect(patchRes.error?.message).toContain("base hash");
   });
@@ -278,10 +275,10 @@ describe("gateway config.patch", () => {
         },
       }),
     );
-    const set2Res = await onceMessage<{
-      ok: boolean;
-      error?: { message?: string };
-    }>(ws, (o) => o.type === "res" && o.id === set2Id);
+    const set2Res = await onceMessage<{ ok: boolean; error?: { message?: string } }>(
+      ws,
+      (o) => o.type === "res" && o.id === set2Id,
+    );
     expect(set2Res.ok).toBe(false);
     expect(set2Res.error?.message).toContain("base hash");
   });

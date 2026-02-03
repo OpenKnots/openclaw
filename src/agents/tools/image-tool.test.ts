@@ -125,11 +125,7 @@ describe("image tool implicit imageModel config", () => {
     expect(resolveImageModelConfigForTool({ cfg, agentDir })).toEqual({
       primary: "openai/gpt-5-mini",
     });
-    const tool = createImageTool({
-      config: cfg,
-      agentDir,
-      modelHasVision: true,
-    });
+    const tool = createImageTool({ config: cfg, agentDir, modelHasVision: true });
     expect(tool).not.toBeNull();
     expect(tool?.description).toContain(
       "Only use this tool when the image was NOT already provided",

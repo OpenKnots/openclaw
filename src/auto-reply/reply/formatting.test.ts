@@ -74,13 +74,7 @@ describe("block reply coalescer", () => {
   it("flushes each enqueued payload separately when flushOnEnqueue is set", async () => {
     const flushes: string[] = [];
     const coalescer = createBlockReplyCoalescer({
-      config: {
-        minChars: 1,
-        maxChars: 200,
-        idleMs: 100,
-        joiner: "\n\n",
-        flushOnEnqueue: true,
-      },
+      config: { minChars: 1, maxChars: 200, idleMs: 100, joiner: "\n\n", flushOnEnqueue: true },
       shouldAbort: () => false,
       onFlush: (payload) => {
         flushes.push(payload.text ?? "");
@@ -118,13 +112,7 @@ describe("block reply coalescer", () => {
   it("flushes short payloads immediately when flushOnEnqueue is set", async () => {
     const flushes: string[] = [];
     const coalescer = createBlockReplyCoalescer({
-      config: {
-        minChars: 10,
-        maxChars: 200,
-        idleMs: 50,
-        joiner: "\n\n",
-        flushOnEnqueue: true,
-      },
+      config: { minChars: 10, maxChars: 200, idleMs: 50, joiner: "\n\n", flushOnEnqueue: true },
       shouldAbort: () => false,
       onFlush: (payload) => {
         flushes.push(payload.text ?? "");
@@ -140,13 +128,7 @@ describe("block reply coalescer", () => {
   it("resets char budget per paragraph with flushOnEnqueue", async () => {
     const flushes: string[] = [];
     const coalescer = createBlockReplyCoalescer({
-      config: {
-        minChars: 1,
-        maxChars: 30,
-        idleMs: 100,
-        joiner: "\n\n",
-        flushOnEnqueue: true,
-      },
+      config: { minChars: 1, maxChars: 30, idleMs: 100, joiner: "\n\n", flushOnEnqueue: true },
       shouldAbort: () => false,
       onFlush: (payload) => {
         flushes.push(payload.text ?? "");

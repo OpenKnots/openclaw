@@ -1,12 +1,7 @@
 import { html } from "lit";
 import type { ConfigUiHints } from "../types";
 import type { ChannelsProps } from "./channels.types";
-import {
-  analyzeConfigSchema,
-  renderNode,
-  schemaType,
-  type JsonSchema,
-} from "./config-form";
+import { analyzeConfigSchema, renderNode, schemaType, type JsonSchema } from "./config-form";
 
 type ChannelConfigFormProps = {
   channelId: string;
@@ -34,11 +29,7 @@ function resolveSchemaNode(
         continue;
       }
       const additional = current.additionalProperties;
-      if (
-        typeof key === "string" &&
-        additional &&
-        typeof additional === "object"
-      ) {
+      if (typeof key === "string" && additional && typeof additional === "object") {
         current = additional;
         continue;
       }
@@ -48,9 +39,7 @@ function resolveSchemaNode(
       if (typeof key !== "number") {
         return null;
       }
-      const items = Array.isArray(current.items)
-        ? current.items[0]
-        : current.items;
+      const items = Array.isArray(current.items) ? current.items[0] : current.items;
       current = items ?? null;
       continue;
     }
@@ -70,9 +59,7 @@ function resolveChannelValue(
     (fromChannels && typeof fromChannels === "object"
       ? (fromChannels as Record<string, unknown>)
       : null) ??
-    (fallback && typeof fallback === "object"
-      ? (fallback as Record<string, unknown>)
-      : null);
+    (fallback && typeof fallback === "object" ? (fallback as Record<string, unknown>) : null);
   return resolved ?? {};
 }
 
@@ -82,11 +69,7 @@ function formatExtraValue(raw: unknown): string {
   if (raw == null) {
     return "n/a";
   }
-  if (
-    typeof raw === "string" ||
-    typeof raw === "number" ||
-    typeof raw === "boolean"
-  ) {
+  if (typeof raw === "string" || typeof raw === "number" || typeof raw === "boolean") {
     return String(raw);
   }
   try {
@@ -153,24 +136,25 @@ export function renderChannelConfigForm(props: ChannelConfigFormProps) {
   `;
 }
 
-export function renderChannelConfigSection(params: {
-  channelId: string;
-  props: ChannelsProps;
-}) {
+export function renderChannelConfigSection(params: { channelId: string; props: ChannelsProps }) {
   const { channelId, props } = params;
   const disabled = props.configSaving || props.configSchemaLoading;
   return html`
     <div style="margin-top: 16px;">
-      ${props.configSchemaLoading
-        ? html` <div class="muted">Loading config schema…</div> `
-        : renderChannelConfigForm({
-            channelId,
-            configValue: props.configForm,
-            schema: props.configSchema,
-            uiHints: props.configUiHints,
-            disabled,
-            onPatch: props.onConfigPatch,
-          })}
+      ${
+        props.configSchemaLoading
+          ? html`
+              <div class="muted">Loading config schema…</div>
+            `
+          : renderChannelConfigForm({
+              channelId,
+              configValue: props.configForm,
+              schema: props.configSchema,
+              uiHints: props.configUiHints,
+              disabled,
+              onPatch: props.onConfigPatch,
+            })
+      }
       <div class="row" style="margin-top: 12px;">
         <button
           class="btn primary"

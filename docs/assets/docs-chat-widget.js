@@ -522,10 +522,7 @@ html[data-theme="dark"] .docs-chat-user {
     if (!isDragging) return;
     // Panel is on right, so dragging left increases width
     const delta = startX - e.clientX;
-    const newWidth = Math.min(
-      MAX_WIDTH,
-      Math.max(MIN_WIDTH, startWidth + delta),
-    );
+    const newWidth = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, startWidth + delta));
     customWidth = newWidth;
     panel.style.width = newWidth + "px";
   });
@@ -604,8 +601,7 @@ html[data-theme="dark"] .docs-chat-user {
       if (!response.ok) {
         try {
           const errorData = await response.json();
-          fullText =
-            errorData.error || "Something went wrong. Please try again.";
+          fullText = errorData.error || "Something went wrong. Please try again.";
         } catch {
           fullText = "Something went wrong. Please try again.";
         }

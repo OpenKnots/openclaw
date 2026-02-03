@@ -132,10 +132,7 @@ export class NodeRegistry {
     if (!ok) {
       return {
         ok: false,
-        error: {
-          code: "UNAVAILABLE",
-          message: "failed to send invoke to node",
-        },
+        error: { code: "UNAVAILABLE", message: "failed to send invoke to node" },
       };
     }
     const timeoutMs = typeof params.timeoutMs === "number" ? params.timeoutMs : 30_000;

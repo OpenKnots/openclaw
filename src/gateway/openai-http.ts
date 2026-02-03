@@ -80,10 +80,8 @@ function buildAgentPrompt(messagesUnknown: unknown): {
   const messages = asMessages(messagesUnknown);
 
   const systemParts: string[] = [];
-  const conversationEntries: Array<{
-    role: "user" | "assistant" | "tool";
-    entry: HistoryEntry;
-  }> = [];
+  const conversationEntries: Array<{ role: "user" | "assistant" | "tool"; entry: HistoryEntry }> =
+    [];
 
   for (const msg of messages) {
     if (!msg || typeof msg !== "object") {

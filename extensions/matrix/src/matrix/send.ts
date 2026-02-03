@@ -58,16 +58,9 @@ export async function sendMessageMatrix(
       trimmedMessage,
       tableMode,
     );
-    const textLimit = getCore().channel.text.resolveTextChunkLimit(
-      cfg,
-      "matrix",
-    );
+    const textLimit = getCore().channel.text.resolveTextChunkLimit(cfg, "matrix");
     const chunkLimit = Math.min(textLimit, MATRIX_TEXT_LIMIT);
-    const chunkMode = getCore().channel.text.resolveChunkMode(
-      cfg,
-      "matrix",
-      opts.accountId,
-    );
+    const chunkMode = getCore().channel.text.resolveChunkMode(cfg, "matrix", opts.accountId);
     const chunks = getCore().channel.text.chunkMarkdownTextWithMode(
       convertedMessage,
       chunkLimit,
@@ -87,25 +80,17 @@ export async function sendMessageMatrix(
     if (opts.mediaUrl) {
       const maxBytes = resolveMediaMaxBytes();
       const media = await getCore().media.loadWebMedia(opts.mediaUrl, maxBytes);
-      const uploaded = await uploadMediaMaybeEncrypted(
-        client,
-        roomId,
-        media.buffer,
-        {
-          contentType: media.contentType,
-          filename: media.fileName,
-        },
-      );
+      const uploaded = await uploadMediaMaybeEncrypted(client, roomId, media.buffer, {
+        contentType: media.contentType,
+        filename: media.fileName,
+      });
       const durationMs = await resolveMediaDurationMs({
         buffer: media.buffer,
         contentType: media.contentType,
         fileName: media.fileName,
         kind: media.kind,
       });
-      const baseMsgType = resolveMatrixMsgType(
-        media.contentType,
-        media.fileName,
-      );
+      const baseMsgType = resolveMatrixMsgType(media.contentType, media.fileName);
       const { useVoice } = resolveMatrixVoiceDecision({
         wantsVoice: opts.audioAsVoice === true,
         contentType: media.contentType,
@@ -117,9 +102,7 @@ export async function sendMessageMatrix(
         ? await prepareImageInfo({ buffer: media.buffer, client })
         : undefined;
       const [firstChunk, ...rest] = chunks;
-      const body = useVoice
-        ? "Voice message"
-        : (firstChunk ?? media.fileName ?? "(file)");
+      const body = useVoice ? "Voice message" : (firstChunk ?? media.fileName ?? "(file)");
       const content = buildMediaContent({
         msgtype,
         body,
@@ -217,8 +200,7 @@ export async function sendTypingMatrix(
     timeoutMs,
   });
   try {
-    const resolvedTimeoutMs =
-      typeof timeoutMs === "number" ? timeoutMs : 30_000;
+    const resolvedTimeoutMs = typeof timeoutMs === "number" ? timeoutMs : 30_000;
     await resolved.setTyping(roomId, typing, resolvedTimeoutMs);
   } finally {
     if (stopOnDone) {

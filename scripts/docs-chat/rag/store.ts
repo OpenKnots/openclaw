@@ -31,7 +31,7 @@ export class DocsStore {
   constructor(
     private readonly dbPath: string,
     private readonly vectorDim: number,
-  ) {}
+  ) { }
 
   private async ensureInitialized(): Promise<void> {
     if (this.table) {
@@ -84,17 +84,14 @@ export class DocsStore {
       return;
     }
 
-    this.table = await this.db.createTable(
-      TABLE_NAME,
-      chunks.map((chunk) => ({
-        id: chunk.id,
-        path: chunk.path,
-        title: chunk.title,
-        content: chunk.content,
-        url: chunk.url,
-        vector: chunk.vector,
-      })),
-    );
+    this.table = await this.db.createTable(TABLE_NAME, chunks.map(chunk => ({
+      id: chunk.id,
+      path: chunk.path,
+      title: chunk.title,
+      content: chunk.content,
+      url: chunk.url,
+      vector: chunk.vector,
+    })));
   }
 
   /**
@@ -107,10 +104,7 @@ export class DocsStore {
       return [];
     }
 
-    const results = await this.table
-      .vectorSearch(vector)
-      .limit(limit)
-      .toArray();
+    const results = await this.table.vectorSearch(vector).limit(limit).toArray();
 
     // Convert L2 distance to similarity: sim = 1 / (1 + d), bounded [0, 1].
     // This assumes DISTANCE_METRIC is L2 (non-negative). If metric changes,

@@ -25,10 +25,7 @@ function createGateway(resolveLabelKey = "agent:main:label"): {
 describe("acp session mapper", () => {
   it("prefers explicit sessionLabel over sessionKey", async () => {
     const { gateway, request } = createGateway();
-    const meta = parseSessionMeta({
-      sessionLabel: "support",
-      sessionKey: "agent:main:main",
-    });
+    const meta = parseSessionMeta({ sessionLabel: "support", sessionKey: "agent:main:main" });
 
     const key = await resolveSessionKey({
       meta,
@@ -39,9 +36,7 @@ describe("acp session mapper", () => {
 
     expect(key).toBe("agent:main:label");
     expect(request).toHaveBeenCalledTimes(1);
-    expect(request).toHaveBeenCalledWith("sessions.resolve", {
-      label: "support",
-    });
+    expect(request).toHaveBeenCalledWith("sessions.resolve", { label: "support" });
   });
 
   it("lets meta sessionKey override default label", async () => {

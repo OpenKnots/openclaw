@@ -1,9 +1,4 @@
-import {
-  getMe,
-  ZaloApiError,
-  type ZaloBotInfo,
-  type ZaloFetch,
-} from "./api.js";
+import { getMe, ZaloApiError, type ZaloBotInfo, type ZaloFetch } from "./api.js";
 
 export type ZaloProbeResult = {
   ok: boolean;
@@ -41,11 +36,7 @@ export async function probeZalo(
 
     if (err instanceof Error) {
       if (err.name === "AbortError") {
-        return {
-          ok: false,
-          error: `Request timed out after ${timeoutMs}ms`,
-          elapsedMs,
-        };
+        return { ok: false, error: `Request timed out after ${timeoutMs}ms`, elapsedMs };
       }
       return { ok: false, error: err.message, elapsedMs };
     }

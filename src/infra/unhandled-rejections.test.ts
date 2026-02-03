@@ -15,9 +15,7 @@ describe("isAbortError", () => {
 
   it("returns true for undici-style AbortError", () => {
     // Node's undici throws errors with this exact message
-    const error = Object.assign(new Error("This operation was aborted"), {
-      name: "AbortError",
-    });
+    const error = Object.assign(new Error("This operation was aborted"), { name: "AbortError" });
     expect(isAbortError(error)).toBe(true);
   });
 
@@ -83,30 +81,20 @@ describe("isTransientNetworkError", () => {
   });
 
   it("returns true for fetch failed with network cause", () => {
-    const cause = Object.assign(new Error("getaddrinfo ENOTFOUND"), {
-      code: "ENOTFOUND",
-    });
+    const cause = Object.assign(new Error("getaddrinfo ENOTFOUND"), { code: "ENOTFOUND" });
     const error = Object.assign(new TypeError("fetch failed"), { cause });
     expect(isTransientNetworkError(error)).toBe(true);
   });
 
   it("returns true for nested cause chain with network error", () => {
-    const innerCause = Object.assign(new Error("connection reset"), {
-      code: "ECONNRESET",
-    });
-    const outerCause = Object.assign(new Error("wrapper"), {
-      cause: innerCause,
-    });
-    const error = Object.assign(new TypeError("fetch failed"), {
-      cause: outerCause,
-    });
+    const innerCause = Object.assign(new Error("connection reset"), { code: "ECONNRESET" });
+    const outerCause = Object.assign(new Error("wrapper"), { cause: innerCause });
+    const error = Object.assign(new TypeError("fetch failed"), { cause: outerCause });
     expect(isTransientNetworkError(error)).toBe(true);
   });
 
   it("returns true for AggregateError containing network errors", () => {
-    const networkError = Object.assign(new Error("timeout"), {
-      code: "ETIMEDOUT",
-    });
+    const networkError = Object.assign(new Error("timeout"), { code: "ETIMEDOUT" });
     const error = new AggregateError([networkError], "Multiple errors");
     expect(isTransientNetworkError(error)).toBe(true);
   });

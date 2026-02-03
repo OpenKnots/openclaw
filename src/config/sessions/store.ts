@@ -233,10 +233,7 @@ async function saveSessionStoreUnlocked(
       // Best-effort: try a direct write (recreating the parent dir), otherwise ignore.
       try {
         await fs.promises.mkdir(path.dirname(storePath), { recursive: true });
-        await fs.promises.writeFile(storePath, json, {
-          mode: 0o600,
-          encoding: "utf-8",
-        });
+        await fs.promises.writeFile(storePath, json, { mode: 0o600, encoding: "utf-8" });
         await fs.promises.chmod(storePath, 0o600);
       } catch (err2) {
         const code2 =
@@ -331,9 +328,7 @@ async function withSessionStoreLock<T>(
 
       const now = Date.now();
       if (now - startedAt > timeoutMs) {
-        throw new Error(`timeout acquiring session store lock: ${lockPath}`, {
-          cause: err,
-        });
+        throw new Error(`timeout acquiring session store lock: ${lockPath}`, { cause: err });
       }
 
       // Best-effort stale lock eviction (e.g. crashed process).

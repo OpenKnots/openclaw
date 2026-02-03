@@ -111,9 +111,7 @@ export function stopSubagentsForRequester(params: {
 
     const cleared = clearSessionQueues([childKey]);
     const parsed = parseAgentSessionKey(childKey);
-    const storePath = resolveStorePath(params.cfg.session?.store, {
-      agentId: parsed?.agentId,
-    });
+    const storePath = resolveStorePath(params.cfg.session?.store, { agentId: parsed?.agentId });
     let store = storeCache.get(storePath);
     if (!store) {
       store = loadSessionStore(storePath);

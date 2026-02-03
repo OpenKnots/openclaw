@@ -6,12 +6,7 @@ describe("prepareSlackMessage sender prefix", () => {
   it("prefixes channel bodies with sender label", async () => {
     const ctx = {
       cfg: {
-        agents: {
-          defaults: {
-            model: "anthropic/claude-opus-4-5",
-            workspace: "/tmp/openclaw",
-          },
-        },
+        agents: { defaults: { model: "anthropic/claude-opus-4-5", workspace: "/tmp/openclaw" } },
         channels: { slack: {} },
       },
       accountId: "default",

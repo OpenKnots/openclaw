@@ -128,10 +128,7 @@ const resolveAgentOrder = (cfg: ReturnType<typeof loadConfig>) => {
       continue;
     }
     seen.add(id);
-    ordered.push({
-      id,
-      name: typeof entry.name === "string" ? entry.name : undefined,
-    });
+    ordered.push({ id, name: typeof entry.name === "string" ? entry.name : undefined });
   }
 
   if (!seen.has(defaultAgentId)) {
@@ -358,9 +355,7 @@ export const formatHealthChannelLines = (
         : [];
     const failedSummary = listSummaries.find((summary) => isProbeFailure(summary));
     if (failedSummary) {
-      const failureLine = formatProbeLine(failedSummary.probe, {
-        botUsernames,
-      });
+      const failureLine = formatProbeLine(failedSummary.probe, { botUsernames });
       if (failureLine) {
         lines.push(`${label}: ${failureLine}`);
         continue;
@@ -397,9 +392,7 @@ export async function getHealthSnapshot(params?: {
   const channelBindings = buildChannelAccountBindings(cfg);
   const sessionCache = new Map<string, HealthSummary["sessions"]>();
   const agents: AgentHealthSummary[] = ordered.map((entry) => {
-    const storePath = resolveStorePath(cfg.session?.store, {
-      agentId: entry.id,
-    });
+    const storePath = resolveStorePath(cfg.session?.store, { agentId: entry.id });
     const sessions = sessionCache.get(storePath) ?? buildSessionSummary(storePath);
     sessionCache.set(storePath, sessions);
     return {
@@ -491,11 +484,7 @@ export async function getHealthSnapshot(params?: {
           ? (probeRecord.bot as { username?: string | null })
           : null;
       if (bot?.username) {
-        debugHealth("probe.bot", {
-          channel: plugin.id,
-          accountId,
-          username: bot.username,
-        });
+        debugHealth("probe.bot", { channel: plugin.id, accountId, username: bot.username });
       }
 
       const snapshot: ChannelAccountSnapshot = {
@@ -571,12 +560,7 @@ export async function getHealthSnapshot(params?: {
 }
 
 export async function healthCommand(
-  opts: {
-    json?: boolean;
-    timeoutMs?: number;
-    verbose?: boolean;
-    config?: OpenClawConfig;
-  },
+  opts: { json?: boolean; timeoutMs?: number; verbose?: boolean; config?: OpenClawConfig },
   runtime: RuntimeEnv,
 ) {
   const cfg = opts.config ?? loadConfig();
@@ -613,9 +597,7 @@ export async function healthCommand(
     const defaultAgentId = summary.defaultAgentId ?? localAgents.defaultAgentId;
     const agents = Array.isArray(summary.agents) ? summary.agents : [];
     const fallbackAgents = localAgents.ordered.map((entry) => {
-      const storePath = resolveStorePath(cfg.session?.store, {
-        agentId: entry.id,
-      });
+      const storePath = resolveStorePath(cfg.session?.store, { agentId: entry.id });
       return {
         agentId: entry.id,
         name: entry.name,

@@ -107,11 +107,7 @@ async function listAgentFiles(workspaceDir: string) {
         updatedAtMs: altMeta.updatedAtMs,
       });
     } else {
-      files.push({
-        name: DEFAULT_MEMORY_FILENAME,
-        path: primaryMemoryPath,
-        missing: true,
-      });
+      files.push({ name: DEFAULT_MEMORY_FILENAME, path: primaryMemoryPath, missing: true });
     }
   }
 

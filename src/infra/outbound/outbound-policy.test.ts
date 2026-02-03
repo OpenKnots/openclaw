@@ -29,10 +29,7 @@ describe("outbound policy", () => {
         channel: "telegram",
         action: "send",
         args: { to: "telegram:@ops" },
-        toolContext: {
-          currentChannelId: "C12345678",
-          currentChannelProvider: "slack",
-        },
+        toolContext: { currentChannelId: "C12345678", currentChannelProvider: "slack" },
       }),
     ).toThrow(/Cross-context messaging denied/);
   });
@@ -51,10 +48,7 @@ describe("outbound policy", () => {
         channel: "telegram",
         action: "send",
         args: { to: "telegram:@ops" },
-        toolContext: {
-          currentChannelId: "C12345678",
-          currentChannelProvider: "slack",
-        },
+        toolContext: { currentChannelId: "C12345678", currentChannelProvider: "slack" },
       }),
     ).not.toThrow();
   });
@@ -71,10 +65,7 @@ describe("outbound policy", () => {
         channel: "slack",
         action: "send",
         args: { to: "C99999999" },
-        toolContext: {
-          currentChannelId: "C12345678",
-          currentChannelProvider: "slack",
-        },
+        toolContext: { currentChannelId: "C12345678", currentChannelProvider: "slack" },
       }),
     ).toThrow(/Cross-context messaging denied/);
   });
@@ -84,10 +75,7 @@ describe("outbound policy", () => {
       cfg: discordConfig,
       channel: "discord",
       target: "123",
-      toolContext: {
-        currentChannelId: "C12345678",
-        currentChannelProvider: "discord",
-      },
+      toolContext: { currentChannelId: "C12345678", currentChannelProvider: "discord" },
     });
 
     expect(decoration).not.toBeNull();

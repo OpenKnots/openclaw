@@ -17,9 +17,7 @@ export const matrixMessageActions: ChannelMessageActionAdapter = {
     if (!account.enabled || !account.configured) {
       return [];
     }
-    const gate = createActionGate(
-      (cfg as CoreConfig).channels?.matrix?.actions,
-    );
+    const gate = createActionGate((cfg as CoreConfig).channels?.matrix?.actions);
     const actions = new Set<ChannelMessageActionName>(["send", "poll"]);
     if (gate("reactions")) {
       actions.add("react");
@@ -85,12 +83,9 @@ export const matrixMessageActions: ChannelMessageActionAdapter = {
     }
 
     if (action === "react") {
-      const messageId = readStringParam(params, "messageId", {
-        required: true,
-      });
+      const messageId = readStringParam(params, "messageId", { required: true });
       const emoji = readStringParam(params, "emoji", { allowEmpty: true });
-      const remove =
-        typeof params.remove === "boolean" ? params.remove : undefined;
+      const remove = typeof params.remove === "boolean" ? params.remove : undefined;
       return await handleMatrixAction(
         {
           action: "react",
@@ -104,9 +99,7 @@ export const matrixMessageActions: ChannelMessageActionAdapter = {
     }
 
     if (action === "reactions") {
-      const messageId = readStringParam(params, "messageId", {
-        required: true,
-      });
+      const messageId = readStringParam(params, "messageId", { required: true });
       const limit = readNumberParam(params, "limit", { integer: true });
       return await handleMatrixAction(
         {
@@ -134,9 +127,7 @@ export const matrixMessageActions: ChannelMessageActionAdapter = {
     }
 
     if (action === "edit") {
-      const messageId = readStringParam(params, "messageId", {
-        required: true,
-      });
+      const messageId = readStringParam(params, "messageId", { required: true });
       const content = readStringParam(params, "message", { required: true });
       return await handleMatrixAction(
         {
@@ -150,9 +141,7 @@ export const matrixMessageActions: ChannelMessageActionAdapter = {
     }
 
     if (action === "delete") {
-      const messageId = readStringParam(params, "messageId", {
-        required: true,
-      });
+      const messageId = readStringParam(params, "messageId", { required: true });
       return await handleMatrixAction(
         {
           action: "deleteMessage",
@@ -171,11 +160,7 @@ export const matrixMessageActions: ChannelMessageActionAdapter = {
       return await handleMatrixAction(
         {
           action:
-            action === "pin"
-              ? "pinMessage"
-              : action === "unpin"
-                ? "unpinMessage"
-                : "listPins",
+            action === "pin" ? "pinMessage" : action === "unpin" ? "unpinMessage" : "listPins",
           roomId: resolveRoomId(),
           messageId,
         },
@@ -189,9 +174,7 @@ export const matrixMessageActions: ChannelMessageActionAdapter = {
         {
           action: "memberInfo",
           userId,
-          roomId:
-            readStringParam(params, "roomId") ??
-            readStringParam(params, "channelId"),
+          roomId: readStringParam(params, "roomId") ?? readStringParam(params, "channelId"),
         },
         cfg,
       );

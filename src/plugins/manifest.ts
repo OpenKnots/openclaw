@@ -47,11 +47,7 @@ export function resolvePluginManifestPath(rootDir: string): string {
 export function loadPluginManifest(rootDir: string): PluginManifestLoadResult {
   const manifestPath = resolvePluginManifestPath(rootDir);
   if (!fs.existsSync(manifestPath)) {
-    return {
-      ok: false,
-      error: `plugin manifest not found: ${manifestPath}`,
-      manifestPath,
-    };
+    return { ok: false, error: `plugin manifest not found: ${manifestPath}`, manifestPath };
   }
   let raw: unknown;
   try {
@@ -64,11 +60,7 @@ export function loadPluginManifest(rootDir: string): PluginManifestLoadResult {
     };
   }
   if (!isRecord(raw)) {
-    return {
-      ok: false,
-      error: "plugin manifest must be an object",
-      manifestPath,
-    };
+    return { ok: false, error: "plugin manifest must be an object", manifestPath };
   }
   const id = typeof raw.id === "string" ? raw.id.trim() : "";
   if (!id) {
@@ -76,11 +68,7 @@ export function loadPluginManifest(rootDir: string): PluginManifestLoadResult {
   }
   const configSchema = isRecord(raw.configSchema) ? raw.configSchema : null;
   if (!configSchema) {
-    return {
-      ok: false,
-      error: "plugin manifest requires configSchema",
-      manifestPath,
-    };
+    return { ok: false, error: "plugin manifest requires configSchema", manifestPath };
   }
 
   const kind = typeof raw.kind === "string" ? (raw.kind as PluginKind) : undefined;

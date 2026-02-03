@@ -15,12 +15,9 @@ export function resolveMatrixConfig(
   const matrix = cfg.channels?.matrix ?? {};
   const homeserver = clean(matrix.homeserver) || clean(env.MATRIX_HOMESERVER);
   const userId = clean(matrix.userId) || clean(env.MATRIX_USER_ID);
-  const accessToken =
-    clean(matrix.accessToken) || clean(env.MATRIX_ACCESS_TOKEN) || undefined;
-  const password =
-    clean(matrix.password) || clean(env.MATRIX_PASSWORD) || undefined;
-  const deviceName =
-    clean(matrix.deviceName) || clean(env.MATRIX_DEVICE_NAME) || undefined;
+  const accessToken = clean(matrix.accessToken) || clean(env.MATRIX_ACCESS_TOKEN) || undefined;
+  const password = clean(matrix.password) || clean(env.MATRIX_PASSWORD) || undefined;
+  const deviceName = clean(matrix.deviceName) || clean(env.MATRIX_DEVICE_NAME) || undefined;
   const initialSyncLimit =
     typeof matrix.initialSyncLimit === "number"
       ? Math.max(0, Math.floor(matrix.initialSyncLimit))
@@ -41,8 +38,7 @@ export async function resolveMatrixAuth(params?: {
   cfg?: CoreConfig;
   env?: NodeJS.ProcessEnv;
 }): Promise<MatrixAuth> {
-  const cfg =
-    params?.cfg ?? (getMatrixRuntime().config.loadConfig() as CoreConfig);
+  const cfg = params?.cfg ?? (getMatrixRuntime().config.loadConfig() as CoreConfig);
   const env = params?.env ?? process.env;
   const resolved = resolveMatrixConfig(cfg, env);
   if (!resolved.homeserver) {
@@ -72,10 +68,7 @@ export async function resolveMatrixAuth(params?: {
     if (!userId) {
       // Fetch userId from access token via whoami
       ensureMatrixSdkLoggingConfigured();
-      const tempClient = new MatrixClient(
-        resolved.homeserver,
-        resolved.accessToken,
-      );
+      const tempClient = new MatrixClient(resolved.homeserver, resolved.accessToken);
       const whoami = await tempClient.getUserId();
       userId = whoami;
       // Save the credentials with the fetched userId
@@ -84,10 +77,7 @@ export async function resolveMatrixAuth(params?: {
         userId,
         accessToken: resolved.accessToken,
       });
-    } else if (
-      cachedCredentials &&
-      cachedCredentials.accessToken === resolved.accessToken
-    ) {
+    } else if (cachedCredentials && cachedCredentials.accessToken === resolved.accessToken) {
       touchMatrixCredentials(env);
     }
     return {
@@ -113,9 +103,7 @@ export async function resolveMatrixAuth(params?: {
   }
 
   if (!resolved.userId) {
-    throw new Error(
-      "Matrix userId is required when no access token is configured (matrix.userId)",
-    );
+    throw new Error("Matrix userId is required when no access token is configured (matrix.userId)");
   }
 
   if (!resolved.password) {
@@ -125,19 +113,16 @@ export async function resolveMatrixAuth(params?: {
   }
 
   // Login with password using HTTP API
-  const loginResponse = await fetch(
-    `${resolved.homeserver}/_matrix/client/v3/login`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        type: "m.login.password",
-        identifier: { type: "m.id.user", user: resolved.userId },
-        password: resolved.password,
-        initial_device_display_name: resolved.deviceName ?? "OpenClaw Gateway",
-      }),
-    },
-  );
+  const loginResponse = await fetch(`${resolved.homeserver}/_matrix/client/v3/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      type: "m.login.password",
+      identifier: { type: "m.id.user", user: resolved.userId },
+      password: resolved.password,
+      initial_device_display_name: resolved.deviceName ?? "OpenClaw Gateway",
+    }),
+  });
 
   if (!loginResponse.ok) {
     const errorText = await loginResponse.text();

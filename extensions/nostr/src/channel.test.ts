@@ -45,8 +45,7 @@ describe("nostrPlugin", () => {
       const cfg = {
         channels: {
           nostr: {
-            privateKey:
-              "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+            privateKey: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
           },
         },
       };
@@ -57,9 +56,7 @@ describe("nostrPlugin", () => {
 
   describe("messaging", () => {
     it("has target resolver", () => {
-      expect(nostrPlugin.messaging?.targetResolver?.looksLikeId).toBeTypeOf(
-        "function",
-      );
+      expect(nostrPlugin.messaging?.targetResolver?.looksLikeId).toBeTypeOf("function");
     });
 
     it("recognizes npub as valid target", () => {
@@ -77,8 +74,7 @@ describe("nostrPlugin", () => {
         return;
       }
 
-      const hexPubkey =
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+      const hexPubkey = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
       expect(looksLikeId(hexPubkey)).toBe(true);
     });
 
@@ -98,8 +94,7 @@ describe("nostrPlugin", () => {
         return;
       }
 
-      const hexPubkey =
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+      const hexPubkey = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
       expect(normalize(`nostr:${hexPubkey}`)).toBe(hexPubkey);
     });
   });
@@ -125,8 +120,7 @@ describe("nostrPlugin", () => {
         return;
       }
 
-      const hexPubkey =
-        "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+      const hexPubkey = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
       expect(normalize(`nostr:${hexPubkey}`)).toBe(hexPubkey);
     });
   });

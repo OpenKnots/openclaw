@@ -1,9 +1,5 @@
 import { format } from "node:util";
-import {
-  mergeAllowlist,
-  summarizeMapping,
-  type RuntimeEnv,
-} from "openclaw/plugin-sdk";
+import { mergeAllowlist, summarizeMapping, type RuntimeEnv } from "openclaw/plugin-sdk";
 import type { CoreConfig, ReplyToMode } from "../../types.js";
 import { resolveMatrixTargets } from "../../resolve-targets.js";
 import { getMatrixRuntime } from "../../runtime.js";
@@ -31,13 +27,9 @@ export type MonitorMatrixOpts = {
 
 const DEFAULT_MEDIA_MAX_MB = 20;
 
-export async function monitorMatrixProvider(
-  opts: MonitorMatrixOpts = {},
-): Promise<void> {
+export async function monitorMatrixProvider(opts: MonitorMatrixOpts = {}): Promise<void> {
   if (isBunRuntime()) {
-    throw new Error(
-      "Matrix provider requires Node (bun runtime not supported)",
-    );
+    throw new Error("Matrix provider requires Node (bun runtime not supported)");
   }
   const core = getMatrixRuntime();
   let cfg = core.config.loadConfig() as CoreConfig;
@@ -46,8 +38,7 @@ export async function monitorMatrixProvider(
   }
 
   const logger = core.logging.getChildLogger({ module: "matrix-auto-reply" });
-  const formatRuntimeMessage = (...args: Parameters<RuntimeEnv["log"]>) =>
-    format(...args);
+  const formatRuntimeMessage = (...args: Parameters<RuntimeEnv["log"]>) => format(...args);
   const runtime: RuntimeEnv = opts.runtime ?? {
     log: (...args) => {
       logger.info(formatRuntimeMessage(...args));
@@ -76,8 +67,7 @@ export async function monitorMatrixProvider(
       .replace(/^matrix:/i, "")
       .replace(/^(room|channel):/i, "")
       .trim();
-  const isMatrixUserId = (value: string) =>
-    value.startsWith("@") && value.includes(":");
+  const isMatrixUserId = (value: string) => value.startsWith("@") && value.includes(":");
 
   const allowlistOnly = cfg.channels?.matrix?.allowlistOnly === true;
   let allowFrom = cfg.channels?.matrix?.dm?.allowFrom ?? [];
@@ -201,33 +191,25 @@ export async function monitorMatrixProvider(
 
   const mentionRegexes = core.channel.mentions.buildMentionRegexes(cfg);
   const defaultGroupPolicy = cfg.channels?.defaults?.groupPolicy;
-  const groupPolicyRaw =
-    cfg.channels?.matrix?.groupPolicy ?? defaultGroupPolicy ?? "allowlist";
-  const groupPolicy =
-    allowlistOnly && groupPolicyRaw === "open" ? "allowlist" : groupPolicyRaw;
-  const replyToMode =
-    opts.replyToMode ?? cfg.channels?.matrix?.replyToMode ?? "off";
+  const groupPolicyRaw = cfg.channels?.matrix?.groupPolicy ?? defaultGroupPolicy ?? "allowlist";
+  const groupPolicy = allowlistOnly && groupPolicyRaw === "open" ? "allowlist" : groupPolicyRaw;
+  const replyToMode = opts.replyToMode ?? cfg.channels?.matrix?.replyToMode ?? "off";
   const threadReplies = cfg.channels?.matrix?.threadReplies ?? "inbound";
   const dmConfig = cfg.channels?.matrix?.dm;
   const dmEnabled = dmConfig?.enabled ?? true;
   const dmPolicyRaw = dmConfig?.policy ?? "pairing";
-  const dmPolicy =
-    allowlistOnly && dmPolicyRaw !== "disabled" ? "allowlist" : dmPolicyRaw;
+  const dmPolicy = allowlistOnly && dmPolicyRaw !== "disabled" ? "allowlist" : dmPolicyRaw;
   const textLimit = core.channel.text.resolveTextChunkLimit(cfg, "matrix");
-  const mediaMaxMb =
-    opts.mediaMaxMb ?? cfg.channels?.matrix?.mediaMaxMb ?? DEFAULT_MEDIA_MAX_MB;
+  const mediaMaxMb = opts.mediaMaxMb ?? cfg.channels?.matrix?.mediaMaxMb ?? DEFAULT_MEDIA_MAX_MB;
   const mediaMaxBytes = Math.max(1, mediaMaxMb) * 1024 * 1024;
   const startupMs = Date.now();
   const startupGraceMs = 0;
-  const directTracker = createDirectRoomTracker(client, {
-    log: logVerboseMessage,
-  });
+  const directTracker = createDirectRoomTracker(client, { log: logVerboseMessage });
   registerMatrixAutoJoin({ client, cfg, runtime });
   const warnedEncryptedRooms = new Set<string>();
   const warnedCryptoMissingRooms = new Set<string>();
 
-  const { getRoomInfo, getMemberDisplayName } =
-    createMatrixRoomInfoResolver(client);
+  const { getRoomInfo, getMemberDisplayName } = createMatrixRoomInfoResolver(client);
   const handleRoomMessage = createMatrixRoomMessageHandler({
     client,
     core,
@@ -278,12 +260,9 @@ export async function monitorMatrixProvider(
   if (auth.encryption && client.crypto) {
     try {
       // Request verification from other sessions
-      const verificationRequest =
-        await client.crypto.requestOwnUserVerification();
+      const verificationRequest = await client.crypto.requestOwnUserVerification();
       if (verificationRequest) {
-        logger.info(
-          "matrix: device verification requested - please verify in another client",
-        );
+        logger.info("matrix: device verification requested - please verify in another client");
       }
     } catch (err) {
       logger.debug(

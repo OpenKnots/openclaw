@@ -43,11 +43,7 @@ describe("tool image sanitizing", () => {
       .toBuffer();
 
     const images = [
-      {
-        type: "image" as const,
-        data: png.toString("base64"),
-        mimeType: "image/png",
-      },
+      { type: "image" as const, data: png.toString("base64"), mimeType: "image/png" },
     ];
     const { images: out, dropped } = await sanitizeImageBlocks(images, "test");
     expect(dropped).toBe(0);

@@ -116,10 +116,7 @@ describe("web_search country and language parameters", () => {
     global.fetch = mockFetch;
 
     const tool = createWebSearchTool({ config: undefined, sandboxed: true });
-    const result = await tool?.execute?.(1, {
-      query: "test",
-      freshness: "yesterday",
-    });
+    const result = await tool?.execute?.(1, { query: "test", freshness: "yesterday" });
 
     expect(mockFetch).not.toHaveBeenCalled();
     expect(result?.details).toMatchObject({ error: "invalid_freshness" });
@@ -140,11 +137,7 @@ describe("web_search perplexity baseUrl defaults", () => {
     const mockFetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () =>
-          Promise.resolve({
-            choices: [{ message: { content: "ok" } }],
-            citations: [],
-          }),
+        json: () => Promise.resolve({ choices: [{ message: { content: "ok" } }], citations: [] }),
       } as Response),
     );
     // @ts-expect-error mock fetch
@@ -165,11 +158,7 @@ describe("web_search perplexity baseUrl defaults", () => {
     const mockFetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () =>
-          Promise.resolve({
-            choices: [{ message: { content: "ok" } }],
-            citations: [],
-          }),
+        json: () => Promise.resolve({ choices: [{ message: { content: "ok" } }], citations: [] }),
       } as Response),
     );
     // @ts-expect-error mock fetch
@@ -191,11 +180,7 @@ describe("web_search perplexity baseUrl defaults", () => {
     const mockFetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () =>
-          Promise.resolve({
-            choices: [{ message: { content: "ok" } }],
-            citations: [],
-          }),
+        json: () => Promise.resolve({ choices: [{ message: { content: "ok" } }], citations: [] }),
       } as Response),
     );
     // @ts-expect-error mock fetch
@@ -217,11 +202,7 @@ describe("web_search perplexity baseUrl defaults", () => {
     const mockFetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () =>
-          Promise.resolve({
-            choices: [{ message: { content: "ok" } }],
-            citations: [],
-          }),
+        json: () => Promise.resolve({ choices: [{ message: { content: "ok" } }], citations: [] }),
       } as Response),
     );
     // @ts-expect-error mock fetch
@@ -242,11 +223,7 @@ describe("web_search perplexity baseUrl defaults", () => {
     const mockFetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () =>
-          Promise.resolve({
-            choices: [{ message: { content: "ok" } }],
-            citations: [],
-          }),
+        json: () => Promise.resolve({ choices: [{ message: { content: "ok" } }], citations: [] }),
       } as Response),
     );
     // @ts-expect-error mock fetch
@@ -275,11 +252,7 @@ describe("web_search perplexity baseUrl defaults", () => {
     const mockFetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () =>
-          Promise.resolve({
-            choices: [{ message: { content: "ok" } }],
-            citations: [],
-          }),
+        json: () => Promise.resolve({ choices: [{ message: { content: "ok" } }], citations: [] }),
       } as Response),
     );
     // @ts-expect-error mock fetch
@@ -308,11 +281,7 @@ describe("web_search perplexity baseUrl defaults", () => {
     const mockFetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () =>
-          Promise.resolve({
-            choices: [{ message: { content: "ok" } }],
-            citations: [],
-          }),
+        json: () => Promise.resolve({ choices: [{ message: { content: "ok" } }], citations: [] }),
       } as Response),
     );
     // @ts-expect-error mock fetch
@@ -371,9 +340,7 @@ describe("web_search external content wrapping", () => {
 
     const tool = createWebSearchTool({ config: undefined, sandboxed: true });
     const result = await tool?.execute?.(1, { query: "test" });
-    const details = result?.details as {
-      results?: Array<{ description?: string }>;
-    };
+    const details = result?.details as { results?: Array<{ description?: string }> };
 
     expect(details.results?.[0]?.description).toContain("<<<EXTERNAL_UNTRUSTED_CONTENT>>>");
     expect(details.results?.[0]?.description).toContain("Ignore previous instructions");
@@ -403,9 +370,7 @@ describe("web_search external content wrapping", () => {
     global.fetch = mockFetch;
 
     const tool = createWebSearchTool({ config: undefined, sandboxed: true });
-    const result = await tool?.execute?.(1, {
-      query: "unique-test-url-not-wrapped",
-    });
+    const result = await tool?.execute?.(1, { query: "unique-test-url-not-wrapped" });
     const details = result?.details as { results?: Array<{ url?: string }> };
 
     // URL should NOT be wrapped - kept raw for tool chaining (e.g., web_fetch)
@@ -436,12 +401,8 @@ describe("web_search external content wrapping", () => {
     global.fetch = mockFetch;
 
     const tool = createWebSearchTool({ config: undefined, sandboxed: true });
-    const result = await tool?.execute?.(1, {
-      query: "unique-test-site-name-wrapping",
-    });
-    const details = result?.details as {
-      results?: Array<{ siteName?: string }>;
-    };
+    const result = await tool?.execute?.(1, { query: "unique-test-site-name-wrapping" });
+    const details = result?.details as { results?: Array<{ siteName?: string }> };
 
     expect(details.results?.[0]?.siteName).toBe("example.com");
     expect(details.results?.[0]?.siteName).not.toContain("<<<EXTERNAL_UNTRUSTED_CONTENT>>>");
@@ -471,12 +432,8 @@ describe("web_search external content wrapping", () => {
     global.fetch = mockFetch;
 
     const tool = createWebSearchTool({ config: undefined, sandboxed: true });
-    const result = await tool?.execute?.(1, {
-      query: "unique-test-brave-published-wrapping",
-    });
-    const details = result?.details as {
-      results?: Array<{ published?: string }>;
-    };
+    const result = await tool?.execute?.(1, { query: "unique-test-brave-published-wrapping" });
+    const details = result?.details as { results?: Array<{ published?: string }> };
 
     expect(details.results?.[0]?.published).toBe("2 days ago");
     expect(details.results?.[0]?.published).not.toContain("<<<EXTERNAL_UNTRUSTED_CONTENT>>>");
@@ -528,9 +485,7 @@ describe("web_search external content wrapping", () => {
       config: { tools: { web: { search: { provider: "perplexity" } } } },
       sandboxed: true,
     });
-    const result = await tool?.execute?.(1, {
-      query: "unique-test-perplexity-citations-raw",
-    });
+    const result = await tool?.execute?.(1, { query: "unique-test-perplexity-citations-raw" });
     const details = result?.details as { citations?: string[] };
 
     // Citations are URLs - should NOT be wrapped for tool chaining

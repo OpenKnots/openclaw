@@ -157,10 +157,7 @@ export const dispatchTelegramMessage = async ({
     Boolean(draftStream) ||
     (typeof telegramCfg.blockStreaming === "boolean" ? !telegramCfg.blockStreaming : undefined);
 
-  const prefixContext = createReplyPrefixContext({
-    cfg,
-    agentId: route.agentId,
-  });
+  const prefixContext = createReplyPrefixContext({ cfg, agentId: route.agentId });
   const tableMode = resolveMarkdownTableMode({
     cfg,
     channel: "telegram",
@@ -309,11 +306,7 @@ export const dispatchTelegramMessage = async ({
   const hasFinalResponse = queuedFinal || sentFallback;
   if (!hasFinalResponse) {
     if (isGroup && historyKey) {
-      clearHistoryEntriesIfEnabled({
-        historyMap: groupHistories,
-        historyKey,
-        limit: historyLimit,
-      });
+      clearHistoryEntriesIfEnabled({ historyMap: groupHistories, historyKey, limit: historyLimit });
     }
     return;
   }
@@ -335,10 +328,6 @@ export const dispatchTelegramMessage = async ({
     },
   });
   if (isGroup && historyKey) {
-    clearHistoryEntriesIfEnabled({
-      historyMap: groupHistories,
-      historyKey,
-      limit: historyLimit,
-    });
+    clearHistoryEntriesIfEnabled({ historyMap: groupHistories, historyKey, limit: historyLimit });
   }
 };

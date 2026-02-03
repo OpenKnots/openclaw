@@ -177,10 +177,8 @@ export function buildAgentPrompt(input: string | ItemParam[]): {
   }
 
   const systemParts: string[] = [];
-  const conversationEntries: Array<{
-    role: "user" | "assistant" | "tool";
-    entry: HistoryEntry;
-  }> = [];
+  const conversationEntries: Array<{ role: "user" | "assistant" | "tool"; entry: HistoryEntry }> =
+    [];
 
   for (const item of input) {
     if (item.type === "message") {
@@ -290,13 +288,7 @@ function extractUsageFromResult(result: unknown): Usage {
   const usage = meta && typeof meta === "object" ? meta.agentMeta?.usage : undefined;
   return toUsage(
     usage as
-      | {
-          input?: number;
-          output?: number;
-          cacheRead?: number;
-          cacheWrite?: number;
-          total?: number;
-        }
+      | { input?: number; output?: number; cacheRead?: number; cacheWrite?: number; total?: number }
       | undefined,
   );
 }
@@ -544,15 +536,8 @@ export async function handleOpenResponsesHttpRequest(
         meta && typeof meta === "object" ? (meta as { stopReason?: string }).stopReason : undefined;
       const pendingToolCalls =
         meta && typeof meta === "object"
-          ? (
-              meta as {
-                pendingToolCalls?: Array<{
-                  id: string;
-                  name: string;
-                  arguments: string;
-                }>;
-              }
-            ).pendingToolCalls
+          ? (meta as { pendingToolCalls?: Array<{ id: string; name: string; arguments: string }> })
+              .pendingToolCalls
           : undefined;
 
       // If agent called a client tool, return function_call instead of text
@@ -591,11 +576,7 @@ export async function handleOpenResponsesHttpRequest(
         model,
         status: "completed",
         output: [
-          createAssistantOutputItem({
-            id: outputItemId,
-            text: content,
-            status: "completed",
-          }),
+          createAssistantOutputItem({ id: outputItemId, text: content, status: "completed" }),
         ],
         usage,
       });
@@ -625,10 +606,7 @@ export async function handleOpenResponsesHttpRequest(
   let closed = false;
   let unsubscribe = () => {};
   let finalUsage: Usage | undefined;
-  let finalizeRequested: {
-    status: ResponseResource["status"];
-    text: string;
-  } | null = null;
+  let finalizeRequested: { status: ResponseResource["status"]; text: string } | null = null;
 
   const maybeFinalize = () => {
     if (closed) {
@@ -703,10 +681,7 @@ export async function handleOpenResponsesHttpRequest(
   });
 
   writeSseEvent(res, { type: "response.created", response: initialResponse });
-  writeSseEvent(res, {
-    type: "response.in_progress",
-    response: initialResponse,
-  });
+  writeSseEvent(res, { type: "response.in_progress", response: initialResponse });
 
   // Add output item
   const outputItem = createAssistantOutputItem({
@@ -802,10 +777,7 @@ export async function handleOpenResponsesHttpRequest(
 
       // Fallback: if no streaming deltas were received, send the full response
       if (!sawAssistantDelta) {
-        const resultAny = result as {
-          payloads?: Array<{ text?: string }>;
-          meta?: unknown;
-        };
+        const resultAny = result as { payloads?: Array<{ text?: string }>; meta?: unknown };
         const payloads = resultAny.payloads;
         const meta = resultAny.meta;
         const stopReason =
@@ -816,11 +788,7 @@ export async function handleOpenResponsesHttpRequest(
           meta && typeof meta === "object"
             ? (
                 meta as {
-                  pendingToolCalls?: Array<{
-                    id: string;
-                    name: string;
-                    arguments: string;
-                  }>;
+                  pendingToolCalls?: Array<{ id: string; name: string; arguments: string }>;
                 }
               ).pendingToolCalls
             : undefined;
@@ -884,10 +852,7 @@ export async function handleOpenResponsesHttpRequest(
           });
           closed = true;
           unsubscribe();
-          writeSseEvent(res, {
-            type: "response.completed",
-            response: incompleteResponse,
-          });
+          writeSseEvent(res, { type: "response.completed", response: incompleteResponse });
           writeDone(res);
           res.end();
           return;

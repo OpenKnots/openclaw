@@ -158,9 +158,7 @@ export async function getStatusSummary(): Promise<StatusSummary> {
 
   const paths = new Set<string>();
   const byAgent = agentList.agents.map((agent) => {
-    const storePath = resolveStorePath(cfg.session?.store, {
-      agentId: agent.id,
-    });
+    const storePath = resolveStorePath(cfg.session?.store, { agentId: agent.id });
     paths.add(storePath);
     const store = loadStore(storePath);
     const sessions = buildSessionRows(store, { agentIdOverride: agent.id });

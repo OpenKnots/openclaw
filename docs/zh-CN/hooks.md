@@ -136,14 +136,7 @@ name: my-hook
 description: "这个钩子做什么的简短描述"
 homepage: https://docs.openclaw.ai/hooks#my-hook
 metadata:
-  {
-    "openclaw":
-      {
-        "emoji": "🔗",
-        "events": ["command:new"],
-        "requires": { "bins": ["node"] },
-      },
-  }
+  { "openclaw": { "emoji": "🔗", "events": ["command:new"], "requires": { "bins": ["node"] } } }
 ---
 
 # My Hook
@@ -625,10 +618,7 @@ const handler: HookHandler = async (event) => {
   try {
     await riskyOperation(event);
   } catch (err) {
-    console.error(
-      "[my-handler] Failed:",
-      err instanceof Error ? err.message : String(err),
-    );
+    console.error("[my-handler] Failed:", err instanceof Error ? err.message : String(err));
     // 不要抛出异常 - 让其他处理器继续运行
   }
 };

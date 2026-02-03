@@ -31,11 +31,7 @@ export async function repairSessionFileIfNeeded(params: {
   } catch (err) {
     const code = (err as { code?: unknown } | undefined)?.code;
     if (code === "ENOENT") {
-      return {
-        repaired: false,
-        droppedLines: 0,
-        reason: "missing session file",
-      };
+      return { repaired: false, droppedLines: 0, reason: "missing session file" };
     }
     const reason = `failed to read session file: ${err instanceof Error ? err.message : "unknown error"}`;
     params.warn?.(`session file repair skipped: ${reason} (${path.basename(sessionFile)})`);

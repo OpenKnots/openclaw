@@ -306,9 +306,7 @@ function applyDefaultModel(cfg: OpenClawConfig, model: string): OpenClawConfig {
         models,
         model: {
           ...(existingModel && typeof existingModel === "object" && "fallbacks" in existingModel
-            ? {
-                fallbacks: (existingModel as { fallbacks?: string[] }).fallbacks,
-              }
+            ? { fallbacks: (existingModel as { fallbacks?: string[] }).fallbacks }
             : undefined),
           primary: model,
         },

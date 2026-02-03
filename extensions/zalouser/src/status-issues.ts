@@ -1,7 +1,4 @@
-import type {
-  ChannelAccountSnapshot,
-  ChannelStatusIssue,
-} from "openclaw/plugin-sdk";
+import type { ChannelAccountSnapshot, ChannelStatusIssue } from "openclaw/plugin-sdk";
 
 type ZalouserAccountStatus = {
   accountId?: unknown;
@@ -15,15 +12,9 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value && typeof value === "object");
 
 const asString = (value: unknown): string | undefined =>
-  typeof value === "string"
-    ? value
-    : typeof value === "number"
-      ? String(value)
-      : undefined;
+  typeof value === "string" ? value : typeof value === "number" ? String(value) : undefined;
 
-function readZalouserAccountStatus(
-  value: ChannelAccountSnapshot,
-): ZalouserAccountStatus | null {
+function readZalouserAccountStatus(value: ChannelAccountSnapshot): ZalouserAccountStatus | null {
   if (!isRecord(value)) {
     return null;
   }
@@ -41,10 +32,7 @@ function isMissingZca(lastError?: string): boolean {
     return false;
   }
   const lower = lastError.toLowerCase();
-  return (
-    lower.includes("zca") &&
-    (lower.includes("not found") || lower.includes("enoent"))
-  );
+  return lower.includes("zca") && (lower.includes("not found") || lower.includes("enoent"));
 }
 
 export function collectZalouserStatusIssues(

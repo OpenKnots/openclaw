@@ -18,14 +18,11 @@ export function resolveMatrixCredentialsDir(
   env: NodeJS.ProcessEnv = process.env,
   stateDir?: string,
 ): string {
-  const resolvedStateDir =
-    stateDir ?? getMatrixRuntime().state.resolveStateDir(env, os.homedir);
+  const resolvedStateDir = stateDir ?? getMatrixRuntime().state.resolveStateDir(env, os.homedir);
   return path.join(resolvedStateDir, "credentials", "matrix");
 }
 
-export function resolveMatrixCredentialsPath(
-  env: NodeJS.ProcessEnv = process.env,
-): string {
+export function resolveMatrixCredentialsPath(env: NodeJS.ProcessEnv = process.env): string {
   const dir = resolveMatrixCredentialsDir(env);
   return path.join(dir, CREDENTIALS_FILENAME);
 }
@@ -74,9 +71,7 @@ export function saveMatrixCredentials(
   fs.writeFileSync(credPath, JSON.stringify(toSave, null, 2), "utf-8");
 }
 
-export function touchMatrixCredentials(
-  env: NodeJS.ProcessEnv = process.env,
-): void {
+export function touchMatrixCredentials(env: NodeJS.ProcessEnv = process.env): void {
   const existing = loadMatrixCredentials(env);
   if (!existing) {
     return;
@@ -87,9 +82,7 @@ export function touchMatrixCredentials(
   fs.writeFileSync(credPath, JSON.stringify(existing, null, 2), "utf-8");
 }
 
-export function clearMatrixCredentials(
-  env: NodeJS.ProcessEnv = process.env,
-): void {
+export function clearMatrixCredentials(env: NodeJS.ProcessEnv = process.env): void {
   const credPath = resolveMatrixCredentialsPath(env);
   try {
     if (fs.existsSync(credPath)) {
@@ -108,7 +101,5 @@ export function credentialsMatchConfig(
   if (!config.userId) {
     return stored.homeserver === config.homeserver;
   }
-  return (
-    stored.homeserver === config.homeserver && stored.userId === config.userId
-  );
+  return stored.homeserver === config.homeserver && stored.userId === config.userId;
 }

@@ -125,38 +125,22 @@ describe("healthCommand", () => {
         telegram: {
           accountId: "main",
           configured: true,
-          probe: {
-            ok: true,
-            elapsedMs: 196,
-            bot: { username: "pinguini_ugi_bot" },
-          },
+          probe: { ok: true, elapsedMs: 196, bot: { username: "pinguini_ugi_bot" } },
           accounts: {
             main: {
               accountId: "main",
               configured: true,
-              probe: {
-                ok: true,
-                elapsedMs: 196,
-                bot: { username: "pinguini_ugi_bot" },
-              },
+              probe: { ok: true, elapsedMs: 196, bot: { username: "pinguini_ugi_bot" } },
             },
             flurry: {
               accountId: "flurry",
               configured: true,
-              probe: {
-                ok: true,
-                elapsedMs: 190,
-                bot: { username: "flurry_ugi_bot" },
-              },
+              probe: { ok: true, elapsedMs: 190, bot: { username: "flurry_ugi_bot" } },
             },
             poe: {
               accountId: "poe",
               configured: true,
-              probe: {
-                ok: true,
-                elapsedMs: 188,
-                bot: { username: "poe_ugi_bot" },
-              },
+              probe: { ok: true, elapsedMs: 188, bot: { username: "poe_ugi_bot" } },
             },
           },
         },

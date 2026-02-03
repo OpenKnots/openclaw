@@ -81,9 +81,7 @@ export const handleCommandsListCommand: CommandHandler = async (params, allowTex
 
   return {
     shouldContinue: false,
-    reply: {
-      text: buildCommandsMessage(params.cfg, skillCommands, { surface }),
-    },
+    reply: { text: buildCommandsMessage(params.cfg, skillCommands, { surface }) },
   };
 };
 

@@ -126,9 +126,7 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
       appTokenSource: account.appTokenSource,
     }),
     resolveAllowFrom: ({ cfg, accountId }) =>
-      (resolveSlackAccount({ cfg, accountId }).dm?.allowFrom ?? []).map(
-        (entry) => String(entry),
-      ),
+      (resolveSlackAccount({ cfg, accountId }).dm?.allowFrom ?? []).map((entry) => String(entry)),
     formatAllowFrom: ({ allowFrom }) =>
       allowFrom
         .map((entry) => String(entry).trim())
@@ -137,11 +135,8 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
   },
   security: {
     resolveDmPolicy: ({ cfg, accountId, account }) => {
-      const resolvedAccountId =
-        accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
-      const useAccountPath = Boolean(
-        cfg.channels?.slack?.accounts?.[resolvedAccountId],
-      );
+      const resolvedAccountId = accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
+      const useAccountPath = Boolean(cfg.channels?.slack?.accounts?.[resolvedAccountId]);
       const allowFromPath = useAccountPath
         ? `channels.slack.accounts.${resolvedAccountId}.dm.`
         : "channels.slack.dm.";
@@ -156,11 +151,9 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
     collectWarnings: ({ account, cfg }) => {
       const warnings: string[] = [];
       const defaultGroupPolicy = cfg.channels?.defaults?.groupPolicy;
-      const groupPolicy =
-        account.config.groupPolicy ?? defaultGroupPolicy ?? "open";
+      const groupPolicy = account.config.groupPolicy ?? defaultGroupPolicy ?? "open";
       const channelAllowlistConfigured =
-        Boolean(account.config.channels) &&
-        Object.keys(account.config.channels ?? {}).length > 0;
+        Boolean(account.config.channels) && Object.keys(account.config.channels ?? {}).length > 0;
 
       if (groupPolicy === "open") {
         if (channelAllowlistConfigured) {
@@ -183,10 +176,7 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
   },
   threading: {
     resolveReplyToMode: ({ cfg, accountId, chatType }) =>
-      resolveSlackReplyToMode(
-        resolveSlackAccount({ cfg, accountId }),
-        chatType,
-      ),
+      resolveSlackReplyToMode(resolveSlackAccount({ cfg, accountId }), chatType),
     allowTagsWhenOff: true,
     buildToolContext: (params) => buildSlackThreadingToolContext(params),
   },
@@ -201,16 +191,14 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
     self: async () => null,
     listPeers: async (params) => listSlackDirectoryPeersFromConfig(params),
     listGroups: async (params) => listSlackDirectoryGroupsFromConfig(params),
-    listPeersLive: async (params) =>
-      getSlackRuntime().channel.slack.listDirectoryPeersLive(params),
+    listPeersLive: async (params) => getSlackRuntime().channel.slack.listDirectoryPeersLive(params),
     listGroupsLive: async (params) =>
       getSlackRuntime().channel.slack.listDirectoryGroupsLive(params),
   },
   resolver: {
     resolveTargets: async ({ cfg, accountId, inputs, kind }) => {
       const account = resolveSlackAccount({ cfg, accountId });
-      const token =
-        account.config.userToken?.trim() || account.botToken?.trim();
+      const token = account.config.userToken?.trim() || account.botToken?.trim();
       if (!token) {
         return inputs.map((input) => ({
           input,
@@ -219,11 +207,10 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
         }));
       }
       if (kind === "group") {
-        const resolved =
-          await getSlackRuntime().channel.slack.resolveChannelAllowlist({
-            token,
-            entries: inputs,
-          });
+        const resolved = await getSlackRuntime().channel.slack.resolveChannelAllowlist({
+          token,
+          entries: inputs,
+        });
         return resolved.map((entry) => ({
           input: entry.input,
           resolved: entry.resolved,
@@ -232,11 +219,10 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
           note: entry.archived ? "archived" : undefined,
         }));
       }
-      const resolved =
-        await getSlackRuntime().channel.slack.resolveUserAllowlist({
-          token,
-          entries: inputs,
-        });
+      const resolved = await getSlackRuntime().channel.slack.resolveUserAllowlist({
+        token,
+        entries: inputs,
+      });
       return resolved.map((entry) => ({
         input: entry.input,
         resolved: entry.resolved,
@@ -301,14 +287,12 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
       if (!to) {
         return null;
       }
-      const accountId =
-        typeof args.accountId === "string" ? args.accountId.trim() : undefined;
+      const accountId = typeof args.accountId === "string" ? args.accountId.trim() : undefined;
       return { to, accountId };
     },
     handleAction: async ({ action, params, cfg, accountId, toolContext }) => {
       const resolveChannelId = () =>
-        readStringParam(params, "channelId") ??
-        readStringParam(params, "to", { required: true });
+        readStringParam(params, "channelId") ?? readStringParam(params, "to", { required: true });
 
       if (action === "send") {
         const to = readStringParam(params, "to", { required: true });
@@ -338,8 +322,7 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
           required: true,
         });
         const emoji = readStringParam(params, "emoji", { allowEmpty: true });
-        const remove =
-          typeof params.remove === "boolean" ? params.remove : undefined;
+        const remove = typeof params.remove === "boolean" ? params.remove : undefined;
         return await getSlackRuntime().channel.slack.handleSlackAction(
           {
             action: "react",
@@ -425,11 +408,7 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
         return await getSlackRuntime().channel.slack.handleSlackAction(
           {
             action:
-              action === "pin"
-                ? "pinMessage"
-                : action === "unpin"
-                  ? "unpinMessage"
-                  : "listPins",
+              action === "pin" ? "pinMessage" : action === "unpin" ? "unpinMessage" : "listPins",
             channelId: resolveChannelId(),
             messageId,
             accountId: accountId ?? undefined,
@@ -453,9 +432,7 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
         );
       }
 
-      throw new Error(
-        `Action ${action} is not supported for provider ${meta.id}.`,
-      );
+      throw new Error(`Action ${action} is not supported for provider ${meta.id}.`);
     },
   },
   setup: {
@@ -534,8 +511,7 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
     chunker: null,
     textChunkLimit: 4000,
     sendText: async ({ to, text, accountId, deps, replyToId, cfg }) => {
-      const send =
-        deps?.sendSlack ?? getSlackRuntime().channel.slack.sendMessageSlack;
+      const send = deps?.sendSlack ?? getSlackRuntime().channel.slack.sendMessageSlack;
       const account = resolveSlackAccount({ cfg, accountId });
       const token = getTokenForOperation(account, "write");
       const botToken = account.botToken?.trim();
@@ -547,17 +523,8 @@ export const slackPlugin: ChannelPlugin<ResolvedSlackAccount> = {
       });
       return { channel: "slack", ...result };
     },
-    sendMedia: async ({
-      to,
-      text,
-      mediaUrl,
-      accountId,
-      deps,
-      replyToId,
-      cfg,
-    }) => {
-      const send =
-        deps?.sendSlack ?? getSlackRuntime().channel.slack.sendMessageSlack;
+    sendMedia: async ({ to, text, mediaUrl, accountId, deps, replyToId, cfg }) => {
+      const send = deps?.sendSlack ?? getSlackRuntime().channel.slack.sendMessageSlack;
       const account = resolveSlackAccount({ cfg, accountId });
       const token = getTokenForOperation(account, "write");
       const botToken = account.botToken?.trim();

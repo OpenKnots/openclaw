@@ -83,10 +83,7 @@ OpenClaw 会将符合条件的 Skills 镜像到沙箱工作区（`.../skills`）
     defaults: {
       sandbox: {
         docker: {
-          binds: [
-            "/home/user/source:/source:ro",
-            "/var/run/docker.sock:/var/run/docker.sock",
-          ],
+          binds: ["/home/user/source:/source:ro", "/var/run/docker.sock:/var/run/docker.sock"],
         },
       },
     },

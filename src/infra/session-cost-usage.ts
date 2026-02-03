@@ -132,9 +132,7 @@ const parseUsageEntry = (entry: Record<string, unknown>): ParsedUsageEntry | nul
 };
 
 const formatDayKey = (date: Date): string =>
-  date.toLocaleDateString("en-CA", {
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  });
+  date.toLocaleDateString("en-CA", { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone });
 
 const applyUsageTotals = (totals: CostUsageTotals, usage: NormalizedUsage) => {
   totals.input += usage.input ?? 0;
@@ -160,13 +158,8 @@ async function scanUsageFile(params: {
   config?: OpenClawConfig;
   onEntry: (entry: ParsedUsageEntry) => void;
 }): Promise<void> {
-  const fileStream = fs.createReadStream(params.filePath, {
-    encoding: "utf-8",
-  });
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity,
-  });
+  const fileStream = fs.createReadStream(params.filePath, { encoding: "utf-8" });
+  const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
 
   for await (const line of rl) {
     const trimmed = line.trim();

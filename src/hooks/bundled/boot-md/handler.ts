@@ -21,11 +21,7 @@ const runBootChecklist: HookHandler = async (event) => {
   }
 
   const deps = context.deps ?? createDefaultDeps();
-  await runBootOnce({
-    cfg: context.cfg,
-    deps,
-    workspaceDir: context.workspaceDir,
-  });
+  await runBootOnce({ cfg: context.cfg, deps, workspaceDir: context.workspaceDir });
 };
 
 export default runBootChecklist;

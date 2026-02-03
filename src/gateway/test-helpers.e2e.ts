@@ -114,10 +114,7 @@ export async function connectDeviceAuthReq(params: { url: string; token?: string
       reject(new Error(`closed ${code}: ${rawDataToString(reason)}`));
     };
     const handler = (data: WebSocket.RawData) => {
-      const obj = JSON.parse(rawDataToString(data)) as {
-        type?: unknown;
-        id?: unknown;
-      };
+      const obj = JSON.parse(rawDataToString(data)) as { type?: unknown; id?: unknown };
       if (obj?.type !== "res" || obj?.id !== "c1") {
         return;
       }

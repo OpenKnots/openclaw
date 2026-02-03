@@ -45,10 +45,7 @@ export type DevicesState = {
   devicesList: DevicePairingList | null;
 };
 
-export async function loadDevices(
-  state: DevicesState,
-  opts?: { quiet?: boolean },
-) {
+export async function loadDevices(state: DevicesState, opts?: { quiet?: boolean }) {
   if (!state.client || !state.connected) {
     return;
   }
@@ -74,10 +71,7 @@ export async function loadDevices(
   }
 }
 
-export async function approveDevicePairing(
-  state: DevicesState,
-  requestId: string,
-) {
+export async function approveDevicePairing(state: DevicesState, requestId: string) {
   if (!state.client || !state.connected) {
     return;
   }
@@ -89,10 +83,7 @@ export async function approveDevicePairing(
   }
 }
 
-export async function rejectDevicePairing(
-  state: DevicesState,
-  requestId: string,
-) {
+export async function rejectDevicePairing(state: DevicesState, requestId: string) {
   if (!state.client || !state.connected) {
     return;
   }
@@ -120,10 +111,7 @@ export async function rotateDeviceToken(
     if (res?.token) {
       const identity = await loadOrCreateDeviceIdentity();
       const role = res.role ?? params.role;
-      if (
-        res.deviceId === identity.deviceId ||
-        params.deviceId === identity.deviceId
-      ) {
+      if (res.deviceId === identity.deviceId || params.deviceId === identity.deviceId) {
         storeDeviceAuthToken({
           deviceId: identity.deviceId,
           role,
@@ -146,9 +134,7 @@ export async function revokeDeviceToken(
   if (!state.client || !state.connected) {
     return;
   }
-  const confirmed = window.confirm(
-    `Revoke token for ${params.deviceId} (${params.role})?`,
-  );
+  const confirmed = window.confirm(`Revoke token for ${params.deviceId} (${params.role})?`);
   if (!confirmed) {
     return;
   }

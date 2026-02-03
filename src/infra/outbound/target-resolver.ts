@@ -201,11 +201,7 @@ function resolveMatch(params: {
   query: string;
 }) {
   const matches = params.entries.filter((entry) =>
-    matchesDirectoryEntry({
-      channel: params.channel,
-      entry,
-      query: params.query,
-    }),
+    matchesDirectoryEntry({ channel: params.channel, entry, query: params.query }),
   );
   if (matches.length === 0) {
     return { kind: "none" as const };

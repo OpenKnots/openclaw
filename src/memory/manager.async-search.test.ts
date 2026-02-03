@@ -18,10 +18,7 @@ vi.mock("./embeddings.js", () => ({
     },
     openAi: {
       baseUrl: "https://api.openai.com/v1",
-      headers: {
-        Authorization: "Bearer test",
-        "Content-Type": "application/json",
-      },
+      headers: { Authorization: "Bearer test", "Content-Type": "application/json" },
       model: "text-embedding-3-small",
     },
   }),

@@ -11,10 +11,7 @@ describe("getShellPathFromLoginShell", () => {
     const exec = vi
       .fn()
       .mockReturnValue(Buffer.from("PATH=/custom/bin\0HOME=/home/user\0", "utf-8"));
-    const result = getShellPathFromLoginShell({
-      env: { SHELL: "/bin/sh" },
-      exec,
-    });
+    const result = getShellPathFromLoginShell({ env: { SHELL: "/bin/sh" }, exec });
     expect(result).toBe("/custom/bin");
   });
 
@@ -36,10 +33,7 @@ describe("getShellPathFromLoginShell", () => {
     const exec = vi.fn(() => {
       throw new Error("boom");
     });
-    const result = getShellPathFromLoginShell({
-      env: { SHELL: "/bin/sh" },
-      exec,
-    });
+    const result = getShellPathFromLoginShell({ env: { SHELL: "/bin/sh" }, exec });
     expect(result).toBeNull();
   });
 });

@@ -247,10 +247,7 @@ describe("gateway-status command", () => {
       loadConfig.mockReturnValueOnce({
         gateway: {
           mode: "remote",
-          remote: {
-            url: "ws://peters-mac-studio-1.sheep-coho.ts.net:18789",
-            token: "rtok",
-          },
+          remote: { url: "ws://peters-mac-studio-1.sheep-coho.ts.net:18789", token: "rtok" },
         },
       });
       resolveSshConfig.mockResolvedValueOnce({

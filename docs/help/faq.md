@@ -1100,11 +1100,7 @@ Keep the Gateway on Linux, but make the required CLI binaries resolve to SSH wra
    ---
    name: imsg
    description: iMessage/SMS CLI for listing chats, history, watch, and sending.
-   metadata:
-     {
-       "openclaw":
-         { "os": ["darwin", "linux"], "requires": { "bins": ["imsg"] } },
-     }
+   metadata: { "openclaw": { "os": ["darwin", "linux"], "requires": { "bins": ["imsg"] } } }
    ---
    ```
 4. Start a new session so the skills snapshot refreshes.

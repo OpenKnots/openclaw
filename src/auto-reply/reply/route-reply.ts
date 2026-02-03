@@ -126,10 +126,7 @@ export async function routeReply(params: RouteReplyParams): Promise<RouteReplyRe
         params.mirror !== false && params.sessionKey
           ? {
               sessionKey: params.sessionKey,
-              agentId: resolveSessionAgentId({
-                sessionKey: params.sessionKey,
-                config: cfg,
-              }),
+              agentId: resolveSessionAgentId({ sessionKey: params.sessionKey, config: cfg }),
               text,
               mediaUrls,
             }

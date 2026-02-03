@@ -86,9 +86,7 @@ describe("exec approvals CLI", () => {
     program.exitOverride();
     registerExecApprovalsCli(program);
 
-    await program.parseAsync(["approvals", "get", "--gateway"], {
-      from: "user",
-    });
+    await program.parseAsync(["approvals", "get", "--gateway"], { from: "user" });
 
     expect(callGatewayFromCli).toHaveBeenCalledWith("exec.approvals.get", expect.anything(), {});
     expect(runtimeErrors).toHaveLength(0);
@@ -104,9 +102,7 @@ describe("exec approvals CLI", () => {
     program.exitOverride();
     registerExecApprovalsCli(program);
 
-    await program.parseAsync(["approvals", "get", "--node", "macbook"], {
-      from: "user",
-    });
+    await program.parseAsync(["approvals", "get", "--node", "macbook"], { from: "user" });
 
     expect(callGatewayFromCli).toHaveBeenCalledWith("exec.approvals.node.get", expect.anything(), {
       nodeId: "node-1",

@@ -228,10 +228,7 @@ async function waitForOpenAiBatch(params: {
     }
     if (["failed", "expired", "cancelled", "canceled"].includes(state)) {
       const detail = status.error_file_id
-        ? await readOpenAiBatchError({
-            openAi: params.openAi,
-            errorFileId: status.error_file_id,
-          })
+        ? await readOpenAiBatchError({ openAi: params.openAi, errorFileId: status.error_file_id })
         : undefined;
       const suffix = detail ? `: ${detail}` : "";
       throw new Error(`openai batch ${params.batchId} ${state}${suffix}`);

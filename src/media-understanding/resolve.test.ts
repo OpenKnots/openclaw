@@ -56,13 +56,7 @@ describe("resolveModelEntries", () => {
     const cfg: OpenClawConfig = {
       tools: {
         media: {
-          models: [
-            {
-              type: "cli",
-              command: "gemini",
-              args: ["--file", "{{MediaPath}}"],
-            },
-          ],
+          models: [{ type: "cli", command: "gemini", args: ["--file", "{{MediaPath}}"] }],
         },
       },
     };
@@ -101,10 +95,7 @@ describe("resolveEntriesWithActiveFallback", () => {
     const cfg: OpenClawConfig = {
       tools: {
         media: {
-          audio: {
-            enabled: true,
-            models: [{ provider: "openai", model: "whisper-1" }],
-          },
+          audio: { enabled: true, models: [{ provider: "openai", model: "whisper-1" }] },
         },
       },
     };

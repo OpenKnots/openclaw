@@ -149,10 +149,7 @@ export async function monitorIMessageProvider(opts: MonitorIMessageOpts = {}): P
     }
   }
 
-  const inboundDebounceMs = resolveInboundDebounceMs({
-    cfg,
-    channel: "imessage",
-  });
+  const inboundDebounceMs = resolveInboundDebounceMs({ cfg, channel: "imessage" });
   const inboundDebouncer = createInboundDebouncer<{ message: IMessagePayload }>({
     debounceMs: inboundDebounceMs,
     buildKey: (entry) => {
@@ -403,14 +400,8 @@ export async function monitorIMessageProvider(opts: MonitorIMessageOpts = {}): P
     const commandGate = resolveControlCommandGate({
       useAccessGroups,
       authorizers: [
-        {
-          configured: effectiveDmAllowFrom.length > 0,
-          allowed: ownerAllowedForCommands,
-        },
-        {
-          configured: effectiveGroupAllowFrom.length > 0,
-          allowed: groupAllowedForCommands,
-        },
+        { configured: effectiveDmAllowFrom.length > 0, allowed: ownerAllowedForCommands },
+        { configured: effectiveGroupAllowFrom.length > 0, allowed: groupAllowedForCommands },
       ],
       allowTextCommands: true,
       hasControlCommand: hasControlCommandInMessage,
@@ -560,10 +551,7 @@ export async function monitorIMessageProvider(opts: MonitorIMessageOpts = {}): P
       );
     }
 
-    const prefixContext = createReplyPrefixContext({
-      cfg,
-      agentId: route.agentId,
-    });
+    const prefixContext = createReplyPrefixContext({ cfg, agentId: route.agentId });
 
     const dispatcher = createReplyDispatcher({
       responsePrefix: prefixContext.responsePrefix,
@@ -608,11 +596,7 @@ export async function monitorIMessageProvider(opts: MonitorIMessageOpts = {}): P
       return;
     }
     if (isGroup && historyKey) {
-      clearHistoryEntriesIfEnabled({
-        historyMap: groupHistories,
-        historyKey,
-        limit: historyLimit,
-      });
+      clearHistoryEntriesIfEnabled({ historyMap: groupHistories, historyKey, limit: historyLimit });
     }
   }
 

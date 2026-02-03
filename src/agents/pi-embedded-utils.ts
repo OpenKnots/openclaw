@@ -158,9 +158,7 @@ export function stripDowngradedToolCallText(text: string): string {
         if (input[index] === " ") {
           index += 1;
         }
-        const end = consumeJsonish(input, index, {
-          allowLeadingNewlines: true,
-        });
+        const end = consumeJsonish(input, index, { allowLeadingNewlines: true });
         if (end !== null) {
           index = end;
         }

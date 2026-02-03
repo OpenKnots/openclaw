@@ -47,12 +47,7 @@ describe("web processMessage inbound contract", () => {
       // oxlint-disable-next-line typescript/no-explicit-any
       replyResolver: (async () => undefined) as any,
       // oxlint-disable-next-line typescript/no-explicit-any
-      replyLogger: {
-        info: () => {},
-        warn: () => {},
-        error: () => {},
-        debug: () => {},
-      } as any,
+      replyLogger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} } as any,
       backgroundTasks: new Set(),
       rememberSentText: (_text: string | undefined, _opts: unknown) => {},
       echoHas: () => false,

@@ -8,11 +8,7 @@ import { resetGlobalHookRunner } from "../plugins/hook-runner-global.js";
 import { loadOpenClawPlugins } from "../plugins/loader.js";
 import { guardSessionManager } from "./session-tool-result-guard-wrapper.js";
 
-const EMPTY_PLUGIN_SCHEMA = {
-  type: "object",
-  additionalProperties: false,
-  properties: {},
-};
+const EMPTY_PLUGIN_SCHEMA = { type: "object", additionalProperties: false, properties: {} };
 
 function writeTempPlugin(params: { dir: string; id: string; body: string }): string {
   const pluginDir = path.join(params.dir, params.id);

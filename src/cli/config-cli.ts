@@ -72,9 +72,7 @@ function parseValue(raw: string, opts: { json?: boolean }): unknown {
     try {
       return JSON5.parse(trimmed);
     } catch (err) {
-      throw new Error(`Failed to parse JSON5 value: ${String(err)}`, {
-        cause: err,
-      });
+      throw new Error(`Failed to parse JSON5 value: ${String(err)}`, { cause: err });
     }
   }
 

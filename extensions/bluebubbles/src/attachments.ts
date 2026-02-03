@@ -3,10 +3,7 @@ import crypto from "node:crypto";
 import path from "node:path";
 import { resolveBlueBubblesAccount } from "./accounts.js";
 import { resolveChatGuidForTarget } from "./send.js";
-import {
-  parseBlueBubblesTarget,
-  normalizeBlueBubblesHandle,
-} from "./targets.js";
+import { parseBlueBubblesTarget, normalizeBlueBubblesHandle } from "./targets.js";
 import {
   blueBubblesFetchWithTimeout,
   buildBlueBubblesApiUrl,
@@ -32,11 +29,7 @@ function sanitizeFilename(input: string | undefined, fallback: string): string {
   return base || fallback;
 }
 
-function ensureExtension(
-  filename: string,
-  extension: string,
-  fallbackBase: string,
-): string {
+function ensureExtension(filename: string, extension: string, fallbackBase: string): string {
   const currentExt = path.extname(filename);
   if (currentExt.toLowerCase() === extension) {
     return filename;
@@ -49,13 +42,10 @@ function resolveVoiceInfo(filename: string, contentType?: string) {
   const normalizedType = contentType?.trim().toLowerCase();
   const extension = path.extname(filename).toLowerCase();
   const isMp3 =
-    extension === ".mp3" ||
-    (normalizedType ? AUDIO_MIME_MP3.has(normalizedType) : false);
+    extension === ".mp3" || (normalizedType ? AUDIO_MIME_MP3.has(normalizedType) : false);
   const isCaf =
-    extension === ".caf" ||
-    (normalizedType ? AUDIO_MIME_CAF.has(normalizedType) : false);
-  const isAudio =
-    isMp3 || isCaf || Boolean(normalizedType?.startsWith("audio/"));
+    extension === ".caf" || (normalizedType ? AUDIO_MIME_CAF.has(normalizedType) : false);
+  const isAudio = isMp3 || isCaf || Boolean(normalizedType?.startsWith("audio/"));
   return { isAudio, isMp3, isCaf };
 }
 
@@ -89,11 +79,7 @@ export async function downloadBlueBubblesAttachment(
     path: `/api/v1/attachment/${encodeURIComponent(guid)}/download`,
     password,
   });
-  const res = await blueBubblesFetchWithTimeout(
-    url,
-    { method: "GET" },
-    opts.timeoutMs,
-  );
+  const res = await blueBubblesFetchWithTimeout(url, { method: "GET" }, opts.timeoutMs);
   if (!res.ok) {
     const errorText = await res.text().catch(() => "");
     throw new Error(
@@ -102,19 +88,11 @@ export async function downloadBlueBubblesAttachment(
   }
   const contentType = res.headers.get("content-type") ?? undefined;
   const buf = new Uint8Array(await res.arrayBuffer());
-  const maxBytes =
-    typeof opts.maxBytes === "number"
-      ? opts.maxBytes
-      : DEFAULT_ATTACHMENT_MAX_BYTES;
+  const maxBytes = typeof opts.maxBytes === "number" ? opts.maxBytes : DEFAULT_ATTACHMENT_MAX_BYTES;
   if (buf.byteLength > maxBytes) {
-    throw new Error(
-      `BlueBubbles attachment too large (${buf.byteLength} bytes)`,
-    );
+    throw new Error(`BlueBubbles attachment too large (${buf.byteLength} bytes)`);
   }
-  return {
-    buffer: buf,
-    contentType: contentType ?? attachment.mimeType ?? undefined,
-  };
+  return { buffer: buf, contentType: contentType ?? attachment.mimeType ?? undefined };
 }
 
 export type SendBlueBubblesAttachmentResult = {
@@ -183,14 +161,7 @@ export async function sendBlueBubblesAttachment(params: {
   asVoice?: boolean;
   opts?: BlueBubblesAttachmentOpts;
 }): Promise<SendBlueBubblesAttachmentResult> {
-  const {
-    to,
-    caption,
-    replyToMessageGuid,
-    replyToPartIndex,
-    asVoice,
-    opts = {},
-  } = params;
+  const { to, caption, replyToMessageGuid, replyToPartIndex, asVoice, opts = {} } = params;
   let { buffer, filename, contentType } = params;
   const wantsVoice = asVoice === true;
   const fallbackName = wantsVoice ? "Audio Message" : "attachment";
@@ -203,9 +174,7 @@ export async function sendBlueBubblesAttachment(params: {
   if (isAudioMessage) {
     const voiceInfo = resolveVoiceInfo(filename, contentType);
     if (!voiceInfo.isAudio) {
-      throw new Error(
-        "BlueBubbles voice messages require audio media (mp3 or caf).",
-      );
+      throw new Error("BlueBubbles voice messages require audio media (mp3 or caf).");
     }
     if (voiceInfo.isMp3) {
       filename = ensureExtension(filename, ".mp3", fallbackName);
@@ -247,30 +216,17 @@ export async function sendBlueBubblesAttachment(params: {
   // Helper to add a form field
   const addField = (name: string, value: string) => {
     parts.push(encoder.encode(`--${boundary}\r\n`));
-    parts.push(
-      encoder.encode(`Content-Disposition: form-data; name="${name}"\r\n\r\n`),
-    );
+    parts.push(encoder.encode(`Content-Disposition: form-data; name="${name}"\r\n\r\n`));
     parts.push(encoder.encode(`${value}\r\n`));
   };
 
   // Helper to add a file field
-  const addFile = (
-    name: string,
-    fileBuffer: Uint8Array,
-    fileName: string,
-    mimeType?: string,
-  ) => {
+  const addFile = (name: string, fileBuffer: Uint8Array, fileName: string, mimeType?: string) => {
     parts.push(encoder.encode(`--${boundary}\r\n`));
     parts.push(
-      encoder.encode(
-        `Content-Disposition: form-data; name="${name}"; filename="${fileName}"\r\n`,
-      ),
+      encoder.encode(`Content-Disposition: form-data; name="${name}"; filename="${fileName}"\r\n`),
     );
-    parts.push(
-      encoder.encode(
-        `Content-Type: ${mimeType ?? "application/octet-stream"}\r\n\r\n`,
-      ),
-    );
+    parts.push(encoder.encode(`Content-Type: ${mimeType ?? "application/octet-stream"}\r\n\r\n`));
     parts.push(fileBuffer);
     parts.push(encoder.encode("\r\n"));
   };
@@ -290,10 +246,7 @@ export async function sendBlueBubblesAttachment(params: {
   const trimmedReplyTo = replyToMessageGuid?.trim();
   if (trimmedReplyTo) {
     addField("selectedMessageGuid", trimmedReplyTo);
-    addField(
-      "partIndex",
-      typeof replyToPartIndex === "number" ? String(replyToPartIndex) : "0",
-    );
+    addField("partIndex", typeof replyToPartIndex === "number" ? String(replyToPartIndex) : "0");
   }
 
   // Add optional caption

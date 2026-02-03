@@ -125,9 +125,7 @@ describe("getDmHistoryLimitFromSessionKey", () => {
   });
   it("strips thread suffix from dm session keys", () => {
     const config = {
-      channels: {
-        telegram: { dmHistoryLimit: 10, dms: { "123": { historyLimit: 7 } } },
-      },
+      channels: { telegram: { dmHistoryLimit: 10, dms: { "123": { historyLimit: 7 } } } },
     } as OpenClawConfig;
     expect(getDmHistoryLimitFromSessionKey("agent:main:telegram:dm:123:thread:999", config)).toBe(
       7,

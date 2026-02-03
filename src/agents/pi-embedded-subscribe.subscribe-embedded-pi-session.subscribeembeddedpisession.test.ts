@@ -211,10 +211,7 @@ describe("subscribeEmbeddedPiSession", () => {
     handler?.({
       type: "message_update",
       message: { role: "assistant" },
-      assistantMessageEvent: {
-        type: "text_delta",
-        delta: " https://example.com/a.png\nCaption",
-      },
+      assistantMessageEvent: { type: "text_delta", delta: " https://example.com/a.png\nCaption" },
     });
 
     const payloads = onAgentEvent.mock.calls
@@ -245,10 +242,7 @@ describe("subscribeEmbeddedPiSession", () => {
     handler?.({
       type: "message_update",
       message: { role: "assistant" },
-      assistantMessageEvent: {
-        type: "text_delta",
-        delta: "MEDIA: https://example.com/a.png",
-      },
+      assistantMessageEvent: { type: "text_delta", delta: "MEDIA: https://example.com/a.png" },
     });
 
     const payloads = onAgentEvent.mock.calls

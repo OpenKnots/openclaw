@@ -411,11 +411,7 @@ const defaultRegistry = createTestRegistry([
   },
   {
     pluginId: "slack",
-    plugin: createOutboundTestPlugin({
-      id: "slack",
-      outbound: slackOutbound,
-      label: "Slack",
-    }),
+    plugin: createOutboundTestPlugin({ id: "slack", outbound: slackOutbound, label: "Slack" }),
     source: "test",
   },
   {
@@ -438,11 +434,7 @@ const defaultRegistry = createTestRegistry([
   },
   {
     pluginId: "signal",
-    plugin: createOutboundTestPlugin({
-      id: "signal",
-      outbound: signalOutbound,
-      label: "Signal",
-    }),
+    plugin: createOutboundTestPlugin({ id: "signal", outbound: signalOutbound, label: "Signal" }),
     source: "test",
   },
   {

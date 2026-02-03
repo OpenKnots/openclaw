@@ -37,10 +37,7 @@ export default function (pi: ExtensionAPI) {
       const branch = ctx.sessionManager.getBranch();
 
       // First pass: collect tool calls (id -> {path, name}) from assistant messages
-      const toolCalls = new Map<
-        string,
-        { path: string; name: FileToolName; timestamp: number }
-      >();
+      const toolCalls = new Map<string, { path: string; name: FileToolName; timestamp: number }>();
 
       for (const entry of branch) {
         if (entry.type !== "message") {
@@ -55,11 +52,7 @@ export default function (pi: ExtensionAPI) {
               if (name === "read" || name === "write" || name === "edit") {
                 const path = block.arguments?.path;
                 if (path && typeof path === "string") {
-                  toolCalls.set(block.id, {
-                    path,
-                    name,
-                    timestamp: msg.timestamp,
-                  });
+                  toolCalls.set(block.id, { path, name, timestamp: msg.timestamp });
                 }
               }
             }
@@ -115,8 +108,7 @@ export default function (pi: ExtensionAPI) {
         try {
           await pi.exec("code", ["-g", file.path], { cwd: ctx.cwd });
         } catch (error) {
-          const message =
-            error instanceof Error ? error.message : String(error);
+          const message = error instanceof Error ? error.message : String(error);
           ctx.ui.notify(`Failed to open ${file.path}: ${message}`, "error");
         }
       };
@@ -126,18 +118,10 @@ export default function (pi: ExtensionAPI) {
         const container = new Container();
 
         // Top border
-        container.addChild(
-          new DynamicBorder((s: string) => theme.fg("accent", s)),
-        );
+        container.addChild(new DynamicBorder((s: string) => theme.fg("accent", s)));
 
         // Title
-        container.addChild(
-          new Text(
-            theme.fg("accent", theme.bold(" Select file to open")),
-            0,
-            0,
-          ),
-        );
+        container.addChild(new Text(theme.fg("accent", theme.bold(" Select file to open")), 0, 0));
 
         // Build select items with colored operations
         const items: SelectItem[] = files.map((f) => {
@@ -179,17 +163,11 @@ export default function (pi: ExtensionAPI) {
 
         // Help text
         container.addChild(
-          new Text(
-            theme.fg("dim", " ↑↓ navigate • ←→ page • enter open • esc close"),
-            0,
-            0,
-          ),
+          new Text(theme.fg("dim", " ↑↓ navigate • ←→ page • enter open • esc close"), 0, 0),
         );
 
         // Bottom border
-        container.addChild(
-          new DynamicBorder((s: string) => theme.fg("accent", s)),
-        );
+        container.addChild(new DynamicBorder((s: string) => theme.fg("accent", s)));
 
         return {
           render: (w) => container.render(w),
@@ -202,10 +180,7 @@ export default function (pi: ExtensionAPI) {
               selectList.setSelectedIndex(currentIndex);
             } else if (matchesKey(data, Key.right)) {
               // Page down - clamp to last
-              currentIndex = Math.min(
-                items.length - 1,
-                currentIndex + visibleRows,
-              );
+              currentIndex = Math.min(items.length - 1, currentIndex + visibleRows);
               selectList.setSelectedIndex(currentIndex);
             } else {
               selectList.handleInput(data);

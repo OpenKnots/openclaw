@@ -29,26 +29,17 @@ describe("gateway broadcaster", () => {
     const clients = new Set<GatewayWsClient>([
       {
         socket: approvalsSocket as unknown as GatewayWsClient["socket"],
-        connect: {
-          role: "operator",
-          scopes: ["operator.approvals"],
-        } as GatewayWsClient["connect"],
+        connect: { role: "operator", scopes: ["operator.approvals"] } as GatewayWsClient["connect"],
         connId: "c-approvals",
       },
       {
         socket: pairingSocket as unknown as GatewayWsClient["socket"],
-        connect: {
-          role: "operator",
-          scopes: ["operator.pairing"],
-        } as GatewayWsClient["connect"],
+        connect: { role: "operator", scopes: ["operator.pairing"] } as GatewayWsClient["connect"],
         connId: "c-pairing",
       },
       {
         socket: readSocket as unknown as GatewayWsClient["socket"],
-        connect: {
-          role: "operator",
-          scopes: ["operator.read"],
-        } as GatewayWsClient["connect"],
+        connect: { role: "operator", scopes: ["operator.read"] } as GatewayWsClient["connect"],
         connId: "c-read",
       },
     ]);

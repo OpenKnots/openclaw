@@ -161,10 +161,7 @@ describe("runMessageAction context isolation", () => {
         target: "channel:C99999999",
         message: "hi",
       },
-      toolContext: {
-        currentChannelId: "C12345678",
-        currentChannelProvider: "slack",
-      },
+      toolContext: { currentChannelId: "C12345678", currentChannelProvider: "slack" },
       dryRun: true,
     });
 
@@ -180,10 +177,7 @@ describe("runMessageAction context isolation", () => {
         target: "C99999999",
         message: "hi",
       },
-      toolContext: {
-        currentChannelId: "C12345678",
-        currentChannelProvider: "slack",
-      },
+      toolContext: { currentChannelId: "C12345678", currentChannelProvider: "slack" },
       dryRun: true,
     });
 
@@ -215,10 +209,7 @@ describe("runMessageAction context isolation", () => {
         target: "456@g.us",
         message: "hi",
       },
-      toolContext: {
-        currentChannelId: "123@g.us",
-        currentChannelProvider: "whatsapp",
-      },
+      toolContext: { currentChannelId: "123@g.us", currentChannelProvider: "whatsapp" },
       dryRun: true,
     });
 
@@ -279,10 +270,7 @@ describe("runMessageAction context isolation", () => {
       params: {
         message: "hi",
       },
-      toolContext: {
-        currentChannelId: "C12345678",
-        currentChannelProvider: "slack",
-      },
+      toolContext: { currentChannelId: "C12345678", currentChannelProvider: "slack" },
       dryRun: true,
     });
 
@@ -300,10 +288,7 @@ describe("runMessageAction context isolation", () => {
           target: "telegram:@ops",
           message: "hi",
         },
-        toolContext: {
-          currentChannelId: "C12345678",
-          currentChannelProvider: "slack",
-        },
+        toolContext: { currentChannelId: "C12345678", currentChannelProvider: "slack" },
         dryRun: true,
       }),
     ).rejects.toThrow(/Cross-context messaging denied/);
@@ -330,10 +315,7 @@ describe("runMessageAction context isolation", () => {
           target: "channel:C99999999",
           message: "hi",
         },
-        toolContext: {
-          currentChannelId: "C12345678",
-          currentChannelProvider: "slack",
-        },
+        toolContext: { currentChannelId: "C12345678", currentChannelProvider: "slack" },
         dryRun: true,
       }),
     ).rejects.toThrow(/Cross-context messaging denied/);

@@ -143,9 +143,7 @@ describe("setupChannels", () => {
       expect.objectContaining({ message: "Select channel (QuickStart)" }),
     );
     expect(select).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: expect.stringContaining("already configured"),
-      }),
+      expect.objectContaining({ message: expect.stringContaining("already configured") }),
     );
     expect(multiselect).not.toHaveBeenCalled();
     expect(text).not.toHaveBeenCalled();

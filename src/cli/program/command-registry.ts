@@ -145,9 +145,7 @@ export const commandRegistry: CommandRegistration[] = [
   {
     id: "agent",
     register: ({ program, ctx }) =>
-      registerAgentCommands(program, {
-        agentChannelOptions: ctx.agentChannelOptions,
-      }),
+      registerAgentCommands(program, { agentChannelOptions: ctx.agentChannelOptions }),
     routes: [routeAgentsList],
   },
   {

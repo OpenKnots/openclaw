@@ -8,9 +8,7 @@ const decode = (s: string) => Buffer.from(s, "base64").toString();
 const CLIENT_ID = decode(
   "MTA3MTAwNjA2MDU5MS10bWhzc2luMmgyMWxjcmUyMzV2dG9sb2poNGc0MDNlcC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbQ==",
 );
-const CLIENT_SECRET = decode(
-  "R09DU1BYLUs1OEZXUjQ4NkxkTEoxbUxCOHNYQzR6NnFEQWY=",
-);
+const CLIENT_SECRET = decode("R09DU1BYLUs1OEZXUjQ4NkxkTEoxbUxCOHNYQzR6NnFEQWY=");
 const REDIRECT_URI = "http://localhost:51121/oauth-callback";
 const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
@@ -92,9 +90,7 @@ function buildAuthUrl(params: { challenge: string; state: string }): string {
   return url.toString();
 }
 
-function parseCallbackInput(
-  input: string,
-): { code: string; state: string } | { error: string } {
+function parseCallbackInput(input: string): { code: string; state: string } | { error: string } {
   const trimmed = input.trim();
   if (!trimmed) {
     return { error: "No input provided" };
@@ -233,16 +229,11 @@ async function exchangeCode(params: {
   return { access, refresh, expires };
 }
 
-async function fetchUserEmail(
-  accessToken: string,
-): Promise<string | undefined> {
+async function fetchUserEmail(accessToken: string): Promise<string | undefined> {
   try {
-    const response = await fetch(
-      "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
-      {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      },
-    );
+    const response = await fetch("https://www.googleapis.com/oauth2/v1/userinfo?alt=json", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
     if (!response.ok) {
       return undefined;
     }
@@ -323,8 +314,7 @@ async function loginAntigravity(params: {
   const state = randomBytes(16).toString("hex");
   const authUrl = buildAuthUrl({ challenge, state });
 
-  let callbackServer: Awaited<ReturnType<typeof startCallbackServer>> | null =
-    null;
+  let callbackServer: Awaited<ReturnType<typeof startCallbackServer>> | null = null;
   const needsManual = shouldUseManualOAuthFlow(params.isRemote);
   if (!needsManual) {
     try {
@@ -420,8 +410,7 @@ const antigravityPlugin = {
               const result = await loginAntigravity({
                 isRemote: ctx.isRemote,
                 openUrl: ctx.openUrl,
-                prompt: async (message) =>
-                  String(await ctx.prompter.text({ message })),
+                prompt: async (message) => String(await ctx.prompter.text({ message })),
                 note: ctx.prompter.note,
                 log: (message) => ctx.runtime.log(message),
                 progress: spin,

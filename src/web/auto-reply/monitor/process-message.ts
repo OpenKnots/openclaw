@@ -252,10 +252,7 @@ export async function processMessage(params: {
   let didLogHeartbeatStrip = false;
   let didSendReply = false;
   const commandAuthorized = shouldComputeCommandAuthorized(params.msg.body, params.cfg)
-    ? await resolveWhatsAppCommandAuthorized({
-        cfg: params.cfg,
-        msg: params.msg,
-      })
+    ? await resolveWhatsAppCommandAuthorized({ cfg: params.cfg, msg: params.msg })
     : undefined;
   const configuredResponsePrefix = params.cfg.messages?.responsePrefix;
   const prefixContext = createReplyPrefixContext({

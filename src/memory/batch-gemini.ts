@@ -146,10 +146,7 @@ async function submitGeminiBatch(params: {
     const text = await fileRes.text();
     throw new Error(`gemini batch file upload failed: ${fileRes.status} ${text}`);
   }
-  const filePayload = (await fileRes.json()) as {
-    name?: string;
-    file?: { name?: string };
-  };
+  const filePayload = (await fileRes.json()) as { name?: string; file?: { name?: string } };
   const fileId = filePayload.name ?? filePayload.file?.name;
   if (!fileId) {
     throw new Error("gemini batch file upload failed: missing file id");

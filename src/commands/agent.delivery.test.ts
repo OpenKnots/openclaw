@@ -7,10 +7,7 @@ import type { RuntimeEnv } from "../runtime.js";
 const mocks = vi.hoisted(() => ({
   deliverOutboundPayloads: vi.fn(async () => []),
   getChannelPlugin: vi.fn(() => ({})),
-  resolveOutboundTarget: vi.fn(() => ({
-    ok: true as const,
-    to: "+15551234567",
-  })),
+  resolveOutboundTarget: vi.fn(() => ({ ok: true as const, to: "+15551234567" })),
 }));
 
 vi.mock("../channels/plugins/index.js", () => ({
@@ -258,11 +255,7 @@ describe("deliverAgentCommandResult", () => {
     });
 
     expect(mocks.resolveOutboundTarget).toHaveBeenCalledWith(
-      expect.objectContaining({
-        channel: "slack",
-        to: "#reports",
-        accountId: "ops",
-      }),
+      expect.objectContaining({ channel: "slack", to: "#reports", accountId: "ops" }),
     );
   });
 

@@ -155,12 +155,7 @@ describe("directive behavior", () => {
       const storePath = path.join(home, "sessions.json");
 
       const res = await getReplyFromConfig(
-        {
-          Body: "/queue interrupt",
-          From: "+1222",
-          To: "+1222",
-          CommandAuthorized: true,
-        },
+        { Body: "/queue interrupt", From: "+1222", To: "+1222", CommandAuthorized: true },
         {},
         {
           agents: {
@@ -227,12 +222,7 @@ describe("directive behavior", () => {
       const storePath = path.join(home, "sessions.json");
 
       await getReplyFromConfig(
-        {
-          Body: "/queue interrupt",
-          From: "+1222",
-          To: "+1222",
-          CommandAuthorized: true,
-        },
+        { Body: "/queue interrupt", From: "+1222", To: "+1222", CommandAuthorized: true },
         {},
         {
           agents: {
@@ -247,12 +237,7 @@ describe("directive behavior", () => {
       );
 
       const res = await getReplyFromConfig(
-        {
-          Body: "/queue reset",
-          From: "+1222",
-          To: "+1222",
-          CommandAuthorized: true,
-        },
+        { Body: "/queue reset", From: "+1222", To: "+1222", CommandAuthorized: true },
         {},
         {
           agents: {

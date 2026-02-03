@@ -103,10 +103,7 @@ describe("memory plugin e2e", () => {
       { text: "I always want verbose output", shouldMatch: true },
       { text: "Just a random short message", shouldMatch: false },
       { text: "x", shouldMatch: false }, // Too short
-      {
-        text: "<relevant-memories>injected</relevant-memories>",
-        shouldMatch: false,
-      }, // Skip injected
+      { text: "<relevant-memories>injected</relevant-memories>", shouldMatch: false }, // Skip injected
     ];
 
     // The shouldCapture function is internal, but we can test via the capture behavior
@@ -124,12 +121,7 @@ describe("memory plugin e2e", () => {
       const wouldCapture =
         !isTooShort &&
         !isInjected &&
-        (hasPreference ||
-          hasRemember ||
-          hasEmail ||
-          hasPhone ||
-          hasDecision ||
-          hasAlways);
+        (hasPreference || hasRemember || hasEmail || hasPhone || hasDecision || hasAlways);
 
       if (shouldMatch) {
         expect(wouldCapture).toBe(true);
@@ -254,15 +246,9 @@ describeLive("memory plugin live tests", () => {
     expect(registeredServices.length).toBe(1);
 
     // Get tool functions
-    const storeTool = registeredTools.find(
-      (t) => t.opts?.name === "memory_store",
-    )?.tool;
-    const recallTool = registeredTools.find(
-      (t) => t.opts?.name === "memory_recall",
-    )?.tool;
-    const forgetTool = registeredTools.find(
-      (t) => t.opts?.name === "memory_forget",
-    )?.tool;
+    const storeTool = registeredTools.find((t) => t.opts?.name === "memory_store")?.tool;
+    const recallTool = registeredTools.find((t) => t.opts?.name === "memory_recall")?.tool;
+    const forgetTool = registeredTools.find((t) => t.opts?.name === "memory_forget")?.tool;
 
     // Test store
     const storeResult = await storeTool.execute("test-call-1", {

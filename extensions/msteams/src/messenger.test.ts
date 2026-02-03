@@ -40,13 +40,10 @@ describe("msteams messenger", () => {
 
   describe("renderReplyPayloadsToMessages", () => {
     it("filters silent replies", () => {
-      const messages = renderReplyPayloadsToMessages(
-        [{ text: SILENT_REPLY_TOKEN }],
-        {
-          textChunkLimit: 4000,
-          tableMode: "code",
-        },
-      );
+      const messages = renderReplyPayloadsToMessages([{ text: SILENT_REPLY_TOKEN }], {
+        textChunkLimit: 4000,
+        tableMode: "code",
+      });
       expect(messages).toEqual([]);
     });
 
@@ -63,10 +60,7 @@ describe("msteams messenger", () => {
         [{ text: "hi", mediaUrl: "https://example.com/a.png" }],
         { textChunkLimit: 4000, tableMode: "code" },
       );
-      expect(messages).toEqual([
-        { text: "hi" },
-        { mediaUrl: "https://example.com/a.png" },
-      ]);
+      expect(messages).toEqual([{ text: "hi" }, { mediaUrl: "https://example.com/a.png" }]);
     });
 
     it("supports inline media mode", () => {
@@ -74,9 +68,7 @@ describe("msteams messenger", () => {
         [{ text: "hi", mediaUrl: "https://example.com/a.png" }],
         { textChunkLimit: 4000, mediaMode: "inline", tableMode: "code" },
       );
-      expect(messages).toEqual([
-        { text: "hi", mediaUrl: "https://example.com/a.png" },
-      ]);
+      expect(messages).toEqual([{ text: "hi", mediaUrl: "https://example.com/a.png" }]);
     });
 
     it("chunks long text when enabled", () => {
@@ -188,8 +180,7 @@ describe("msteams messenger", () => {
         context: ctx,
         messages: [{ text: "one" }],
         retry: { maxAttempts: 2, baseDelayMs: 0, maxDelayMs: 0 },
-        onRetry: (e) =>
-          retryEvents.push({ nextAttempt: e.nextAttempt, delayMs: e.delayMs }),
+        onRetry: (e) => retryEvents.push({ nextAttempt: e.nextAttempt, delayMs: e.delayMs }),
       });
 
       expect(attempts).toEqual(["one", "one"]);

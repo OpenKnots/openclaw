@@ -82,10 +82,7 @@ export function installSessionToolResultGuard(
     }
     if (allowSyntheticToolResults) {
       for (const [id, name] of pending.entries()) {
-        const synthetic = makeMissingToolResult({
-          toolCallId: id,
-          toolName: name,
-        });
+        const synthetic = makeMissingToolResult({ toolCallId: id, toolName: name });
         originalAppend(
           persistToolResult(synthetic, {
             toolCallId: id,

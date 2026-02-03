@@ -1,7 +1,4 @@
-import type {
-  IStorageProvider,
-  ICryptoStorageProvider,
-} from "@vector-im/matrix-bot-sdk";
+import type { IStorageProvider, ICryptoStorageProvider } from "@vector-im/matrix-bot-sdk";
 import {
   LogService,
   MatrixClient,
@@ -28,8 +25,7 @@ function sanitizeUserIdList(input: unknown, label: string): string[] {
     return [];
   }
   const filtered = input.filter(
-    (entry): entry is string =>
-      typeof entry === "string" && entry.trim().length > 0,
+    (entry): entry is string => typeof entry === "string" && entry.trim().length > 0,
   );
   if (filtered.length !== input.length) {
     LogService.warn(
@@ -61,9 +57,7 @@ export async function createMatrixClient(params: {
   });
   maybeMigrateLegacyStorage({ storagePaths, env });
   fs.mkdirSync(storagePaths.rootDir, { recursive: true });
-  const storage: IStorageProvider = new SimpleFsStorageProvider(
-    storagePaths.storagePath,
-  );
+  const storage: IStorageProvider = new SimpleFsStorageProvider(storagePaths.storagePath);
 
   // Create crypto storage if encryption is enabled
   let cryptoStorage: ICryptoStorageProvider | undefined;
@@ -71,12 +65,8 @@ export async function createMatrixClient(params: {
     fs.mkdirSync(storagePaths.cryptoPath, { recursive: true });
 
     try {
-      const { StoreType } =
-        await import("@matrix-org/matrix-sdk-crypto-nodejs");
-      cryptoStorage = new RustSdkCryptoStorageProvider(
-        storagePaths.cryptoPath,
-        StoreType.Sqlite,
-      );
+      const { StoreType } = await import("@matrix-org/matrix-sdk-crypto-nodejs");
+      cryptoStorage = new RustSdkCryptoStorageProvider(storagePaths.cryptoPath, StoreType.Sqlite);
     } catch (err) {
       LogService.warn(
         "MatrixClientLite",
@@ -93,17 +83,10 @@ export async function createMatrixClient(params: {
     accountId: params.accountId,
   });
 
-  const client = new MatrixClient(
-    params.homeserver,
-    params.accessToken,
-    storage,
-    cryptoStorage,
-  );
+  const client = new MatrixClient(params.homeserver, params.accessToken, storage, cryptoStorage);
 
   if (client.crypto) {
-    const originalUpdateSyncData = client.crypto.updateSyncData.bind(
-      client.crypto,
-    );
+    const originalUpdateSyncData = client.crypto.updateSyncData.bind(client.crypto);
     client.crypto.updateSyncData = async (
       toDeviceMessages,
       otkCounts,
@@ -111,10 +94,7 @@ export async function createMatrixClient(params: {
       changedDeviceLists,
       leftDeviceLists,
     ) => {
-      const safeChanged = sanitizeUserIdList(
-        changedDeviceLists,
-        "changed device list",
-      );
+      const safeChanged = sanitizeUserIdList(changedDeviceLists, "changed device list");
       const safeLeft = sanitizeUserIdList(leftDeviceLists, "left device list");
       try {
         return await originalUpdateSyncData(
@@ -125,12 +105,7 @@ export async function createMatrixClient(params: {
           safeLeft,
         );
       } catch (err) {
-        const message =
-          typeof err === "string"
-            ? err
-            : err instanceof Error
-              ? err.message
-              : "";
+        const message = typeof err === "string" ? err : err instanceof Error ? err.message : "";
         if (message.includes("Expect value to be String")) {
           LogService.warn(
             "MatrixClientLite",

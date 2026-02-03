@@ -186,9 +186,7 @@ export async function monitorTelegramProvider(opts: MonitorTelegramOpts = {}) {
           throw err;
         }
         const isConflict = isGetUpdatesConflict(err);
-        const isRecoverable = isRecoverableTelegramNetworkError(err, {
-          context: "polling",
-        });
+        const isRecoverable = isRecoverableTelegramNetworkError(err, { context: "polling" });
         if (!isConflict && !isRecoverable) {
           throw err;
         }

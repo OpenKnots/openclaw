@@ -26,19 +26,14 @@ export function renderOverview(props: OverviewProps) {
   const snapshot = props.hello?.snapshot as
     | { uptimeMs?: number; policy?: { tickIntervalMs?: number } }
     | undefined;
-  const uptime = snapshot?.uptimeMs
-    ? formatDurationMs(snapshot.uptimeMs)
-    : "n/a";
-  const tick = snapshot?.policy?.tickIntervalMs
-    ? `${snapshot.policy.tickIntervalMs}ms`
-    : "n/a";
+  const uptime = snapshot?.uptimeMs ? formatDurationMs(snapshot.uptimeMs) : "n/a";
+  const tick = snapshot?.policy?.tickIntervalMs ? `${snapshot.policy.tickIntervalMs}ms` : "n/a";
   const authHint = (() => {
     if (props.connected || !props.lastError) {
       return null;
     }
     const lower = props.lastError.toLowerCase();
-    const authFailed =
-      lower.includes("unauthorized") || lower.includes("connect failed");
+    const authFailed = lower.includes("unauthorized") || lower.includes("connect failed");
     if (!authFailed) {
       return null;
     }
@@ -47,13 +42,10 @@ export function renderOverview(props: OverviewProps) {
     if (!hasToken && !hasPassword) {
       return html`
         <div class="muted" style="margin-top: 8px">
-          This gateway requires auth. Add a token or password, then click
-          Connect.
+          This gateway requires auth. Add a token or password, then click Connect.
           <div style="margin-top: 6px">
-            <span class="mono">openclaw dashboard --no-open</span> → tokenized
-            URL<br />
-            <span class="mono">openclaw doctor --generate-gateway-token</span> →
-            set token
+            <span class="mono">openclaw dashboard --no-open</span> → tokenized URL<br />
+            <span class="mono">openclaw doctor --generate-gateway-token</span> → set token
           </div>
           <div style="margin-top: 6px">
             <a
@@ -71,8 +63,7 @@ export function renderOverview(props: OverviewProps) {
     return html`
       <div class="muted" style="margin-top: 8px">
         Auth failed. Re-copy a tokenized URL with
-        <span class="mono">openclaw dashboard --no-open</span>, or update the
-        token, then click Connect.
+        <span class="mono">openclaw dashboard --no-open</span>, or update the token, then click Connect.
         <div style="margin-top: 6px">
           <a
             class="session-link"
@@ -90,27 +81,21 @@ export function renderOverview(props: OverviewProps) {
     if (props.connected || !props.lastError) {
       return null;
     }
-    const isSecureContext =
-      typeof window !== "undefined" ? window.isSecureContext : true;
+    const isSecureContext = typeof window !== "undefined" ? window.isSecureContext : true;
     if (isSecureContext) {
       return null;
     }
     const lower = props.lastError.toLowerCase();
-    if (
-      !lower.includes("secure context") &&
-      !lower.includes("device identity required")
-    ) {
+    if (!lower.includes("secure context") && !lower.includes("device identity required")) {
       return null;
     }
     return html`
       <div class="muted" style="margin-top: 8px">
-        This page is HTTP, so the browser blocks device identity. Use HTTPS
-        (Tailscale Serve) or open
+        This page is HTTP, so the browser blocks device identity. Use HTTPS (Tailscale Serve) or open
         <span class="mono">http://127.0.0.1:18789</span> on the gateway host.
         <div style="margin-top: 6px">
           If you must stay on HTTP, set
-          <span class="mono">gateway.controlUi.allowInsecureAuth: true</span>
-          (token-only).
+          <span class="mono">gateway.controlUi.allowInsecureAuth: true</span> (token-only).
         </div>
         <div style="margin-top: 6px">
           <a
@@ -139,9 +124,7 @@ export function renderOverview(props: OverviewProps) {
     <section class="grid grid-cols-2">
       <div class="card">
         <div class="card-title">Gateway Access</div>
-        <div class="card-sub">
-          Where the dashboard connects and how it authenticates.
-        </div>
+        <div class="card-sub">Where the dashboard connects and how it authenticates.</div>
         <div class="form-grid" style="margin-top: 16px;">
           <label class="field">
             <span>WebSocket URL</span>
@@ -216,23 +199,23 @@ export function renderOverview(props: OverviewProps) {
           <div class="stat">
             <div class="stat-label">Last Channels Refresh</div>
             <div class="stat-value">
-              ${props.lastChannelsRefresh
-                ? formatAgo(props.lastChannelsRefresh)
-                : "n/a"}
+              ${props.lastChannelsRefresh ? formatAgo(props.lastChannelsRefresh) : "n/a"}
             </div>
           </div>
         </div>
-        ${props.lastError
-          ? html`<div class="callout danger" style="margin-top: 14px;">
+        ${
+          props.lastError
+            ? html`<div class="callout danger" style="margin-top: 14px;">
               <div>${props.lastError}</div>
-              ${authHint ?? ""} ${insecureContextHint ?? ""}
+              ${authHint ?? ""}
+              ${insecureContextHint ?? ""}
             </div>`
-          : html`
-              <div class="callout" style="margin-top: 14px">
-                Use Channels to link WhatsApp, Telegram, Discord, Signal, or
-                iMessage.
-              </div>
-            `}
+            : html`
+                <div class="callout" style="margin-top: 14px">
+                  Use Channels to link WhatsApp, Telegram, Discord, Signal, or iMessage.
+                </div>
+              `
+        }
       </div>
     </section>
 
@@ -250,11 +233,7 @@ export function renderOverview(props: OverviewProps) {
       <div class="card stat-card">
         <div class="stat-label">Cron</div>
         <div class="stat-value">
-          ${props.cronEnabled == null
-            ? "n/a"
-            : props.cronEnabled
-              ? "Enabled"
-              : "Disabled"}
+          ${props.cronEnabled == null ? "n/a" : props.cronEnabled ? "Enabled" : "Disabled"}
         </div>
         <div class="muted">Next wake ${formatNextRun(props.cronNext)}</div>
       </div>

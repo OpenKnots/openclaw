@@ -261,11 +261,7 @@ function collectGatewayConfigFindings(
 
   const bind = typeof cfg.gateway?.bind === "string" ? cfg.gateway.bind : "loopback";
   const tailscaleMode = cfg.gateway?.tailscale?.mode ?? "off";
-  const auth = resolveGatewayAuth({
-    authConfig: cfg.gateway?.auth,
-    tailscaleMode,
-    env,
-  });
+  const auth = resolveGatewayAuth({ authConfig: cfg.gateway?.auth, tailscaleMode, env });
   const controlUiEnabled = cfg.gateway?.controlUi?.enabled !== false;
   const trustedProxies = Array.isArray(cfg.gateway?.trustedProxies)
     ? cfg.gateway.trustedProxies
@@ -662,12 +658,8 @@ async function collectChannelSecurityFindings(params: {
 
     if (plugin.id === "slack") {
       const slackCfg =
-        (
-          account as {
-            config?: Record<string, unknown>;
-            dm?: Record<string, unknown>;
-          } | null
-        )?.config ?? ({} as Record<string, unknown>);
+        (account as { config?: Record<string, unknown>; dm?: Record<string, unknown> } | null)
+          ?.config ?? ({} as Record<string, unknown>);
       const nativeEnabled = resolveNativeCommandsEnabled({
         providerId: "slack",
         providerSetting: coerceNativeSetting(
@@ -833,9 +825,9 @@ async function collectChannelSecurityFindings(params: {
       }
 
       if (!hasAnySenderAllowlist) {
-        const providerSetting =
+        const providerSetting = (telegramCfg.commands as { nativeSkills?: unknown } | undefined)
           // oxlint-disable-next-line typescript/no-explicit-any
-          (telegramCfg.commands as { nativeSkills?: unknown } | undefined)?.nativeSkills as any;
+          ?.nativeSkills as any;
         const skillsEnabled = resolveNativeSkillsEnabled({
           providerId: "telegram",
           providerSetting,
@@ -956,22 +948,11 @@ export async function runSecurityAudit(opts: SecurityAuditOptions): Promise<Secu
     );
     if (configSnapshot) {
       findings.push(
-        ...(await collectIncludeFilePermFindings({
-          configSnapshot,
-          env,
-          platform,
-          execIcacls,
-        })),
+        ...(await collectIncludeFilePermFindings({ configSnapshot, env, platform, execIcacls })),
       );
     }
     findings.push(
-      ...(await collectStateDeepFilesystemFindings({
-        cfg,
-        env,
-        stateDir,
-        platform,
-        execIcacls,
-      })),
+      ...(await collectStateDeepFilesystemFindings({ cfg, env, stateDir, platform, execIcacls })),
     );
     findings.push(...(await collectPluginsTrustFindings({ cfg, stateDir })));
   }

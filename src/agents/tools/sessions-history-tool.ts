@@ -82,10 +82,7 @@ export function createSessionsHistoryTool(opts?: {
         restrictToSpawned,
       });
       if (!resolvedSession.ok) {
-        return jsonResult({
-          status: resolvedSession.status,
-          error: resolvedSession.error,
-        });
+        return jsonResult({ status: resolvedSession.status, error: resolvedSession.error });
       }
       // From here on, use the canonical key (sessionId inputs already resolved).
       const resolvedKey = resolvedSession.key;

@@ -545,9 +545,7 @@ export async function statusCommand(
       Detail: `${health.durationMs}ms`,
     });
 
-    for (const line of formatHealthChannelLines(health, {
-      accountMode: "all",
-    })) {
+    for (const line of formatHealthChannelLines(health, { accountMode: "all" })) {
       const colon = line.indexOf(":");
       if (colon === -1) {
         continue;

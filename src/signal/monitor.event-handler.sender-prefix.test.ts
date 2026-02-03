@@ -12,11 +12,7 @@ describe("signal event handler sender prefix", () => {
   beforeEach(() => {
     dispatchMock.mockReset().mockImplementation(async ({ dispatcher, ctx }) => {
       dispatcher.sendFinalReply({ text: "ok" });
-      return {
-        queuedFinal: true,
-        counts: { tool: 0, block: 0, final: 1 },
-        ctx,
-      };
+      return { queuedFinal: true, counts: { tool: 0, block: 0, final: 1 }, ctx };
     });
     readAllowFromMock.mockReset().mockResolvedValue([]);
   });
@@ -43,12 +39,7 @@ describe("signal event handler sender prefix", () => {
         },
       },
       cfg: {
-        agents: {
-          defaults: {
-            model: "anthropic/claude-opus-4-5",
-            workspace: "/tmp/openclaw",
-          },
-        },
+        agents: { defaults: { model: "anthropic/claude-opus-4-5", workspace: "/tmp/openclaw" } },
         channels: { signal: {} },
       } as never,
       baseUrl: "http://localhost",

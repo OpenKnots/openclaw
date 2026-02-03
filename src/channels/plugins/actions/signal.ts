@@ -22,10 +22,7 @@ function normalizeSignalReactionRecipient(raw: string): string {
   return withoutSignal;
 }
 
-function resolveSignalReactionTarget(raw: string): {
-  recipient?: string;
-  groupId?: string;
-} {
+function resolveSignalReactionTarget(raw: string): { recipient?: string; groupId?: string } {
   const trimmed = raw.trim();
   if (!trimmed) {
     return {};

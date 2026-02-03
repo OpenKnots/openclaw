@@ -86,10 +86,7 @@ function validatePluginConfig(params: {
 }): { ok: boolean; value?: Record<string, unknown>; errors?: string[] } {
   const schema = params.schema;
   if (!schema) {
-    return {
-      ok: true,
-      value: params.value as Record<string, unknown> | undefined,
-    };
+    return { ok: true, value: params.value as Record<string, unknown> | undefined };
   }
   const cacheKey = params.cacheKey ?? JSON.stringify(schema);
   const result = validateJsonSchemaValue({
@@ -98,10 +95,7 @@ function validatePluginConfig(params: {
     value: params.value ?? {},
   });
   if (result.ok) {
-    return {
-      ok: true,
-      value: params.value as Record<string, unknown> | undefined,
-    };
+    return { ok: true, value: params.value as Record<string, unknown> | undefined };
   }
   return { ok: false, errors: result.errors };
 }

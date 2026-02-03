@@ -169,10 +169,7 @@ export function clearHistoryEntriesIfEnabled(params: {
   if (params.limit <= 0) {
     return;
   }
-  clearHistoryEntries({
-    historyMap: params.historyMap,
-    historyKey: params.historyKey,
-  });
+  clearHistoryEntries({ historyMap: params.historyMap, historyKey: params.historyKey });
 }
 
 export function buildHistoryContextFromEntries(params: {

@@ -84,10 +84,7 @@ function ensureTranscriptFile(params: { transcriptPath: string; sessionId: strin
     fs.writeFileSync(params.transcriptPath, `${JSON.stringify(header)}\n`, "utf-8");
     return { ok: true };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : String(err),
-    };
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
 }
 
@@ -117,10 +114,7 @@ function appendAssistantTranscriptMessage(params: {
       sessionId: params.sessionId,
     });
     if (!ensured.ok) {
-      return {
-        ok: false,
-        error: ensured.error ?? "failed to create transcript file",
-      };
+      return { ok: false, error: ensured.error ?? "failed to create transcript file" };
     }
   }
 
@@ -144,10 +138,7 @@ function appendAssistantTranscriptMessage(params: {
   try {
     fs.appendFileSync(transcriptPath, `${JSON.stringify(transcriptEntry)}\n`, "utf-8");
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : String(err),
-    };
+    return { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
 
   return { ok: true, messageId, message: transcriptEntry.message };

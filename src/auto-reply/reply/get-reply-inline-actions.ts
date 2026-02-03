@@ -185,10 +185,7 @@ export async function handleInlineActions(params: {
       const tool = tools.find((candidate) => candidate.name === dispatch.toolName);
       if (!tool) {
         typing.cleanup();
-        return {
-          kind: "reply",
-          reply: { text: `❌ Tool not available: ${dispatch.toolName}` },
-        };
+        return { kind: "reply", reply: { text: `❌ Tool not available: ${dispatch.toolName}` } };
       }
 
       const toolCallId = `cmd_${Date.now()}_${Math.random().toString(16).slice(2)}`;

@@ -322,11 +322,7 @@ export async function createModelSelectionState(params: {
       if (allowedModelKeys.size > 0 && !allowedModelKeys.has(key)) {
         const { updated } = applyModelOverrideToSessionEntry({
           entry: sessionEntry,
-          selection: {
-            provider: defaultProvider,
-            model: defaultModel,
-            isDefault: true,
-          },
+          selection: { provider: defaultProvider, model: defaultModel, isDefault: true },
         });
         if (updated) {
           sessionStore[sessionKey] = sessionEntry;

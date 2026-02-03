@@ -120,9 +120,7 @@ describe("resolveDiscordAutoThreadReplyPlan", () => {
   });
 
   it("does nothing when autoThread is disabled", async () => {
-    const client = {
-      rest: { post: async () => ({ id: "thread" }) },
-    } as unknown as Client;
+    const client = { rest: { post: async () => ({ id: "thread" }) } } as unknown as Client;
     const plan = await resolveDiscordAutoThreadReplyPlan({
       client,
       message: {

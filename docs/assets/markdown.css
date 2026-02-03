@@ -106,10 +106,7 @@
   visibility: hidden;
   pointer-events: none;
   z-index: 20;
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease,
-    visibility 0.18s ease;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
 }
 
 .showcase-preview img {
@@ -149,8 +146,7 @@
   border-radius: var(--radius-sm);
   border: 1px solid color-mix(in oklab, var(--frame-border) 18%, transparent);
   overflow-x: auto;
-  box-shadow: inset 0 0 0 1px
-    color-mix(in oklab, var(--code-accent) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--code-accent) 12%, transparent);
 }
 
 .markdown pre code {
@@ -172,8 +168,7 @@
 .markdown th,
 .markdown td {
   padding: 10px 10px;
-  border-bottom: 1px solid
-    color-mix(in oklab, var(--frame-border) 15%, transparent);
+  border-bottom: 1px solid color-mix(in oklab, var(--frame-border) 15%, transparent);
   vertical-align: top;
 }
 

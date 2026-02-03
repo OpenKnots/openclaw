@@ -40,11 +40,7 @@ describe("resolveChannelEntryMatch", () => {
 
 describe("resolveChannelEntryMatchWithFallback", () => {
   it("prefers direct matches over parent and wildcard", () => {
-    const entries = {
-      a: { allow: true },
-      parent: { allow: false },
-      "*": { allow: false },
-    };
+    const entries = { a: { allow: true }, parent: { allow: false }, "*": { allow: false } };
     const match = resolveChannelEntryMatchWithFallback({
       entries,
       keys: ["a"],
@@ -108,9 +104,7 @@ describe("applyChannelMatchMeta", () => {
 
 describe("resolveChannelMatchConfig", () => {
   it("returns null when no entry is matched", () => {
-    const resolved = resolveChannelMatchConfig({ matchKey: "x" }, () => ({
-      allowed: true,
-    }));
+    const resolved = resolveChannelMatchConfig({ matchKey: "x" }, () => ({ allowed: true }));
     expect(resolved).toBeNull();
   });
 

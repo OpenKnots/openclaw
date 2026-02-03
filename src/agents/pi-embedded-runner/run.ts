@@ -137,9 +137,7 @@ export async function runEmbeddedPiAgent(
         );
       }
 
-      const authStore = ensureAuthProfileStore(agentDir, {
-        allowKeychainPrompt: false,
-      });
+      const authStore = ensureAuthProfileStore(agentDir, { allowKeychainPrompt: false });
       const preferredProfileId = params.authProfileId?.trim();
       let lockedProfileId = params.authProfileIdSource === "user" ? preferredProfileId : undefined;
       if (lockedProfileId) {

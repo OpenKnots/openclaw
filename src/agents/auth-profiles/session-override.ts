@@ -62,39 +62,22 @@ export async function resolveSessionAuthProfileOverride(params: {
     return sessionEntry?.authProfileOverride;
   }
 
-  const store = ensureAuthProfileStore(agentDir, {
-    allowKeychainPrompt: false,
-  });
+  const store = ensureAuthProfileStore(agentDir, { allowKeychainPrompt: false });
   const order = resolveAuthProfileOrder({ cfg, store, provider });
   let current = sessionEntry.authProfileOverride?.trim();
 
   if (current && !store.profiles[current]) {
-    await clearSessionAuthProfileOverride({
-      sessionEntry,
-      sessionStore,
-      sessionKey,
-      storePath,
-    });
+    await clearSessionAuthProfileOverride({ sessionEntry, sessionStore, sessionKey, storePath });
     current = undefined;
   }
 
   if (current && !isProfileForProvider({ provider, profileId: current, store })) {
-    await clearSessionAuthProfileOverride({
-      sessionEntry,
-      sessionStore,
-      sessionKey,
-      storePath,
-    });
+    await clearSessionAuthProfileOverride({ sessionEntry, sessionStore, sessionKey, storePath });
     current = undefined;
   }
 
   if (current && order.length > 0 && !order.includes(current)) {
-    await clearSessionAuthProfileOverride({
-      sessionEntry,
-      sessionStore,
-      sessionKey,
-      storePath,
-    });
+    await clearSessionAuthProfileOverride({ sessionEntry, sessionStore, sessionKey, storePath });
     current = undefined;
   }
 

@@ -107,9 +107,7 @@ describe("resolveHeartbeatIntervalMs", () => {
             },
           },
         },
-        channels: {
-          whatsapp: { allowFrom: ["*"], heartbeat: { showOk: true } },
-        },
+        channels: { whatsapp: { allowFrom: ["*"], heartbeat: { showOk: true } } },
         session: { store: storePath },
       };
       const sessionKey = resolveMainSessionKey(cfg);
@@ -174,11 +172,7 @@ describe("resolveHeartbeatIntervalMs", () => {
         channels: {
           whatsapp: {
             allowFrom: ["*"],
-            heartbeat: {
-              showOk: false,
-              showAlerts: false,
-              useIndicator: false,
-            },
+            heartbeat: { showOk: false, showAlerts: false, useIndicator: false },
           },
         },
         session: { store: storePath },

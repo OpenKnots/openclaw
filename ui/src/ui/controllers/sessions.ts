@@ -32,12 +32,9 @@ export async function loadSessions(
   state.sessionsLoading = true;
   state.sessionsError = null;
   try {
-    const includeGlobal =
-      overrides?.includeGlobal ?? state.sessionsIncludeGlobal;
-    const includeUnknown =
-      overrides?.includeUnknown ?? state.sessionsIncludeUnknown;
-    const activeMinutes =
-      overrides?.activeMinutes ?? toNumber(state.sessionsFilterActive, 0);
+    const includeGlobal = overrides?.includeGlobal ?? state.sessionsIncludeGlobal;
+    const includeUnknown = overrides?.includeUnknown ?? state.sessionsIncludeUnknown;
+    const activeMinutes = overrides?.activeMinutes ?? toNumber(state.sessionsFilterActive, 0);
     const limit = overrides?.limit ?? toNumber(state.sessionsFilterLimit, 0);
     const params: Record<string, unknown> = {
       includeGlobal,
@@ -110,10 +107,7 @@ export async function deleteSession(state: SessionsState, key: string) {
   state.sessionsLoading = true;
   state.sessionsError = null;
   try {
-    await state.client.request("sessions.delete", {
-      key,
-      deleteTranscript: true,
-    });
+    await state.client.request("sessions.delete", { key, deleteTranscript: true });
     await loadSessions(state);
   } catch (err) {
     state.sessionsError = String(err);

@@ -28,8 +28,7 @@ function readAccessToken(value: unknown): string | null {
   }
   if (value && typeof value === "object") {
     const token =
-      (value as { accessToken?: unknown }).accessToken ??
-      (value as { token?: unknown }).token;
+      (value as { accessToken?: unknown }).accessToken ?? (value as { token?: unknown }).token;
     return typeof token === "string" ? token : null;
   }
   return null;
@@ -56,9 +55,7 @@ async function fetchGraphJson<T>(params: {
   });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(
-      `Graph ${params.path} failed (${res.status}): ${text || "unknown error"}`,
-    );
+    throw new Error(`Graph ${params.path} failed (${res.status}): ${text || "unknown error"}`);
   }
   return (await res.json()) as T;
 }
@@ -72,9 +69,7 @@ async function resolveGraphToken(cfg: unknown): Promise<string> {
   }
   const { sdk, authConfig } = await loadMSTeamsSdkWithAuth(creds);
   const tokenProvider = new sdk.MsalTokenProvider(authConfig);
-  const token = await tokenProvider.getAccessToken(
-    "https://graph.microsoft.com",
-  );
+  const token = await tokenProvider.getAccessToken("https://graph.microsoft.com");
   const accessToken = readAccessToken(token);
   if (!accessToken) {
     throw new Error("MS Teams graph token unavailable");
@@ -82,10 +77,7 @@ async function resolveGraphToken(cfg: unknown): Promise<string> {
   return accessToken;
 }
 
-async function listTeamsByName(
-  token: string,
-  query: string,
-): Promise<GraphGroup[]> {
+async function listTeamsByName(token: string, query: string): Promise<GraphGroup[]> {
   const escaped = escapeOData(query);
   const filter = `resourceProvisioningOptions/Any(x:x eq 'Team') and startsWith(displayName,'${escaped}')`;
   const path = `/groups?$filter=${encodeURIComponent(filter)}&$select=id,displayName`;
@@ -93,15 +85,9 @@ async function listTeamsByName(
   return res.value ?? [];
 }
 
-async function listChannelsForTeam(
-  token: string,
-  teamId: string,
-): Promise<GraphChannel[]> {
+async function listChannelsForTeam(token: string, teamId: string): Promise<GraphChannel[]> {
   const path = `/teams/${encodeURIComponent(teamId)}/channels?$select=id,displayName`;
-  const res = await fetchGraphJson<GraphResponse<GraphChannel>>({
-    token,
-    path,
-  });
+  const res = await fetchGraphJson<GraphResponse<GraphChannel>>({ token, path });
   return res.value ?? [];
 }
 
@@ -115,8 +101,7 @@ export async function listMSTeamsDirectoryPeersLive(params: {
     return [];
   }
   const token = await resolveGraphToken(params.cfg);
-  const limit =
-    typeof params.limit === "number" && params.limit > 0 ? params.limit : 20;
+  const limit = typeof params.limit === "number" && params.limit > 0 ? params.limit : 20;
 
   let users: GraphUser[] = [];
   if (query.includes("@")) {
@@ -164,8 +149,7 @@ export async function listMSTeamsDirectoryGroupsLive(params: {
     return [];
   }
   const token = await resolveGraphToken(params.cfg);
-  const limit =
-    typeof params.limit === "number" && params.limit > 0 ? params.limit : 20;
+  const limit = typeof params.limit === "number" && params.limit > 0 ? params.limit : 20;
   const [teamQuery, channelQuery] = rawQuery.includes("/")
     ? rawQuery
         .split("/", 2)

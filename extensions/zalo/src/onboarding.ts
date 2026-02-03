@@ -10,11 +10,7 @@ import {
   normalizeAccountId,
   promptAccountId,
 } from "openclaw/plugin-sdk";
-import {
-  listZaloAccountIds,
-  resolveDefaultZaloAccountId,
-  resolveZaloAccount,
-} from "./accounts.js";
+import { listZaloAccountIds, resolveDefaultZaloAccountId, resolveZaloAccount } from "./accounts.js";
 
 const channel = "zalo" as const;
 
@@ -25,9 +21,7 @@ function setZaloDmPolicy(
   dmPolicy: "pairing" | "allowlist" | "open" | "disabled",
 ) {
   const allowFrom =
-    dmPolicy === "open"
-      ? addWildcardAllowFrom(cfg.channels?.zalo?.allowFrom)
-      : undefined;
+    dmPolicy === "open" ? addWildcardAllowFrom(cfg.channels?.zalo?.allowFrom) : undefined;
   return {
     ...cfg,
     channels: {
@@ -66,17 +60,9 @@ function setZaloUpdateMode(
         },
       } as OpenClawConfig;
     }
-    const accounts = { ...cfg.channels?.zalo?.accounts } as Record<
-      string,
-      Record<string, unknown>
-    >;
+    const accounts = { ...cfg.channels?.zalo?.accounts } as Record<string, Record<string, unknown>>;
     const existing = accounts[accountId] ?? {};
-    const {
-      webhookUrl: _url,
-      webhookSecret: _secret,
-      webhookPath: _path,
-      ...rest
-    } = existing;
+    const { webhookUrl: _url, webhookSecret: _secret, webhookPath: _path, ...rest } = existing;
     accounts[accountId] = rest;
     return {
       ...cfg,
@@ -105,10 +91,7 @@ function setZaloUpdateMode(
     } as OpenClawConfig;
   }
 
-  const accounts = { ...cfg.channels?.zalo?.accounts } as Record<
-    string,
-    Record<string, unknown>
-  >;
+  const accounts = { ...cfg.channels?.zalo?.accounts } as Record<string, Record<string, unknown>>;
   accounts[accountId] = {
     ...accounts[accountId],
     webhookUrl,
@@ -151,9 +134,7 @@ async function promptZaloAllowFrom(params: {
   const entry = await prompter.text({
     message: "Zalo allowFrom (user id)",
     placeholder: "123456789",
-    initialValue: existingAllowFrom[0]
-      ? String(existingAllowFrom[0])
-      : undefined,
+    initialValue: existingAllowFrom[0] ? String(existingAllowFrom[0]) : undefined,
     validate: (value) => {
       const raw = String(value ?? "").trim();
       if (!raw) {
@@ -239,9 +220,7 @@ export const zaloOnboardingAdapter: ChannelOnboardingAdapter = {
       channel,
       configured,
       statusLines: [`Zalo: ${configured ? "configured" : "needs token"}`],
-      selectionHint: configured
-        ? "recommended · configured"
-        : "recommended · newcomer-friendly",
+      selectionHint: configured ? "recommended · configured" : "recommended · newcomer-friendly",
       quickstartScore: configured ? 1 : 10,
     };
   },
@@ -254,9 +233,7 @@ export const zaloOnboardingAdapter: ChannelOnboardingAdapter = {
   }) => {
     const zaloOverride = accountOverrides.zalo?.trim();
     const defaultZaloAccountId = resolveDefaultZaloAccountId(cfg);
-    let zaloAccountId = zaloOverride
-      ? normalizeAccountId(zaloOverride)
-      : defaultZaloAccountId;
+    let zaloAccountId = zaloOverride ? normalizeAccountId(zaloOverride) : defaultZaloAccountId;
     if (shouldPromptAccountIds && !zaloOverride) {
       zaloAccountId = await promptAccountId({
         cfg: cfg,
@@ -269,10 +246,7 @@ export const zaloOnboardingAdapter: ChannelOnboardingAdapter = {
     }
 
     let next = cfg;
-    const resolvedAccount = resolveZaloAccount({
-      cfg: next,
-      accountId: zaloAccountId,
-    });
+    const resolvedAccount = resolveZaloAccount({ cfg: next, accountId: zaloAccountId });
     const accountConfigured = Boolean(resolvedAccount.token);
     const allowEnv = zaloAccountId === DEFAULT_ACCOUNT_ID;
     const canUseEnv = allowEnv && Boolean(process.env.ZALO_BOT_TOKEN?.trim());
@@ -374,9 +348,7 @@ export const zaloOnboardingAdapter: ChannelOnboardingAdapter = {
         await prompter.text({
           message: "Webhook URL (https://...) ",
           validate: (value) =>
-            value?.trim()?.startsWith("https://")
-              ? undefined
-              : "HTTPS URL required",
+            value?.trim()?.startsWith("https://") ? undefined : "HTTPS URL required",
         }),
       ).trim();
       const defaultPath = (() => {

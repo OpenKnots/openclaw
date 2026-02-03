@@ -74,11 +74,7 @@ x-i18n:
   // 认证配置文件元数据（密钥存放在 auth-profiles.json 中）
   auth: {
     profiles: {
-      "anthropic:me@example.com": {
-        provider: "anthropic",
-        mode: "oauth",
-        email: "me@example.com",
-      },
+      "anthropic:me@example.com": { provider: "anthropic", mode: "oauth", email: "me@example.com" },
       "anthropic:work": { provider: "anthropic", mode: "api_key" },
       "openai:default": { provider: "openai", mode: "api_key" },
       "openai-codex:default": { provider: "openai-codex", mode: "oauth" },
@@ -174,9 +170,7 @@ x-i18n:
     typingIntervalSeconds: 5,
     sendPolicy: {
       default: "allow",
-      rules: [
-        { action: "deny", match: { channel: "discord", chatType: "group" } },
-      ],
+      rules: [{ action: "deny", match: { channel: "discord", chatType: "group" } }],
     },
   },
 
@@ -381,10 +375,7 @@ x-i18n:
         to: "+15555550123",
         thinking: "low",
         timeoutSeconds: 300,
-        transform: {
-          module: "./transforms/gmail.js",
-          export: "transformGmail",
-        },
+        transform: { module: "./transforms/gmail.js", export: "transformGmail" },
       },
     ],
     gmail: {

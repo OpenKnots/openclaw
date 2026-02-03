@@ -409,16 +409,11 @@ describe("runWithModelFallback", () => {
 
   it("falls back on timeout abort errors", async () => {
     const cfg = makeCfg();
-    const timeoutCause = Object.assign(new Error("request timed out"), {
-      name: "TimeoutError",
-    });
+    const timeoutCause = Object.assign(new Error("request timed out"), { name: "TimeoutError" });
     const run = vi
       .fn()
       .mockRejectedValueOnce(
-        Object.assign(new Error("aborted"), {
-          name: "AbortError",
-          cause: timeoutCause,
-        }),
+        Object.assign(new Error("aborted"), { name: "AbortError", cause: timeoutCause }),
       )
       .mockResolvedValueOnce("ok");
 
@@ -440,10 +435,7 @@ describe("runWithModelFallback", () => {
     const run = vi
       .fn()
       .mockRejectedValueOnce(
-        Object.assign(new Error("aborted"), {
-          name: "AbortError",
-          reason: "deadline exceeded",
-        }),
+        Object.assign(new Error("aborted"), { name: "AbortError", reason: "deadline exceeded" }),
       )
       .mockResolvedValueOnce("ok");
 

@@ -1,15 +1,7 @@
 import { Type } from "@sinclair/typebox";
 import { runZca, parseJsonOutput } from "./zca.js";
 
-const ACTIONS = [
-  "send",
-  "image",
-  "link",
-  "friends",
-  "groups",
-  "me",
-  "status",
-] as const;
+const ACTIONS = ["send", "image", "link", "friends", "groups", "me", "status"] as const;
 
 function stringEnum<T extends readonly string[]>(
   values: T,
@@ -25,12 +17,8 @@ function stringEnum<T extends readonly string[]>(
 // Tool schema - avoiding Type.Union per tool schema guardrails
 export const ZalouserToolSchema = Type.Object(
   {
-    action: stringEnum(ACTIONS, {
-      description: `Action to perform: ${ACTIONS.join(", ")}`,
-    }),
-    threadId: Type.Optional(
-      Type.String({ description: "Thread ID for messaging" }),
-    ),
+    action: stringEnum(ACTIONS, { description: `Action to perform: ${ACTIONS.join(", ")}` }),
+    threadId: Type.Optional(Type.String({ description: "Thread ID for messaging" })),
     message: Type.Optional(Type.String({ description: "Message text" })),
     isGroup: Type.Optional(Type.Boolean({ description: "Is group chat" })),
     profile: Type.Optional(Type.String({ description: "Profile name" })),
@@ -120,9 +108,7 @@ export async function executeZalouserTool(
       }
 
       case "friends": {
-        const args = params.query
-          ? ["friend", "find", params.query]
-          : ["friend", "list", "-j"];
+        const args = params.query ? ["friend", "find", params.query] : ["friend", "list", "-j"];
         const result = await runZca(args, { profile: params.profile });
         if (!result.ok) {
           throw new Error(result.stderr || "Failed to get friends");

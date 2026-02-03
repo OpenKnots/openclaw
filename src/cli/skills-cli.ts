@@ -125,12 +125,7 @@ export function formatSkillsList(report: SkillStatusReport, opts: SkillsListOpti
     { key: "Source", header: "Source", minWidth: 10 },
   ];
   if (opts.verbose) {
-    columns.push({
-      key: "Missing",
-      header: "Missing",
-      minWidth: 18,
-      flex: true,
-    });
+    columns.push({ key: "Missing", header: "Missing", minWidth: 18, flex: true });
   }
 
   const lines: string[] = [];

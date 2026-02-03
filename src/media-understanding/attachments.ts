@@ -284,11 +284,7 @@ export class MediaAttachmentCache {
     try {
       const fetchImpl = (input: RequestInfo | URL, init?: RequestInit) =>
         fetchWithTimeout(resolveRequestUrl(input), init ?? {}, params.timeoutMs, fetch);
-      const fetched = await fetchRemoteMedia({
-        url,
-        fetchImpl,
-        maxBytes: params.maxBytes,
-      });
+      const fetched = await fetchRemoteMedia({ url, fetchImpl, maxBytes: params.maxBytes });
       entry.buffer = fetched.buffer;
       entry.bufferMime =
         entry.attachment.mime ??

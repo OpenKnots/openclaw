@@ -137,11 +137,7 @@ async function shouldProcessLineEvent(
     allowFrom: account.config.allowFrom,
     storeAllowFrom,
   });
-  const groupConfig = resolveLineGroupConfig({
-    config: account.config,
-    groupId,
-    roomId,
-  });
+  const groupConfig = resolveLineGroupConfig({ config: account.config, groupId, roomId });
   const groupAllowOverride = groupConfig?.allowFrom;
   const fallbackGroupAllowFrom = account.config.allowFrom?.length
     ? account.config.allowFrom

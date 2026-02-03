@@ -84,10 +84,7 @@ export async function inspectPathPermissions(
   const platform = opts?.platform ?? process.platform;
 
   if (platform === "win32") {
-    const acl = await inspectWindowsAcl(targetPath, {
-      env: opts?.env,
-      exec: opts?.exec,
-    });
+    const acl = await inspectWindowsAcl(targetPath, { env: opts?.env, exec: opts?.exec });
     if (!acl.ok) {
       return {
         ok: true,
@@ -148,10 +145,7 @@ export function formatPermissionRemediation(params: {
   env?: NodeJS.ProcessEnv;
 }): string {
   if (params.perms.source === "windows-acl") {
-    return formatIcaclsResetCommand(params.targetPath, {
-      isDir: params.isDir,
-      env: params.env,
-    });
+    return formatIcaclsResetCommand(params.targetPath, { isDir: params.isDir, env: params.env });
   }
   const mode = params.posixMode.toString(8).padStart(3, "0");
   return `chmod ${mode} ${params.targetPath}`;

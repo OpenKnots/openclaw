@@ -78,9 +78,7 @@ export function loadOrCreateDeviceIdentity(filePath: string = DEFAULT_FILE): Dev
             ...parsed,
             deviceId: derivedId,
           };
-          fs.writeFileSync(filePath, `${JSON.stringify(updated, null, 2)}\n`, {
-            mode: 0o600,
-          });
+          fs.writeFileSync(filePath, `${JSON.stringify(updated, null, 2)}\n`, { mode: 0o600 });
           try {
             fs.chmodSync(filePath, 0o600);
           } catch {
@@ -112,9 +110,7 @@ export function loadOrCreateDeviceIdentity(filePath: string = DEFAULT_FILE): Dev
     privateKeyPem: identity.privateKeyPem,
     createdAtMs: Date.now(),
   };
-  fs.writeFileSync(filePath, `${JSON.stringify(stored, null, 2)}\n`, {
-    mode: 0o600,
-  });
+  fs.writeFileSync(filePath, `${JSON.stringify(stored, null, 2)}\n`, { mode: 0o600 });
   try {
     fs.chmodSync(filePath, 0o600);
   } catch {

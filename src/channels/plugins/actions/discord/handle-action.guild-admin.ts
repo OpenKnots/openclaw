@@ -24,12 +24,7 @@ export async function tryHandleDiscordMessageActionGuildAdmin(params: {
       required: true,
     });
     return await handleDiscordAction(
-      {
-        action: "memberInfo",
-        accountId: accountId ?? undefined,
-        guildId,
-        userId,
-      },
+      { action: "memberInfo", accountId: accountId ?? undefined, guildId, userId },
       cfg,
     );
   }
@@ -283,11 +278,7 @@ export async function tryHandleDiscordMessageActionGuildAdmin(params: {
       required: true,
     });
     return await handleDiscordAction(
-      {
-        action: "categoryDelete",
-        accountId: accountId ?? undefined,
-        categoryId,
-      },
+      { action: "categoryDelete", accountId: accountId ?? undefined, categoryId },
       cfg,
     );
   }
@@ -298,12 +289,7 @@ export async function tryHandleDiscordMessageActionGuildAdmin(params: {
     });
     const userId = readStringParam(actionParams, "userId", { required: true });
     return await handleDiscordAction(
-      {
-        action: "voiceStatus",
-        accountId: accountId ?? undefined,
-        guildId,
-        userId,
-      },
+      { action: "voiceStatus", accountId: accountId ?? undefined, guildId, userId },
       cfg,
     );
   }

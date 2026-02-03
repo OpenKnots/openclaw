@@ -52,10 +52,7 @@ async function runCliEntry(params: {
     return null;
   }
   const args = params.entry.args ?? [];
-  const timeoutMs = resolveTimeoutMsFromConfig({
-    config: params.config,
-    entry: params.entry,
-  });
+  const timeoutMs = resolveTimeoutMsFromConfig({ config: params.config, entry: params.entry });
   const templCtx = {
     ...params.ctx,
     LinkUrl: params.url,
@@ -126,9 +123,7 @@ export async function runLinkUnderstanding(params: {
   }
 
   const message = params.message ?? params.ctx.CommandBody ?? params.ctx.RawBody ?? params.ctx.Body;
-  const links = extractLinksFromMessage(message ?? "", {
-    maxLinks: config?.maxLinks,
-  });
+  const links = extractLinksFromMessage(message ?? "", { maxLinks: config?.maxLinks });
   if (links.length === 0) {
     return { urls: [], outputs: [] };
   }

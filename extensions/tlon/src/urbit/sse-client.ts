@@ -30,11 +30,7 @@ export class UrbitSSEClient {
   }> = [];
   eventHandlers = new Map<
     number,
-    {
-      event?: (data: unknown) => void;
-      err?: (error: unknown) => void;
-      quit?: () => void;
-    }
+    { event?: (data: unknown) => void; err?: (error: unknown) => void; quit?: () => void }
   >();
   aborted = false;
   streamController: AbortController | null = null;
@@ -91,11 +87,7 @@ export class UrbitSSEClient {
     } as const;
 
     this.subscriptions.push(subscription);
-    this.eventHandlers.set(subId, {
-      event: params.event,
-      err: params.err,
-      quit: params.quit,
-    });
+    this.eventHandlers.set(subId, { event: params.event, err: params.err, quit: params.quit });
 
     if (this.isConnected) {
       try {
@@ -212,8 +204,7 @@ export class UrbitSSEClient {
     if (!body) {
       return;
     }
-    const stream =
-      body instanceof ReadableStream ? Readable.fromWeb(body) : body;
+    const stream = body instanceof ReadableStream ? Readable.fromWeb(body) : body;
     let buffer = "";
 
     try {
@@ -253,11 +244,7 @@ export class UrbitSSEClient {
     }
 
     try {
-      const parsed = JSON.parse(data) as {
-        id?: number;
-        json?: unknown;
-        response?: string;
-      };
+      const parsed = JSON.parse(data) as { id?: number; json?: unknown; response?: string };
 
       if (parsed.response === "quit") {
         if (parsed.id) {

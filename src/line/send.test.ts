@@ -88,10 +88,7 @@ describe("createTextMessageWithQuickReplies", () => {
   it("quick replies use label as both label and text", () => {
     const message = createTextMessageWithQuickReplies("Pick one:", ["Apple", "Banana"]);
 
-    const firstAction = message.quickReply.items[0].action as {
-      label: string;
-      text: string;
-    };
+    const firstAction = message.quickReply.items[0].action as { label: string; text: string };
     expect(firstAction.label).toBe("Apple");
     expect(firstAction.text).toBe("Apple");
   });

@@ -117,11 +117,7 @@ async function buildReminderContextLines(params: {
   }
   const cfg = loadConfig();
   const { mainKey, alias } = resolveMainSessionAlias(cfg);
-  const resolvedKey = resolveInternalSessionKey({
-    key: sessionKey,
-    alias,
-    mainKey,
-  });
+  const resolvedKey = resolveInternalSessionKey({ key: sessionKey, alias, mainKey });
   try {
     const res = await callGatewayTool<{ messages: Array<unknown> }>(
       "chat.history",
@@ -232,10 +228,7 @@ Use jobId as the canonical identifier; id is accepted for compatibility. Use con
           if (job && typeof job === "object" && !("agentId" in job)) {
             const cfg = loadConfig();
             const agentId = opts?.agentSessionKey
-              ? resolveSessionAgentId({
-                  sessionKey: opts.agentSessionKey,
-                  config: cfg,
-                })
+              ? resolveSessionAgentId({ sessionKey: opts.agentSessionKey, config: cfg })
               : undefined;
             if (agentId) {
               (job as { agentId?: string }).agentId = agentId;

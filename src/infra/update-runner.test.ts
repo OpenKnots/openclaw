@@ -52,9 +52,7 @@ describe("runGatewayUpdate", () => {
       [`git -C ${tempDir} rev-parse --show-toplevel`]: { stdout: tempDir },
       [`git -C ${tempDir} rev-parse HEAD`]: { stdout: "abc123" },
       [`git -C ${tempDir} rev-parse --abbrev-ref HEAD`]: { stdout: "main" },
-      [`git -C ${tempDir} status --porcelain -- :!dist/control-ui/`]: {
-        stdout: " M README.md",
-      },
+      [`git -C ${tempDir} status --porcelain -- :!dist/control-ui/`]: { stdout: " M README.md" },
     });
 
     const result = await runGatewayUpdate({
@@ -79,17 +77,13 @@ describe("runGatewayUpdate", () => {
       [`git -C ${tempDir} rev-parse --show-toplevel`]: { stdout: tempDir },
       [`git -C ${tempDir} rev-parse HEAD`]: { stdout: "abc123" },
       [`git -C ${tempDir} rev-parse --abbrev-ref HEAD`]: { stdout: "main" },
-      [`git -C ${tempDir} status --porcelain -- :!dist/control-ui/`]: {
-        stdout: "",
-      },
+      [`git -C ${tempDir} status --porcelain -- :!dist/control-ui/`]: { stdout: "" },
       [`git -C ${tempDir} rev-parse --abbrev-ref --symbolic-full-name @{upstream}`]: {
         stdout: "origin/main",
       },
       [`git -C ${tempDir} fetch --all --prune --tags`]: { stdout: "" },
       [`git -C ${tempDir} rev-parse @{upstream}`]: { stdout: "upstream123" },
-      [`git -C ${tempDir} rev-list --max-count=10 upstream123`]: {
-        stdout: "upstream123\n",
-      },
+      [`git -C ${tempDir} rev-list --max-count=10 upstream123`]: { stdout: "upstream123\n" },
       [`git -C ${tempDir} rebase upstream123`]: { code: 1, stderr: "conflict" },
       [`git -C ${tempDir} rebase --abort`]: { stdout: "" },
     });
@@ -109,11 +103,7 @@ describe("runGatewayUpdate", () => {
     await fs.mkdir(path.join(tempDir, ".git"));
     await fs.writeFile(
       path.join(tempDir, "package.json"),
-      JSON.stringify({
-        name: "openclaw",
-        version: "1.0.0",
-        packageManager: "pnpm@8.0.0",
-      }),
+      JSON.stringify({ name: "openclaw", version: "1.0.0", packageManager: "pnpm@8.0.0" }),
       "utf-8",
     );
     const stableTag = "v1.0.1-1";
@@ -121,9 +111,7 @@ describe("runGatewayUpdate", () => {
     const { runner, calls } = createRunner({
       [`git -C ${tempDir} rev-parse --show-toplevel`]: { stdout: tempDir },
       [`git -C ${tempDir} rev-parse HEAD`]: { stdout: "abc123" },
-      [`git -C ${tempDir} status --porcelain -- :!dist/control-ui/`]: {
-        stdout: "",
-      },
+      [`git -C ${tempDir} status --porcelain -- :!dist/control-ui/`]: { stdout: "" },
       [`git -C ${tempDir} fetch --all --prune --tags`]: { stdout: "" },
       [`git -C ${tempDir} tag --list v* --sort=-v:refname`]: {
         stdout: `${stableTag}\n${betaTag}\n`,

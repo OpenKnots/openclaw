@@ -76,10 +76,7 @@ export async function runCliAgent(params: {
     config: params.config,
     sessionKey: params.sessionKey,
     sessionId: params.sessionId,
-    warn: makeBootstrapWarn({
-      sessionLabel,
-      warn: (message) => log.warn(message),
-    }),
+    warn: makeBootstrapWarn({ sessionLabel, warn: (message) => log.warn(message) }),
   });
   const { defaultAgentId, sessionAgentId } = resolveSessionAgentIds({
     sessionKey: params.sessionKey,

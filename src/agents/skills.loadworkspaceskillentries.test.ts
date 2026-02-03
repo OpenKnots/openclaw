@@ -46,20 +46,14 @@ describe("loadWorkspaceSkillEntries", () => {
     const bundledDir = path.join(workspaceDir, ".bundled");
     const pluginRoot = path.join(workspaceDir, ".openclaw", "extensions", "open-prose");
 
-    await fs.mkdir(path.join(pluginRoot, "skills", "prose"), {
-      recursive: true,
-    });
+    await fs.mkdir(path.join(pluginRoot, "skills", "prose"), { recursive: true });
     await fs.writeFile(
       path.join(pluginRoot, "openclaw.plugin.json"),
       JSON.stringify(
         {
           id: "open-prose",
           skills: ["./skills"],
-          configSchema: {
-            type: "object",
-            additionalProperties: false,
-            properties: {},
-          },
+          configSchema: { type: "object", additionalProperties: false, properties: {} },
         },
         null,
         2,
@@ -91,20 +85,14 @@ describe("loadWorkspaceSkillEntries", () => {
     const bundledDir = path.join(workspaceDir, ".bundled");
     const pluginRoot = path.join(workspaceDir, ".openclaw", "extensions", "open-prose");
 
-    await fs.mkdir(path.join(pluginRoot, "skills", "prose"), {
-      recursive: true,
-    });
+    await fs.mkdir(path.join(pluginRoot, "skills", "prose"), { recursive: true });
     await fs.writeFile(
       path.join(pluginRoot, "openclaw.plugin.json"),
       JSON.stringify(
         {
           id: "open-prose",
           skills: ["./skills"],
-          configSchema: {
-            type: "object",
-            additionalProperties: false,
-            properties: {},
-          },
+          configSchema: { type: "object", additionalProperties: false, properties: {} },
         },
         null,
         2,

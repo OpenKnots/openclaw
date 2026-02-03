@@ -298,9 +298,7 @@ describe("checkTwitchAccessControl", () => {
         botUsername: "testbot",
       });
       expect(result.allowed).toBe(false);
-      expect(result.reason).toContain(
-        "does not have any of the required roles",
-      );
+      expect(result.reason).toContain("does not have any of the required roles");
     });
 
     it("allows all users when role is 'all'", () => {

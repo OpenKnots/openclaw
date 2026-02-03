@@ -24,13 +24,7 @@ import {
   formatNextRun,
 } from "../presenter";
 
-export type AgentsPanel =
-  | "overview"
-  | "files"
-  | "tools"
-  | "skills"
-  | "channels"
-  | "cron";
+export type AgentsPanel = "overview" | "files" | "tools" | "skills" | "channels" | "cron";
 
 export type AgentsProps = {
   loading: boolean;
@@ -73,16 +67,8 @@ export type AgentsProps = {
   onFileDraftChange: (name: string, content: string) => void;
   onFileReset: (name: string) => void;
   onFileSave: (name: string) => void;
-  onToolsProfileChange: (
-    agentId: string,
-    profile: string | null,
-    clearAllow: boolean,
-  ) => void;
-  onToolsOverridesChange: (
-    agentId: string,
-    alsoAllow: string[],
-    deny: string[],
-  ) => void;
+  onToolsProfileChange: (agentId: string, profile: string | null, clearAllow: boolean) => void;
+  onToolsOverridesChange: (agentId: string, alsoAllow: string[], deny: string[]) => void;
   onConfigReload: () => void;
   onConfigSave: () => void;
   onModelChange: (agentId: string, modelId: string | null) => void;
@@ -91,11 +77,7 @@ export type AgentsProps = {
   onCronRefresh: () => void;
   onSkillsFilterChange: (next: string) => void;
   onSkillsRefresh: () => void;
-  onAgentSkillToggle: (
-    agentId: string,
-    skillName: string,
-    enabled: boolean,
-  ) => void;
+  onAgentSkillToggle: (agentId: string, skillName: string, enabled: boolean) => void;
   onAgentSkillsClear: (agentId: string) => void;
   onAgentSkillsDisableAll: (agentId: string) => void;
 };
@@ -108,11 +90,7 @@ const TOOL_SECTIONS = [
       { id: "read", label: "read", description: "Read file contents" },
       { id: "write", label: "write", description: "Create or overwrite files" },
       { id: "edit", label: "edit", description: "Make precise edits" },
-      {
-        id: "apply_patch",
-        label: "apply_patch",
-        description: "Patch files (OpenAI)",
-      },
+      { id: "apply_patch", label: "apply_patch", description: "Patch files (OpenAI)" },
     ],
   },
   {
@@ -120,11 +98,7 @@ const TOOL_SECTIONS = [
     label: "Runtime",
     tools: [
       { id: "exec", label: "exec", description: "Run shell commands" },
-      {
-        id: "process",
-        label: "process",
-        description: "Manage background processes",
-      },
+      { id: "process", label: "process", description: "Manage background processes" },
     ],
   },
   {
@@ -139,47 +113,19 @@ const TOOL_SECTIONS = [
     id: "memory",
     label: "Memory",
     tools: [
-      {
-        id: "memory_search",
-        label: "memory_search",
-        description: "Semantic search",
-      },
-      {
-        id: "memory_get",
-        label: "memory_get",
-        description: "Read memory files",
-      },
+      { id: "memory_search", label: "memory_search", description: "Semantic search" },
+      { id: "memory_get", label: "memory_get", description: "Read memory files" },
     ],
   },
   {
     id: "sessions",
     label: "Sessions",
     tools: [
-      {
-        id: "sessions_list",
-        label: "sessions_list",
-        description: "List sessions",
-      },
-      {
-        id: "sessions_history",
-        label: "sessions_history",
-        description: "Session history",
-      },
-      {
-        id: "sessions_send",
-        label: "sessions_send",
-        description: "Send to session",
-      },
-      {
-        id: "sessions_spawn",
-        label: "sessions_spawn",
-        description: "Spawn sub-agent",
-      },
-      {
-        id: "session_status",
-        label: "session_status",
-        description: "Session status",
-      },
+      { id: "sessions_list", label: "sessions_list", description: "List sessions" },
+      { id: "sessions_history", label: "sessions_history", description: "Session history" },
+      { id: "sessions_send", label: "sessions_send", description: "Send to session" },
+      { id: "sessions_spawn", label: "sessions_spawn", description: "Spawn sub-agent" },
+      { id: "session_status", label: "session_status", description: "Session status" },
     ],
   },
   {
@@ -211,16 +157,12 @@ const TOOL_SECTIONS = [
   {
     id: "agents",
     label: "Agents",
-    tools: [
-      { id: "agents_list", label: "agents_list", description: "List agents" },
-    ],
+    tools: [{ id: "agents_list", label: "agents_list", description: "List agents" }],
   },
   {
     id: "media",
     label: "Media",
-    tools: [
-      { id: "image", label: "image", description: "Image understanding" },
-    ],
+    tools: [{ id: "image", label: "image", description: "Image understanding" }],
   },
 ];
 
@@ -253,11 +195,7 @@ type AgentConfigEntry = {
 
 type ConfigSnapshot = {
   agents?: {
-    defaults?: {
-      workspace?: string;
-      model?: unknown;
-      models?: Record<string, { alias?: string }>;
-    };
+    defaults?: { workspace?: string; model?: unknown; models?: Record<string, { alias?: string }> };
     list?: AgentConfigEntry[];
   };
   tools?: {
@@ -268,11 +206,7 @@ type ConfigSnapshot = {
   };
 };
 
-function normalizeAgentLabel(agent: {
-  id: string;
-  name?: string;
-  identity?: { name?: string };
-}) {
+function normalizeAgentLabel(agent: { id: string; name?: string; identity?: { name?: string } }) {
   return agent.name?.trim() || agent.identity?.name?.trim() || agent.id;
 }
 
@@ -294,11 +228,7 @@ function isLikelyEmoji(value: string) {
   if (!hasNonAscii) {
     return false;
   }
-  if (
-    trimmed.includes("://") ||
-    trimmed.includes("/") ||
-    trimmed.includes(".")
-  ) {
+  if (trimmed.includes("://") || trimmed.includes("/") || trimmed.includes(".")) {
     return false;
   }
   return true;
@@ -348,10 +278,7 @@ function formatBytes(bytes?: number) {
   return `${size.toFixed(size < 10 ? 1 : 0)} ${units[unitIndex]}`;
 }
 
-function resolveAgentConfig(
-  config: Record<string, unknown> | null,
-  agentId: string,
-) {
+function resolveAgentConfig(config: Record<string, unknown> | null, agentId: string) {
   const cfg = config as ConfigSnapshot | null;
   const list = cfg?.agents?.list ?? [];
   const entry = list.find((agent) => agent?.id === agentId);
@@ -380,14 +307,9 @@ function buildAgentContext(
 ): AgentContext {
   const config = resolveAgentConfig(configForm, agent.id);
   const workspaceFromFiles =
-    agentFilesList && agentFilesList.agentId === agent.id
-      ? agentFilesList.workspace
-      : null;
+    agentFilesList && agentFilesList.agentId === agent.id ? agentFilesList.workspace : null;
   const workspace =
-    workspaceFromFiles ||
-    config.entry?.workspace ||
-    config.defaults?.workspace ||
-    "default";
+    workspaceFromFiles || config.entry?.workspace || config.defaults?.workspace || "default";
   const modelLabel = config.entry?.model
     ? resolveModelLabel(config.entry?.model)
     : resolveModelLabel(config.defaults?.model);
@@ -398,9 +320,7 @@ function buildAgentContext(
     config.entry?.name ||
     agent.id;
   const identityEmoji = resolveAgentEmoji(agent, agentIdentity) || "-";
-  const skillFilter = Array.isArray(config.entry?.skills)
-    ? config.entry?.skills
-    : null;
+  const skillFilter = Array.isArray(config.entry?.skills) ? config.entry?.skills : null;
   const skillCount = skillFilter?.length ?? null;
   return {
     workspace,
@@ -423,12 +343,8 @@ function resolveModelLabel(model?: unknown): string {
     const record = model as { primary?: string; fallbacks?: string[] };
     const primary = record.primary?.trim();
     if (primary) {
-      const fallbackCount = Array.isArray(record.fallbacks)
-        ? record.fallbacks.length
-        : 0;
-      return fallbackCount > 0
-        ? `${primary} (+${fallbackCount} fallback)`
-        : primary;
+      const fallbackCount = Array.isArray(record.fallbacks) ? record.fallbacks.length : 0;
+      return fallbackCount > 0 ? `${primary} (+${fallbackCount} fallback)` : primary;
     }
   }
   return "-";
@@ -515,30 +431,24 @@ function resolveConfiguredModels(
           ? (modelRaw as { alias?: string }).alias?.trim()
           : undefined
         : undefined;
-    const label =
-      alias && alias !== trimmed ? `${alias} (${trimmed})` : trimmed;
+    const label = alias && alias !== trimmed ? `${alias} (${trimmed})` : trimmed;
     options.push({ value: trimmed, label });
   }
   return options;
 }
 
-function buildModelOptions(
-  configForm: Record<string, unknown> | null,
-  current?: string | null,
-) {
+function buildModelOptions(configForm: Record<string, unknown> | null, current?: string | null) {
   const options = resolveConfiguredModels(configForm);
-  const hasCurrent = current
-    ? options.some((option) => option.value === current)
-    : false;
+  const hasCurrent = current ? options.some((option) => option.value === current) : false;
   if (current && !hasCurrent) {
     options.unshift({ value: current, label: `Current (${current})` });
   }
   if (options.length === 0) {
-    return html` <option value="" disabled>No configured models</option> `;
+    return html`
+      <option value="" disabled>No configured models</option>
+    `;
   }
-  return options.map(
-    (option) => html`<option value=${option.value}>${option.label}</option>`,
-  );
+  return options.map((option) => html`<option value=${option.value}>${option.label}</option>`);
 }
 
 type CompiledPattern =
@@ -558,10 +468,7 @@ function compilePattern(pattern: string): CompiledPattern {
     return { kind: "exact", value: normalized };
   }
   const escaped = normalized.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
-  return {
-    kind: "regex",
-    value: new RegExp(`^${escaped.replaceAll("\\*", ".*")}$`),
-  };
+  return { kind: "regex", value: new RegExp(`^${escaped.replaceAll("\\*", ".*")}$`) };
 }
 
 function compilePatterns(patterns?: string[]): CompiledPattern[] {
@@ -630,8 +537,7 @@ function matchesList(name: string, list?: string[]) {
 export function renderAgents(props: AgentsProps) {
   const agents = props.agentsList?.agents ?? [];
   const defaultId = props.agentsList?.defaultId ?? null;
-  const selectedId =
-    props.selectedAgentId ?? defaultId ?? agents[0]?.id ?? null;
+  const selectedId = props.selectedAgentId ?? defaultId ?? agents[0]?.id ?? null;
   const selectedAgent = selectedId
     ? (agents.find((agent) => agent.id === selectedId) ?? null)
     : null;
@@ -644,171 +550,171 @@ export function renderAgents(props: AgentsProps) {
             <div class="card-title">Agents</div>
             <div class="card-sub">${agents.length} configured.</div>
           </div>
-          <button
-            class="btn btn--sm"
-            ?disabled=${props.loading}
-            @click=${props.onRefresh}
-          >
+          <button class="btn btn--sm" ?disabled=${props.loading} @click=${props.onRefresh}>
             ${props.loading ? "Loading…" : "Refresh"}
           </button>
         </div>
-        ${props.error
-          ? html`<div class="callout danger" style="margin-top: 12px;">
-              ${props.error}
-            </div>`
-          : nothing}
+        ${
+          props.error
+            ? html`<div class="callout danger" style="margin-top: 12px;">${props.error}</div>`
+            : nothing
+        }
         <div class="agent-list" style="margin-top: 12px;">
-          ${agents.length === 0
-            ? html` <div class="muted">No agents found.</div> `
-            : agents.map((agent) => {
-                const badge = agentBadgeText(agent.id, defaultId);
-                const emoji = resolveAgentEmoji(
-                  agent,
-                  props.agentIdentityById[agent.id] ?? null,
-                );
-                return html`
-                  <button
-                    type="button"
-                    class="agent-row ${selectedId === agent.id ? "active" : ""}"
-                    @click=${() => props.onSelectAgent(agent.id)}
-                  >
-                    <div class="agent-avatar">
-                      ${emoji || normalizeAgentLabel(agent).slice(0, 1)}
-                    </div>
-                    <div class="agent-info">
-                      <div class="agent-title">
-                        ${normalizeAgentLabel(agent)}
+          ${
+            agents.length === 0
+              ? html`
+                  <div class="muted">No agents found.</div>
+                `
+              : agents.map((agent) => {
+                  const badge = agentBadgeText(agent.id, defaultId);
+                  const emoji = resolveAgentEmoji(agent, props.agentIdentityById[agent.id] ?? null);
+                  return html`
+                    <button
+                      type="button"
+                      class="agent-row ${selectedId === agent.id ? "active" : ""}"
+                      @click=${() => props.onSelectAgent(agent.id)}
+                    >
+                      <div class="agent-avatar">
+                        ${emoji || normalizeAgentLabel(agent).slice(0, 1)}
                       </div>
-                      <div class="agent-sub mono">${agent.id}</div>
-                    </div>
-                    ${badge
-                      ? html`<span class="agent-pill">${badge}</span>`
-                      : nothing}
-                  </button>
-                `;
-              })}
+                      <div class="agent-info">
+                        <div class="agent-title">${normalizeAgentLabel(agent)}</div>
+                        <div class="agent-sub mono">${agent.id}</div>
+                      </div>
+                      ${badge ? html`<span class="agent-pill">${badge}</span>` : nothing}
+                    </button>
+                  `;
+                })
+          }
         </div>
       </section>
       <section class="agents-main">
-        ${!selectedAgent
-          ? html`
-              <div class="card">
-                <div class="card-title">Select an agent</div>
-                <div class="card-sub">
-                  Pick an agent to inspect its workspace and tools.
+        ${
+          !selectedAgent
+            ? html`
+                <div class="card">
+                  <div class="card-title">Select an agent</div>
+                  <div class="card-sub">Pick an agent to inspect its workspace and tools.</div>
                 </div>
-              </div>
-            `
-          : html`
+              `
+            : html`
               ${renderAgentHeader(
                 selectedAgent,
                 defaultId,
                 props.agentIdentityById[selectedAgent.id] ?? null,
               )}
-              ${renderAgentTabs(props.activePanel, (panel) =>
-                props.onSelectPanel(panel),
-              )}
-              ${props.activePanel === "overview"
-                ? renderAgentOverview({
-                    agent: selectedAgent,
-                    defaultId,
-                    configForm: props.configForm,
-                    agentFilesList: props.agentFilesList,
-                    agentIdentity:
-                      props.agentIdentityById[selectedAgent.id] ?? null,
-                    agentIdentityError: props.agentIdentityError,
-                    agentIdentityLoading: props.agentIdentityLoading,
-                    configLoading: props.configLoading,
-                    configSaving: props.configSaving,
-                    configDirty: props.configDirty,
-                    onConfigReload: props.onConfigReload,
-                    onConfigSave: props.onConfigSave,
-                    onModelChange: props.onModelChange,
-                    onModelFallbacksChange: props.onModelFallbacksChange,
-                  })
-                : nothing}
-              ${props.activePanel === "files"
-                ? renderAgentFiles({
-                    agentId: selectedAgent.id,
-                    agentFilesList: props.agentFilesList,
-                    agentFilesLoading: props.agentFilesLoading,
-                    agentFilesError: props.agentFilesError,
-                    agentFileActive: props.agentFileActive,
-                    agentFileContents: props.agentFileContents,
-                    agentFileDrafts: props.agentFileDrafts,
-                    agentFileSaving: props.agentFileSaving,
-                    onLoadFiles: props.onLoadFiles,
-                    onSelectFile: props.onSelectFile,
-                    onFileDraftChange: props.onFileDraftChange,
-                    onFileReset: props.onFileReset,
-                    onFileSave: props.onFileSave,
-                  })
-                : nothing}
-              ${props.activePanel === "tools"
-                ? renderAgentTools({
-                    agentId: selectedAgent.id,
-                    configForm: props.configForm,
-                    configLoading: props.configLoading,
-                    configSaving: props.configSaving,
-                    configDirty: props.configDirty,
-                    onProfileChange: props.onToolsProfileChange,
-                    onOverridesChange: props.onToolsOverridesChange,
-                    onConfigReload: props.onConfigReload,
-                    onConfigSave: props.onConfigSave,
-                  })
-                : nothing}
-              ${props.activePanel === "skills"
-                ? renderAgentSkills({
-                    agentId: selectedAgent.id,
-                    report: props.agentSkillsReport,
-                    loading: props.agentSkillsLoading,
-                    error: props.agentSkillsError,
-                    activeAgentId: props.agentSkillsAgentId,
-                    configForm: props.configForm,
-                    configLoading: props.configLoading,
-                    configSaving: props.configSaving,
-                    configDirty: props.configDirty,
-                    filter: props.skillsFilter,
-                    onFilterChange: props.onSkillsFilterChange,
-                    onRefresh: props.onSkillsRefresh,
-                    onToggle: props.onAgentSkillToggle,
-                    onClear: props.onAgentSkillsClear,
-                    onDisableAll: props.onAgentSkillsDisableAll,
-                    onConfigReload: props.onConfigReload,
-                    onConfigSave: props.onConfigSave,
-                  })
-                : nothing}
-              ${props.activePanel === "channels"
-                ? renderAgentChannels({
-                    agent: selectedAgent,
-                    defaultId,
-                    configForm: props.configForm,
-                    agentFilesList: props.agentFilesList,
-                    agentIdentity:
-                      props.agentIdentityById[selectedAgent.id] ?? null,
-                    snapshot: props.channelsSnapshot,
-                    loading: props.channelsLoading,
-                    error: props.channelsError,
-                    lastSuccess: props.channelsLastSuccess,
-                    onRefresh: props.onChannelsRefresh,
-                  })
-                : nothing}
-              ${props.activePanel === "cron"
-                ? renderAgentCron({
-                    agent: selectedAgent,
-                    defaultId,
-                    configForm: props.configForm,
-                    agentFilesList: props.agentFilesList,
-                    agentIdentity:
-                      props.agentIdentityById[selectedAgent.id] ?? null,
-                    jobs: props.cronJobs,
-                    status: props.cronStatus,
-                    loading: props.cronLoading,
-                    error: props.cronError,
-                    onRefresh: props.onCronRefresh,
-                  })
-                : nothing}
-            `}
+              ${renderAgentTabs(props.activePanel, (panel) => props.onSelectPanel(panel))}
+              ${
+                props.activePanel === "overview"
+                  ? renderAgentOverview({
+                      agent: selectedAgent,
+                      defaultId,
+                      configForm: props.configForm,
+                      agentFilesList: props.agentFilesList,
+                      agentIdentity: props.agentIdentityById[selectedAgent.id] ?? null,
+                      agentIdentityError: props.agentIdentityError,
+                      agentIdentityLoading: props.agentIdentityLoading,
+                      configLoading: props.configLoading,
+                      configSaving: props.configSaving,
+                      configDirty: props.configDirty,
+                      onConfigReload: props.onConfigReload,
+                      onConfigSave: props.onConfigSave,
+                      onModelChange: props.onModelChange,
+                      onModelFallbacksChange: props.onModelFallbacksChange,
+                    })
+                  : nothing
+              }
+              ${
+                props.activePanel === "files"
+                  ? renderAgentFiles({
+                      agentId: selectedAgent.id,
+                      agentFilesList: props.agentFilesList,
+                      agentFilesLoading: props.agentFilesLoading,
+                      agentFilesError: props.agentFilesError,
+                      agentFileActive: props.agentFileActive,
+                      agentFileContents: props.agentFileContents,
+                      agentFileDrafts: props.agentFileDrafts,
+                      agentFileSaving: props.agentFileSaving,
+                      onLoadFiles: props.onLoadFiles,
+                      onSelectFile: props.onSelectFile,
+                      onFileDraftChange: props.onFileDraftChange,
+                      onFileReset: props.onFileReset,
+                      onFileSave: props.onFileSave,
+                    })
+                  : nothing
+              }
+              ${
+                props.activePanel === "tools"
+                  ? renderAgentTools({
+                      agentId: selectedAgent.id,
+                      configForm: props.configForm,
+                      configLoading: props.configLoading,
+                      configSaving: props.configSaving,
+                      configDirty: props.configDirty,
+                      onProfileChange: props.onToolsProfileChange,
+                      onOverridesChange: props.onToolsOverridesChange,
+                      onConfigReload: props.onConfigReload,
+                      onConfigSave: props.onConfigSave,
+                    })
+                  : nothing
+              }
+              ${
+                props.activePanel === "skills"
+                  ? renderAgentSkills({
+                      agentId: selectedAgent.id,
+                      report: props.agentSkillsReport,
+                      loading: props.agentSkillsLoading,
+                      error: props.agentSkillsError,
+                      activeAgentId: props.agentSkillsAgentId,
+                      configForm: props.configForm,
+                      configLoading: props.configLoading,
+                      configSaving: props.configSaving,
+                      configDirty: props.configDirty,
+                      filter: props.skillsFilter,
+                      onFilterChange: props.onSkillsFilterChange,
+                      onRefresh: props.onSkillsRefresh,
+                      onToggle: props.onAgentSkillToggle,
+                      onClear: props.onAgentSkillsClear,
+                      onDisableAll: props.onAgentSkillsDisableAll,
+                      onConfigReload: props.onConfigReload,
+                      onConfigSave: props.onConfigSave,
+                    })
+                  : nothing
+              }
+              ${
+                props.activePanel === "channels"
+                  ? renderAgentChannels({
+                      agent: selectedAgent,
+                      defaultId,
+                      configForm: props.configForm,
+                      agentFilesList: props.agentFilesList,
+                      agentIdentity: props.agentIdentityById[selectedAgent.id] ?? null,
+                      snapshot: props.channelsSnapshot,
+                      loading: props.channelsLoading,
+                      error: props.channelsError,
+                      lastSuccess: props.channelsLastSuccess,
+                      onRefresh: props.onChannelsRefresh,
+                    })
+                  : nothing
+              }
+              ${
+                props.activePanel === "cron"
+                  ? renderAgentCron({
+                      agent: selectedAgent,
+                      defaultId,
+                      configForm: props.configForm,
+                      agentFilesList: props.agentFilesList,
+                      agentIdentity: props.agentIdentityById[selectedAgent.id] ?? null,
+                      jobs: props.cronJobs,
+                      status: props.cronStatus,
+                      loading: props.cronLoading,
+                      error: props.cronError,
+                      onRefresh: props.onCronRefresh,
+                    })
+                  : nothing
+              }
+            `
+        }
       </section>
     </div>
   `;
@@ -821,8 +727,7 @@ function renderAgentHeader(
 ) {
   const badge = agentBadgeText(agent.id, defaultId);
   const displayName = normalizeAgentLabel(agent);
-  const subtitle =
-    agent.identity?.theme?.trim() || "Agent workspace and routing.";
+  const subtitle = agent.identity?.theme?.trim() || "Agent workspace and routing.";
   const emoji = resolveAgentEmoji(agent, agentIdentity);
   return html`
     <section class="card agent-header">
@@ -843,10 +748,7 @@ function renderAgentHeader(
   `;
 }
 
-function renderAgentTabs(
-  active: AgentsPanel,
-  onSelect: (panel: AgentsPanel) => void,
-) {
+function renderAgentTabs(active: AgentsPanel, onSelect: (panel: AgentsPanel) => void) {
   const tabs: Array<{ id: AgentsPanel; label: string }> = [
     { id: "overview", label: "Overview" },
     { id: "files", label: "Files" },
@@ -905,21 +807,15 @@ function renderAgentOverview(params: {
   } = params;
   const config = resolveAgentConfig(configForm, agent.id);
   const workspaceFromFiles =
-    agentFilesList && agentFilesList.agentId === agent.id
-      ? agentFilesList.workspace
-      : null;
+    agentFilesList && agentFilesList.agentId === agent.id ? agentFilesList.workspace : null;
   const workspace =
-    workspaceFromFiles ||
-    config.entry?.workspace ||
-    config.defaults?.workspace ||
-    "default";
+    workspaceFromFiles || config.entry?.workspace || config.defaults?.workspace || "default";
   const model = config.entry?.model
     ? resolveModelLabel(config.entry?.model)
     : resolveModelLabel(config.defaults?.model);
   const defaultModel = resolveModelLabel(config.defaults?.model);
   const modelPrimary =
-    resolveModelPrimary(config.entry?.model) ||
-    (model !== "-" ? normalizeModelValue(model) : null);
+    resolveModelPrimary(config.entry?.model) || (model !== "-" ? normalizeModelValue(model) : null);
   const defaultPrimary =
     resolveModelPrimary(config.defaults?.model) ||
     (defaultModel !== "-" ? normalizeModelValue(defaultModel) : null);
@@ -934,9 +830,7 @@ function renderAgentOverview(params: {
     "-";
   const resolvedEmoji = resolveAgentEmoji(agent, agentIdentity);
   const identityEmoji = resolvedEmoji || "-";
-  const skillFilter = Array.isArray(config.entry?.skills)
-    ? config.entry?.skills
-    : null;
+  const skillFilter = Array.isArray(config.entry?.skills) ? config.entry?.skills : null;
   const skillCount = skillFilter?.length ?? null;
   const identityStatus = agentIdentityLoading
     ? "Loading…"
@@ -961,9 +855,7 @@ function renderAgentOverview(params: {
         <div class="agent-kv">
           <div class="label">Identity Name</div>
           <div>${identityName}</div>
-          ${identityStatus
-            ? html`<div class="agent-kv-sub muted">${identityStatus}</div>`
-            : nothing}
+          ${identityStatus ? html`<div class="agent-kv-sub muted">${identityStatus}</div>` : nothing}
         </div>
         <div class="agent-kv">
           <div class="label">Default</div>
@@ -988,15 +880,10 @@ function renderAgentOverview(params: {
               .value=${effectivePrimary ?? ""}
               ?disabled=${!configForm || configLoading || configSaving}
               @change=${(e: Event) =>
-                onModelChange(
-                  agent.id,
-                  (e.target as HTMLSelectElement).value || null,
-                )}
+                onModelChange(agent.id, (e.target as HTMLSelectElement).value || null)}
             >
               <option value="">
-                ${defaultPrimary
-                  ? `Inherit default (${defaultPrimary})`
-                  : "Inherit default"}
+                ${defaultPrimary ? `Inherit default (${defaultPrimary})` : "Inherit default"}
               </option>
               ${buildModelOptions(configForm, effectivePrimary ?? undefined)}
             </select>
@@ -1085,9 +972,7 @@ function resolveChannelLabel(snapshot: ChannelsStatusSnapshot, id: string) {
   return snapshot.channelLabels?.[id] ?? id;
 }
 
-function resolveChannelEntries(
-  snapshot: ChannelsStatusSnapshot | null,
-): ChannelSummaryEntry[] {
+function resolveChannelEntries(snapshot: ChannelsStatusSnapshot | null): ChannelSummaryEntry[] {
   if (!snapshot) {
     return [];
   }
@@ -1102,9 +987,7 @@ function resolveChannelEntries(
     ids.add(id);
   }
   const ordered: string[] = [];
-  const seed = snapshot.channelOrder?.length
-    ? snapshot.channelOrder
-    : Array.from(ids);
+  const seed = snapshot.channelOrder?.length ? snapshot.channelOrder : Array.from(ids);
   for (const id of seed) {
     if (!ids.has(id)) {
       continue;
@@ -1147,11 +1030,7 @@ function formatChannelExtraValue(raw: unknown): string {
   if (raw == null) {
     return "n/a";
   }
-  if (
-    typeof raw === "string" ||
-    typeof raw === "number" ||
-    typeof raw === "boolean"
-  ) {
+  if (typeof raw === "string" || typeof raw === "number" || typeof raw === "boolean") {
     return String(raw);
   }
   try {
@@ -1183,13 +1062,10 @@ function summarizeChannelAccounts(accounts: ChannelAccountSnapshot[]) {
   let enabled = 0;
   for (const account of accounts) {
     const probeOk =
-      account.probe &&
-      typeof account.probe === "object" &&
-      "ok" in account.probe
+      account.probe && typeof account.probe === "object" && "ok" in account.probe
         ? Boolean((account.probe as { ok?: unknown }).ok)
         : false;
-    const isConnected =
-      account.connected === true || account.running === true || probeOk;
+    const isConnected = account.connected === true || account.running === true || probeOk;
     if (isConnected) {
       connected += 1;
     }
@@ -1228,51 +1104,41 @@ function renderAgentChannels(params: {
     params.agentIdentity,
   );
   const entries = resolveChannelEntries(params.snapshot);
-  const lastSuccessLabel = params.lastSuccess
-    ? formatAgo(params.lastSuccess)
-    : "never";
+  const lastSuccessLabel = params.lastSuccess ? formatAgo(params.lastSuccess) : "never";
   return html`
     <section class="grid grid-cols-2">
-      ${renderAgentContextCard(
-        context,
-        "Workspace, identity, and model configuration.",
-      )}
+      ${renderAgentContextCard(context, "Workspace, identity, and model configuration.")}
       <section class="card">
         <div class="row" style="justify-content: space-between;">
           <div>
             <div class="card-title">Channels</div>
             <div class="card-sub">Gateway-wide channel status snapshot.</div>
           </div>
-          <button
-            class="btn btn--sm"
-            ?disabled=${params.loading}
-            @click=${params.onRefresh}
-          >
+          <button class="btn btn--sm" ?disabled=${params.loading} @click=${params.onRefresh}>
             ${params.loading ? "Refreshing…" : "Refresh"}
           </button>
         </div>
         <div class="muted" style="margin-top: 8px;">
           Last refresh: ${lastSuccessLabel}
         </div>
-        ${params.error
-          ? html`<div class="callout danger" style="margin-top: 12px;">
-              ${params.error}
-            </div>`
-          : nothing}
-        ${!params.snapshot
-          ? html`
-              <div class="callout info" style="margin-top: 12px">
-                Load channels to see live status.
-              </div>
-            `
-          : nothing}
-        ${entries.length === 0
-          ? html`
-              <div class="muted" style="margin-top: 16px">
-                No channels found.
-              </div>
-            `
-          : html`
+        ${
+          params.error
+            ? html`<div class="callout danger" style="margin-top: 12px;">${params.error}</div>`
+            : nothing
+        }
+        ${
+          !params.snapshot
+            ? html`
+                <div class="callout info" style="margin-top: 12px">Load channels to see live status.</div>
+              `
+            : nothing
+        }
+        ${
+          entries.length === 0
+            ? html`
+                <div class="muted" style="margin-top: 16px">No channels found.</div>
+              `
+            : html`
               <div class="list" style="margin-top: 16px;">
                 ${entries.map((entry) => {
                   const summary = summarizeChannelAccounts(entry.accounts);
@@ -1282,13 +1148,8 @@ function renderAgentChannels(params: {
                   const config = summary.configured
                     ? `${summary.configured} configured`
                     : "not configured";
-                  const enabled = summary.total
-                    ? `${summary.enabled} enabled`
-                    : "disabled";
-                  const extras = resolveChannelExtras(
-                    params.configForm,
-                    entry.id,
-                  );
+                  const enabled = summary.total ? `${summary.enabled} enabled` : "disabled";
+                  const extras = resolveChannelExtras(params.configForm, entry.id);
                   return html`
                     <div class="list-item">
                       <div class="list-main">
@@ -1299,18 +1160,18 @@ function renderAgentChannels(params: {
                         <div>${status}</div>
                         <div>${config}</div>
                         <div>${enabled}</div>
-                        ${extras.length > 0
-                          ? extras.map(
-                              (extra) =>
-                                html`<div>${extra.label}: ${extra.value}</div>`,
-                            )
-                          : nothing}
+                        ${
+                          extras.length > 0
+                            ? extras.map((extra) => html`<div>${extra.label}: ${extra.value}</div>`)
+                            : nothing
+                        }
                       </div>
                     </div>
                   `;
                 })}
               </div>
-            `}
+            `
+        }
       </section>
     </section>
   `;
@@ -1345,11 +1206,7 @@ function renderAgentCron(params: {
             <div class="card-title">Scheduler</div>
             <div class="card-sub">Gateway cron status.</div>
           </div>
-          <button
-            class="btn btn--sm"
-            ?disabled=${params.loading}
-            @click=${params.onRefresh}
-          >
+          <button class="btn btn--sm" ?disabled=${params.loading} @click=${params.onRefresh}>
             ${params.loading ? "Refreshing…" : "Refresh"}
           </button>
         </div>
@@ -1366,40 +1223,35 @@ function renderAgentCron(params: {
           </div>
           <div class="stat">
             <div class="stat-label">Next wake</div>
-            <div class="stat-value">
-              ${formatNextRun(params.status?.nextWakeAtMs ?? null)}
-            </div>
+            <div class="stat-value">${formatNextRun(params.status?.nextWakeAtMs ?? null)}</div>
           </div>
         </div>
-        ${params.error
-          ? html`<div class="callout danger" style="margin-top: 12px;">
-              ${params.error}
-            </div>`
-          : nothing}
+        ${
+          params.error
+            ? html`<div class="callout danger" style="margin-top: 12px;">${params.error}</div>`
+            : nothing
+        }
       </section>
     </section>
     <section class="card">
       <div class="card-title">Agent Cron Jobs</div>
       <div class="card-sub">Scheduled jobs targeting this agent.</div>
-      ${jobs.length === 0
-        ? html`
-            <div class="muted" style="margin-top: 16px">No jobs assigned.</div>
-          `
-        : html`
-            <div class="list" style="margin-top: 16px;">
-              ${jobs.map(
-                (job) => html`
+      ${
+        jobs.length === 0
+          ? html`
+              <div class="muted" style="margin-top: 16px">No jobs assigned.</div>
+            `
+          : html`
+              <div class="list" style="margin-top: 16px;">
+                ${jobs.map(
+                  (job) => html`
                   <div class="list-item">
                     <div class="list-main">
                       <div class="list-title">${job.name}</div>
-                      ${job.description
-                        ? html`<div class="list-sub">${job.description}</div>`
-                        : nothing}
+                      ${job.description ? html`<div class="list-sub">${job.description}</div>` : nothing}
                       <div class="chip-row" style="margin-top: 6px;">
                         <span class="chip">${formatCronSchedule(job)}</span>
-                        <span
-                          class="chip ${job.enabled ? "chip-ok" : "chip-warn"}"
-                        >
+                        <span class="chip ${job.enabled ? "chip-ok" : "chip-warn"}">
                           ${job.enabled ? "enabled" : "disabled"}
                         </span>
                         <span class="chip">${job.sessionTarget}</span>
@@ -1411,9 +1263,10 @@ function renderAgentCron(params: {
                     </div>
                   </div>
                 `,
-              )}
-            </div>
-          `}
+                )}
+              </div>
+            `
+      }
     </section>
   `;
 }
@@ -1433,15 +1286,10 @@ function renderAgentFiles(params: {
   onFileReset: (name: string) => void;
   onFileSave: (name: string) => void;
 }) {
-  const list =
-    params.agentFilesList?.agentId === params.agentId
-      ? params.agentFilesList
-      : null;
+  const list = params.agentFilesList?.agentId === params.agentId ? params.agentFilesList : null;
   const files = list?.files ?? [];
   const active = params.agentFileActive ?? null;
-  const activeEntry = active
-    ? (files.find((file) => file.name === active) ?? null)
-    : null;
+  const activeEntry = active ? (files.find((file) => file.name === active) ?? null) : null;
   const baseContent = active ? (params.agentFileContents[active] ?? "") : "";
   const draft = active ? (params.agentFileDrafts[active] ?? baseContent) : "";
   const isDirty = active ? draft !== baseContent : false;
@@ -1451,9 +1299,7 @@ function renderAgentFiles(params: {
       <div class="row" style="justify-content: space-between;">
         <div>
           <div class="card-title">Core Files</div>
-          <div class="card-sub">
-            Bootstrap persona, identity, and tool guidance.
-          </div>
+          <div class="card-sub">Bootstrap persona, identity, and tool guidance.</div>
         </div>
         <button
           class="btn btn--sm"
@@ -1463,95 +1309,94 @@ function renderAgentFiles(params: {
           ${params.agentFilesLoading ? "Loading…" : "Refresh"}
         </button>
       </div>
-      ${list
-        ? html`<div class="muted mono" style="margin-top: 8px;">
-            Workspace: ${list.workspace}
-          </div>`
-        : nothing}
-      ${params.agentFilesError
-        ? html`<div class="callout danger" style="margin-top: 12px;">
-            ${params.agentFilesError}
-          </div>`
-        : nothing}
-      ${!list
-        ? html`
-            <div class="callout info" style="margin-top: 12px">
-              Load the agent workspace files to edit core instructions.
-            </div>
-          `
-        : html`
-            <div class="agent-files-grid" style="margin-top: 16px;">
-              <div class="agent-files-list">
-                ${files.length === 0
-                  ? html` <div class="muted">No files found.</div> `
-                  : files.map((file) =>
-                      renderAgentFileRow(file, active, () =>
-                        params.onSelectFile(file.name),
-                      ),
-                    )}
+      ${list ? html`<div class="muted mono" style="margin-top: 8px;">Workspace: ${list.workspace}</div>` : nothing}
+      ${
+        params.agentFilesError
+          ? html`<div class="callout danger" style="margin-top: 12px;">${
+              params.agentFilesError
+            }</div>`
+          : nothing
+      }
+      ${
+        !list
+          ? html`
+              <div class="callout info" style="margin-top: 12px">
+                Load the agent workspace files to edit core instructions.
               </div>
-              <div class="agent-files-editor">
-                ${!activeEntry
-                  ? html` <div class="muted">Select a file to edit.</div> `
-                  : html`
-                      <div class="agent-file-header">
-                        <div>
-                          <div class="agent-file-title mono">
-                            ${activeEntry.name}
-                          </div>
-                          <div class="agent-file-sub mono">
-                            ${activeEntry.path}
-                          </div>
-                        </div>
-                        <div class="agent-file-actions">
-                          <button
-                            class="btn btn--sm"
-                            ?disabled=${!isDirty}
-                            @click=${() => params.onFileReset(activeEntry.name)}
-                          >
-                            Reset
-                          </button>
-                          <button
-                            class="btn btn--sm primary"
-                            ?disabled=${params.agentFileSaving || !isDirty}
-                            @click=${() => params.onFileSave(activeEntry.name)}
-                          >
-                            ${params.agentFileSaving ? "Saving…" : "Save"}
-                          </button>
-                        </div>
-                      </div>
-                      ${activeEntry.missing
-                        ? html`
-                            <div class="callout info" style="margin-top: 10px">
-                              This file is missing. Saving will create it in the
-                              agent workspace.
+            `
+          : html`
+              <div class="agent-files-grid" style="margin-top: 16px;">
+                <div class="agent-files-list">
+                  ${
+                    files.length === 0
+                      ? html`
+                          <div class="muted">No files found.</div>
+                        `
+                      : files.map((file) =>
+                          renderAgentFileRow(file, active, () => params.onSelectFile(file.name)),
+                        )
+                  }
+                </div>
+                <div class="agent-files-editor">
+                  ${
+                    !activeEntry
+                      ? html`
+                          <div class="muted">Select a file to edit.</div>
+                        `
+                      : html`
+                          <div class="agent-file-header">
+                            <div>
+                              <div class="agent-file-title mono">${activeEntry.name}</div>
+                              <div class="agent-file-sub mono">${activeEntry.path}</div>
                             </div>
-                          `
-                        : nothing}
-                      <label class="field" style="margin-top: 12px;">
-                        <span>Content</span>
-                        <textarea
-                          .value=${draft}
-                          @input=${(e: Event) =>
-                            params.onFileDraftChange(
-                              activeEntry.name,
-                              (e.target as HTMLTextAreaElement).value,
-                            )}
-                        ></textarea>
-                      </label>
-                    `}
+                            <div class="agent-file-actions">
+                              <button
+                                class="btn btn--sm"
+                                ?disabled=${!isDirty}
+                                @click=${() => params.onFileReset(activeEntry.name)}
+                              >
+                                Reset
+                              </button>
+                              <button
+                                class="btn btn--sm primary"
+                                ?disabled=${params.agentFileSaving || !isDirty}
+                                @click=${() => params.onFileSave(activeEntry.name)}
+                              >
+                                ${params.agentFileSaving ? "Saving…" : "Save"}
+                              </button>
+                            </div>
+                          </div>
+                          ${
+                            activeEntry.missing
+                              ? html`
+                                  <div class="callout info" style="margin-top: 10px">
+                                    This file is missing. Saving will create it in the agent workspace.
+                                  </div>
+                                `
+                              : nothing
+                          }
+                          <label class="field" style="margin-top: 12px;">
+                            <span>Content</span>
+                            <textarea
+                              .value=${draft}
+                              @input=${(e: Event) =>
+                                params.onFileDraftChange(
+                                  activeEntry.name,
+                                  (e.target as HTMLTextAreaElement).value,
+                                )}
+                            ></textarea>
+                          </label>
+                        `
+                  }
+                </div>
               </div>
-            </div>
-          `}
+            `
+      }
     </section>
   `;
 }
 
-function renderAgentFileRow(
-  file: AgentFileEntry,
-  active: string | null,
-  onSelect: () => void,
-) {
+function renderAgentFileRow(file: AgentFileEntry, active: string | null, onSelect: () => void) {
   const status = file.missing
     ? "Missing"
     : `${formatBytes(file.size)} · ${formatAgo(file.updatedAtMs ?? null)}`;
@@ -1565,9 +1410,13 @@ function renderAgentFileRow(
         <div class="agent-file-name mono">${file.name}</div>
         <div class="agent-file-meta">${status}</div>
       </div>
-      ${file.missing
-        ? html` <span class="agent-pill warn">missing</span> `
-        : nothing}
+      ${
+        file.missing
+          ? html`
+              <span class="agent-pill warn">missing</span>
+            `
+          : nothing
+      }
     </button>
   `;
 }
@@ -1578,16 +1427,8 @@ function renderAgentTools(params: {
   configLoading: boolean;
   configSaving: boolean;
   configDirty: boolean;
-  onProfileChange: (
-    agentId: string,
-    profile: string | null,
-    clearAllow: boolean,
-  ) => void;
-  onOverridesChange: (
-    agentId: string,
-    alsoAllow: string[],
-    deny: string[],
-  ) => void;
+  onProfileChange: (agentId: string, profile: string | null, clearAllow: boolean) => void;
+  onOverridesChange: (agentId: string, alsoAllow: string[], deny: string[]) => void;
   onConfigReload: () => void;
   onConfigSave: () => void;
 }) {
@@ -1600,31 +1441,20 @@ function renderAgentTools(params: {
     : globalTools.profile
       ? "global default"
       : "default";
-  const hasAgentAllow =
-    Array.isArray(agentTools.allow) && agentTools.allow.length > 0;
-  const hasGlobalAllow =
-    Array.isArray(globalTools.allow) && globalTools.allow.length > 0;
+  const hasAgentAllow = Array.isArray(agentTools.allow) && agentTools.allow.length > 0;
+  const hasGlobalAllow = Array.isArray(globalTools.allow) && globalTools.allow.length > 0;
   const editable =
-    Boolean(params.configForm) &&
-    !params.configLoading &&
-    !params.configSaving &&
-    !hasAgentAllow;
+    Boolean(params.configForm) && !params.configLoading && !params.configSaving && !hasAgentAllow;
   const alsoAllow = hasAgentAllow
     ? []
     : Array.isArray(agentTools.alsoAllow)
       ? agentTools.alsoAllow
       : [];
-  const deny = hasAgentAllow
-    ? []
-    : Array.isArray(agentTools.deny)
-      ? agentTools.deny
-      : [];
+  const deny = hasAgentAllow ? [] : Array.isArray(agentTools.deny) ? agentTools.deny : [];
   const basePolicy = hasAgentAllow
     ? { allow: agentTools.allow ?? [], deny: agentTools.deny ?? [] }
     : (resolveToolProfilePolicy(profile) ?? undefined);
-  const toolIds = TOOL_SECTIONS.flatMap((section) =>
-    section.tools.map((tool) => tool.id),
-  );
+  const toolIds = TOOL_SECTIONS.flatMap((section) => section.tools.map((tool) => tool.id));
 
   const resolveAllowed = (toolId: string) => {
     const baseAllowed = isAllowedByPolicy(toolId, basePolicy);
@@ -1637,20 +1467,14 @@ function renderAgentTools(params: {
       denied,
     };
   };
-  const enabledCount = toolIds.filter(
-    (toolId) => resolveAllowed(toolId).allowed,
-  ).length;
+  const enabledCount = toolIds.filter((toolId) => resolveAllowed(toolId).allowed).length;
 
   const updateTool = (toolId: string, nextEnabled: boolean) => {
     const nextAllow = new Set(
-      alsoAllow
-        .map((entry) => normalizeToolName(entry))
-        .filter((entry) => entry.length > 0),
+      alsoAllow.map((entry) => normalizeToolName(entry)).filter((entry) => entry.length > 0),
     );
     const nextDeny = new Set(
-      deny
-        .map((entry) => normalizeToolName(entry))
-        .filter((entry) => entry.length > 0),
+      deny.map((entry) => normalizeToolName(entry)).filter((entry) => entry.length > 0),
     );
     const baseAllowed = resolveAllowed(toolId).baseAllowed;
     const normalized = normalizeToolName(toolId);
@@ -1668,14 +1492,10 @@ function renderAgentTools(params: {
 
   const updateAll = (nextEnabled: boolean) => {
     const nextAllow = new Set(
-      alsoAllow
-        .map((entry) => normalizeToolName(entry))
-        .filter((entry) => entry.length > 0),
+      alsoAllow.map((entry) => normalizeToolName(entry)).filter((entry) => entry.length > 0),
     );
     const nextDeny = new Set(
-      deny
-        .map((entry) => normalizeToolName(entry))
-        .filter((entry) => entry.length > 0),
+      deny.map((entry) => normalizeToolName(entry)).filter((entry) => entry.length > 0),
     );
     for (const toolId of toolIds) {
       const baseAllowed = resolveAllowed(toolId).baseAllowed;
@@ -1735,29 +1555,33 @@ function renderAgentTools(params: {
         </div>
       </div>
 
-      ${!params.configForm
-        ? html`
-            <div class="callout info" style="margin-top: 12px">
-              Load the gateway config to adjust tool profiles.
-            </div>
-          `
-        : nothing}
-      ${hasAgentAllow
-        ? html`
-            <div class="callout info" style="margin-top: 12px">
-              This agent is using an explicit allowlist in config. Tool
-              overrides are managed in the Config tab.
-            </div>
-          `
-        : nothing}
-      ${hasGlobalAllow
-        ? html`
-            <div class="callout info" style="margin-top: 12px">
-              Global tools.allow is set. Agent overrides cannot enable tools
-              that are globally blocked.
-            </div>
-          `
-        : nothing}
+      ${
+        !params.configForm
+          ? html`
+              <div class="callout info" style="margin-top: 12px">
+                Load the gateway config to adjust tool profiles.
+              </div>
+            `
+          : nothing
+      }
+      ${
+        hasAgentAllow
+          ? html`
+              <div class="callout info" style="margin-top: 12px">
+                This agent is using an explicit allowlist in config. Tool overrides are managed in the Config tab.
+              </div>
+            `
+          : nothing
+      }
+      ${
+        hasGlobalAllow
+          ? html`
+              <div class="callout info" style="margin-top: 12px">
+                Global tools.allow is set. Agent overrides cannot enable tools that are globally blocked.
+              </div>
+            `
+          : nothing
+      }
 
       <div class="agent-tools-meta" style="margin-top: 16px;">
         <div class="agent-kv">
@@ -1768,14 +1592,16 @@ function renderAgentTools(params: {
           <div class="label">Source</div>
           <div>${profileSource}</div>
         </div>
-        ${params.configDirty
-          ? html`
-              <div class="agent-kv">
-                <div class="label">Status</div>
-                <div class="mono">unsaved</div>
-              </div>
-            `
-          : nothing}
+        ${
+          params.configDirty
+            ? html`
+                <div class="agent-kv">
+                  <div class="label">Status</div>
+                  <div class="mono">unsaved</div>
+                </div>
+              `
+            : nothing
+        }
       </div>
 
       <div class="agent-tools-presets" style="margin-top: 16px;">
@@ -1786,8 +1612,7 @@ function renderAgentTools(params: {
               <button
                 class="btn btn--sm ${profile === option.id ? "active" : ""}"
                 ?disabled=${!editable}
-                @click=${() =>
-                  params.onProfileChange(params.agentId, option.id, true)}
+                @click=${() => params.onProfileChange(params.agentId, option.id, true)}
               >
                 ${option.label}
               </button>
@@ -1805,7 +1630,8 @@ function renderAgentTools(params: {
 
       <div class="agent-tools-grid" style="margin-top: 20px;">
         ${TOOL_SECTIONS.map(
-          (section) => html`
+          (section) =>
+            html`
             <div class="agent-tools-section">
               <div class="agent-tools-header">${section.label}</div>
               <div class="agent-tools-list">
@@ -1823,10 +1649,7 @@ function renderAgentTools(params: {
                           .checked=${allowed}
                           ?disabled=${!editable}
                           @change=${(e: Event) =>
-                            updateTool(
-                              tool.id,
-                              (e.target as HTMLInputElement).checked,
-                            )}
+                            updateTool(tool.id, (e.target as HTMLInputElement).checked)}
                         />
                         <span class="cfg-toggle__track"></span>
                       </label>
@@ -1848,16 +1671,8 @@ type SkillGroup = {
   skills: SkillStatusEntry[];
 };
 
-const SKILL_SOURCE_GROUPS: Array<{
-  id: string;
-  label: string;
-  sources: string[];
-}> = [
-  {
-    id: "workspace",
-    label: "Workspace Skills",
-    sources: ["openclaw-workspace"],
-  },
+const SKILL_SOURCE_GROUPS: Array<{ id: string; label: string; sources: string[] }> = [
+  { id: "workspace", label: "Workspace Skills", sources: ["openclaw-workspace"] },
   { id: "built-in", label: "Built-in Skills", sources: ["openclaw-bundled"] },
   { id: "installed", label: "Installed Skills", sources: ["openclaw-managed"] },
   { id: "extra", label: "Extra Skills", sources: ["openclaw-extra"] },
@@ -1870,19 +1685,15 @@ function groupSkills(skills: SkillStatusEntry[]): SkillGroup[] {
   }
   const other: SkillGroup = { id: "other", label: "Other Skills", skills: [] };
   for (const skill of skills) {
-    const match = SKILL_SOURCE_GROUPS.find((group) =>
-      group.sources.includes(skill.source),
-    );
+    const match = SKILL_SOURCE_GROUPS.find((group) => group.sources.includes(skill.source));
     if (match) {
       groups.get(match.id)?.skills.push(skill);
     } else {
       other.skills.push(skill);
     }
   }
-  const ordered = SKILL_SOURCE_GROUPS.map((group) =>
-    groups.get(group.id),
-  ).filter((group): group is SkillGroup =>
-    Boolean(group && group.skills.length > 0),
+  const ordered = SKILL_SOURCE_GROUPS.map((group) => groups.get(group.id)).filter(
+    (group): group is SkillGroup => Boolean(group && group.skills.length > 0),
   );
   if (other.skills.length > 0) {
     ordered.push(other);
@@ -1909,27 +1720,17 @@ function renderAgentSkills(params: {
   onConfigReload: () => void;
   onConfigSave: () => void;
 }) {
-  const editable =
-    Boolean(params.configForm) && !params.configLoading && !params.configSaving;
+  const editable = Boolean(params.configForm) && !params.configLoading && !params.configSaving;
   const config = resolveAgentConfig(params.configForm, params.agentId);
-  const allowlist = Array.isArray(config.entry?.skills)
-    ? config.entry?.skills
-    : undefined;
-  const allowSet = new Set(
-    (allowlist ?? []).map((name) => name.trim()).filter(Boolean),
-  );
+  const allowlist = Array.isArray(config.entry?.skills) ? config.entry?.skills : undefined;
+  const allowSet = new Set((allowlist ?? []).map((name) => name.trim()).filter(Boolean));
   const usingAllowlist = allowlist !== undefined;
-  const reportReady = Boolean(
-    params.report && params.activeAgentId === params.agentId,
-  );
+  const reportReady = Boolean(params.report && params.activeAgentId === params.agentId);
   const rawSkills = reportReady ? (params.report?.skills ?? []) : [];
   const filter = params.filter.trim().toLowerCase();
   const filtered = filter
     ? rawSkills.filter((skill) =>
-        [skill.name, skill.description, skill.source]
-          .join(" ")
-          .toLowerCase()
-          .includes(filter),
+        [skill.name, skill.description, skill.source].join(" ").toLowerCase().includes(filter),
       )
     : rawSkills;
   const groups = groupSkills(filtered);
@@ -1945,24 +1746,14 @@ function renderAgentSkills(params: {
           <div class="card-title">Skills</div>
           <div class="card-sub">
             Per-agent skill allowlist and workspace skills.
-            ${totalCount > 0
-              ? html`<span class="mono">${enabledCount}/${totalCount}</span>`
-              : nothing}
+            ${totalCount > 0 ? html`<span class="mono">${enabledCount}/${totalCount}</span>` : nothing}
           </div>
         </div>
         <div class="row" style="gap: 8px;">
-          <button
-            class="btn btn--sm"
-            ?disabled=${!editable}
-            @click=${() => params.onClear(params.agentId)}
-          >
+          <button class="btn btn--sm" ?disabled=${!editable} @click=${() => params.onClear(params.agentId)}>
             Use All
           </button>
-          <button
-            class="btn btn--sm"
-            ?disabled=${!editable}
-            @click=${() => params.onDisableAll(params.agentId)}
-          >
+          <button class="btn btn--sm" ?disabled=${!editable} @click=${() => params.onDisableAll(params.agentId)}>
             Disable All
           </button>
           <button
@@ -1972,11 +1763,7 @@ function renderAgentSkills(params: {
           >
             Reload Config
           </button>
-          <button
-            class="btn btn--sm"
-            ?disabled=${params.loading}
-            @click=${params.onRefresh}
-          >
+          <button class="btn btn--sm" ?disabled=${params.loading} @click=${params.onRefresh}>
             ${params.loading ? "Loading…" : "Refresh"}
           </button>
           <button
@@ -1989,68 +1776,72 @@ function renderAgentSkills(params: {
         </div>
       </div>
 
-      ${!params.configForm
-        ? html`
-            <div class="callout info" style="margin-top: 12px">
-              Load the gateway config to set per-agent skills.
-            </div>
-          `
-        : nothing}
-      ${usingAllowlist
-        ? html`
-            <div class="callout info" style="margin-top: 12px">
-              This agent uses a custom skill allowlist.
-            </div>
-          `
-        : html`
-            <div class="callout info" style="margin-top: 12px">
-              All skills are enabled. Disabling any skill will create a
-              per-agent allowlist.
-            </div>
-          `}
-      ${!reportReady && !params.loading
-        ? html`
-            <div class="callout info" style="margin-top: 12px">
-              Load skills for this agent to view workspace-specific entries.
-            </div>
-          `
-        : nothing}
-      ${params.error
-        ? html`<div class="callout danger" style="margin-top: 12px;">
-            ${params.error}
-          </div>`
-        : nothing}
+      ${
+        !params.configForm
+          ? html`
+              <div class="callout info" style="margin-top: 12px">
+                Load the gateway config to set per-agent skills.
+              </div>
+            `
+          : nothing
+      }
+      ${
+        usingAllowlist
+          ? html`
+              <div class="callout info" style="margin-top: 12px">This agent uses a custom skill allowlist.</div>
+            `
+          : html`
+              <div class="callout info" style="margin-top: 12px">
+                All skills are enabled. Disabling any skill will create a per-agent allowlist.
+              </div>
+            `
+      }
+      ${
+        !reportReady && !params.loading
+          ? html`
+              <div class="callout info" style="margin-top: 12px">
+                Load skills for this agent to view workspace-specific entries.
+              </div>
+            `
+          : nothing
+      }
+      ${
+        params.error
+          ? html`<div class="callout danger" style="margin-top: 12px;">${params.error}</div>`
+          : nothing
+      }
 
       <div class="filters" style="margin-top: 14px;">
         <label class="field" style="flex: 1;">
           <span>Filter</span>
           <input
             .value=${params.filter}
-            @input=${(e: Event) =>
-              params.onFilterChange((e.target as HTMLInputElement).value)}
+            @input=${(e: Event) => params.onFilterChange((e.target as HTMLInputElement).value)}
             placeholder="Search skills"
           />
         </label>
         <div class="muted">${filtered.length} shown</div>
       </div>
 
-      ${filtered.length === 0
-        ? html`
-            <div class="muted" style="margin-top: 16px">No skills found.</div>
-          `
-        : html`
-            <div class="agent-skills-groups" style="margin-top: 16px;">
-              ${groups.map((group) =>
-                renderAgentSkillGroup(group, {
-                  agentId: params.agentId,
-                  allowSet,
-                  usingAllowlist,
-                  editable,
-                  onToggle: params.onToggle,
-                }),
-              )}
-            </div>
-          `}
+      ${
+        filtered.length === 0
+          ? html`
+              <div class="muted" style="margin-top: 16px">No skills found.</div>
+            `
+          : html`
+              <div class="agent-skills-groups" style="margin-top: 16px;">
+                ${groups.map((group) =>
+                  renderAgentSkillGroup(group, {
+                    agentId: params.agentId,
+                    allowSet,
+                    usingAllowlist,
+                    editable,
+                    onToggle: params.onToggle,
+                  }),
+                )}
+              </div>
+            `
+      }
     </section>
   `;
 }
@@ -2065,8 +1856,7 @@ function renderAgentSkillGroup(
     onToggle: (agentId: string, skillName: string, enabled: boolean) => void;
   },
 ) {
-  const collapsedByDefault =
-    group.id === "workspace" || group.id === "built-in";
+  const collapsedByDefault = group.id === "workspace" || group.id === "built-in";
   return html`
     <details class="agent-skills-group" ?open=${!collapsedByDefault}>
       <summary class="agent-skills-header">
@@ -2098,9 +1888,7 @@ function renderAgentSkillRow(
     onToggle: (agentId: string, skillName: string, enabled: boolean) => void;
   },
 ) {
-  const enabled = params.usingAllowlist
-    ? params.allowSet.has(skill.name)
-    : true;
+  const enabled = params.usingAllowlist ? params.allowSet.has(skill.name) : true;
   const missing = [
     ...skill.missing.bins.map((b) => `bin:${b}`),
     ...skill.missing.env.map((e) => `env:${e}`),
@@ -2126,20 +1914,24 @@ function renderAgentSkillRow(
           <span class="chip ${skill.eligible ? "chip-ok" : "chip-warn"}">
             ${skill.eligible ? "eligible" : "blocked"}
           </span>
-          ${skill.disabled
-            ? html` <span class="chip chip-warn">disabled</span> `
-            : nothing}
+          ${
+            skill.disabled
+              ? html`
+                  <span class="chip chip-warn">disabled</span>
+                `
+              : nothing
+          }
         </div>
-        ${missing.length > 0
-          ? html`<div class="muted" style="margin-top: 6px;">
-              Missing: ${missing.join(", ")}
-            </div>`
-          : nothing}
-        ${reasons.length > 0
-          ? html`<div class="muted" style="margin-top: 6px;">
-              Reason: ${reasons.join(", ")}
-            </div>`
-          : nothing}
+        ${
+          missing.length > 0
+            ? html`<div class="muted" style="margin-top: 6px;">Missing: ${missing.join(", ")}</div>`
+            : nothing
+        }
+        ${
+          reasons.length > 0
+            ? html`<div class="muted" style="margin-top: 6px;">Reason: ${reasons.join(", ")}</div>`
+            : nothing
+        }
       </div>
       <div class="list-meta">
         <label class="cfg-toggle">
@@ -2148,11 +1940,7 @@ function renderAgentSkillRow(
             .checked=${enabled}
             ?disabled=${!params.editable}
             @change=${(e: Event) =>
-              params.onToggle(
-                params.agentId,
-                skill.name,
-                (e.target as HTMLInputElement).checked,
-              )}
+              params.onToggle(params.agentId, skill.name, (e.target as HTMLInputElement).checked)}
           />
           <span class="cfg-toggle__track"></span>
         </label>

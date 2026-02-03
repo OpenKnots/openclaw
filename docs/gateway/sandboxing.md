@@ -79,10 +79,7 @@ Example (read-only source + docker socket):
     defaults: {
       sandbox: {
         docker: {
-          binds: [
-            "/home/user/source:/source:ro",
-            "/var/run/docker.sock:/var/run/docker.sock",
-          ],
+          binds: ["/home/user/source:/source:ro", "/var/run/docker.sock:/var/run/docker.sock"],
         },
       },
     },

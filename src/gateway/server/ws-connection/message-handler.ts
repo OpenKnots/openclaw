@@ -192,12 +192,7 @@ export function attachGatewayWsMessageHandler(params: {
 
   const configSnapshot = loadConfig();
   const trustedProxies = configSnapshot.gateway?.trustedProxies ?? [];
-  const clientIp = resolveGatewayClientIp({
-    remoteAddr,
-    forwardedFor,
-    realIp,
-    trustedProxies,
-  });
+  const clientIp = resolveGatewayClientIp({ remoteAddr, forwardedFor, realIp, trustedProxies });
 
   // If proxy headers are present but the remote address isn't trusted, don't treat
   // the connection as local. This prevents auth bypass when running behind a reverse
@@ -682,9 +677,7 @@ export function attachGatewayWsMessageHandler(params: {
                 );
               }
             } else if (pairing.created) {
-              context.broadcast("device.pair.requested", pairing.request, {
-                dropIfSlow: true,
-              });
+              context.broadcast("device.pair.requested", pairing.request, { dropIfSlow: true });
             }
             if (pairing.request.silent !== true) {
               setHandshakeState("failed");

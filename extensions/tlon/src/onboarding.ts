@@ -45,9 +45,7 @@ function applyAccountConfig(params: {
           ...(input.ship ? { ship: input.ship } : {}),
           ...(input.url ? { url: input.url } : {}),
           ...(input.code ? { code: input.code } : {}),
-          ...(input.groupChannels
-            ? { groupChannels: input.groupChannels }
-            : {}),
+          ...(input.groupChannels ? { groupChannels: input.groupChannels } : {}),
           ...(input.dmAllowlist ? { dmAllowlist: input.dmAllowlist } : {}),
           ...(typeof input.autoDiscoverChannels === "boolean"
             ? { autoDiscoverChannels: input.autoDiscoverChannels }
@@ -67,16 +65,15 @@ function applyAccountConfig(params: {
         accounts: {
           ...(base as { accounts?: Record<string, unknown> }).accounts,
           [accountId]: {
-            ...(base as { accounts?: Record<string, Record<string, unknown>> })
-              .accounts?.[accountId],
+            ...(base as { accounts?: Record<string, Record<string, unknown>> }).accounts?.[
+              accountId
+            ],
             enabled: true,
             ...(input.name ? { name: input.name } : {}),
             ...(input.ship ? { ship: input.ship } : {}),
             ...(input.url ? { url: input.url } : {}),
             ...(input.code ? { code: input.code } : {}),
-            ...(input.groupChannels
-              ? { groupChannels: input.groupChannels }
-              : {}),
+            ...(input.groupChannels ? { groupChannels: input.groupChannels } : {}),
             ...(input.dmAllowlist ? { dmAllowlist: input.dmAllowlist } : {}),
             ...(typeof input.autoDiscoverChannels === "boolean"
               ? { autoDiscoverChannels: input.autoDiscoverChannels }
@@ -113,9 +110,7 @@ export const tlonOnboardingAdapter: ChannelOnboardingAdapter = {
     const accountIds = listTlonAccountIds(cfg);
     const configured =
       accountIds.length > 0
-        ? accountIds.some((accountId) =>
-            isConfigured(resolveTlonAccount(cfg, accountId)),
-          )
+        ? accountIds.some((accountId) => isConfigured(resolveTlonAccount(cfg, accountId)))
         : isConfigured(resolveTlonAccount(cfg, DEFAULT_ACCOUNT_ID));
 
     return {
@@ -126,12 +121,7 @@ export const tlonOnboardingAdapter: ChannelOnboardingAdapter = {
       quickstartScore: configured ? 1 : 4,
     };
   },
-  configure: async ({
-    cfg,
-    prompter,
-    accountOverrides,
-    shouldPromptAccountIds,
-  }) => {
+  configure: async ({ cfg, prompter, accountOverrides, shouldPromptAccountIds }) => {
     const override = accountOverrides[channel]?.trim();
     const defaultAccountId = DEFAULT_ACCOUNT_ID;
     let accountId = override ? normalizeAccountId(override) : defaultAccountId;
@@ -154,24 +144,21 @@ export const tlonOnboardingAdapter: ChannelOnboardingAdapter = {
       message: "Ship name",
       placeholder: "~sampel-palnet",
       initialValue: resolved.ship ?? undefined,
-      validate: (value) =>
-        String(value ?? "").trim() ? undefined : "Required",
+      validate: (value) => (String(value ?? "").trim() ? undefined : "Required"),
     });
 
     const url = await prompter.text({
       message: "Ship URL",
       placeholder: "https://your-ship-host",
       initialValue: resolved.url ?? undefined,
-      validate: (value) =>
-        String(value ?? "").trim() ? undefined : "Required",
+      validate: (value) => (String(value ?? "").trim() ? undefined : "Required"),
     });
 
     const code = await prompter.text({
       message: "Login code",
       placeholder: "lidlut-tabwed-pillex-ridrup",
       initialValue: resolved.code ?? undefined,
-      validate: (value) =>
-        String(value ?? "").trim() ? undefined : "Required",
+      validate: (value) => (String(value ?? "").trim() ? undefined : "Required"),
     });
 
     const wantsGroupChannels = await prompter.confirm({

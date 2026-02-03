@@ -32,10 +32,7 @@ function shouldAcceptInbound(
       const normalized = from?.replace(/\D/g, "") || "";
       const allowed = (allowFrom || []).some((num) => {
         const normalizedAllow = num.replace(/\D/g, "");
-        return (
-          normalized.endsWith(normalizedAllow) ||
-          normalizedAllow.endsWith(normalized)
-        );
+        return normalized.endsWith(normalizedAllow) || normalizedAllow.endsWith(normalized);
       });
       const status = allowed ? "accepted" : "rejected";
       console.log(
@@ -69,8 +66,7 @@ function createInboundCall(params: {
     transcript: [],
     processedEventIds: [],
     metadata: {
-      initialMessage:
-        params.ctx.config.inboundGreeting || "Hello! How can I help you today?",
+      initialMessage: params.ctx.config.inboundGreeting || "Hello! How can I help you today?",
     },
   };
 
@@ -78,16 +74,11 @@ function createInboundCall(params: {
   params.ctx.providerCallIdMap.set(params.providerCallId, callId);
   persistCallRecord(params.ctx.storePath, callRecord);
 
-  console.log(
-    `[voice-call] Created inbound call record: ${callId} from ${params.from}`,
-  );
+  console.log(`[voice-call] Created inbound call record: ${callId} from ${params.from}`);
   return callRecord;
 }
 
-export function processEvent(
-  ctx: CallManagerContext,
-  event: NormalizedEvent,
-): void {
+export function processEvent(ctx: CallManagerContext, event: NormalizedEvent): void {
   if (ctx.processedEventIds.has(event.id)) {
     return;
   }

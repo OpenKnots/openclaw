@@ -271,28 +271,12 @@ function collectModels(cfg: OpenClawConfig): ModelRef[] {
 
 const LEGACY_MODEL_PATTERNS: Array<{ id: string; re: RegExp; label: string }> = [
   { id: "openai.gpt35", re: /\bgpt-3\.5\b/i, label: "GPT-3.5 family" },
-  {
-    id: "anthropic.claude2",
-    re: /\bclaude-(instant|2)\b/i,
-    label: "Claude 2/Instant family",
-  },
-  {
-    id: "openai.gpt4_legacy",
-    re: /\bgpt-4-(0314|0613)\b/i,
-    label: "Legacy GPT-4 snapshots",
-  },
+  { id: "anthropic.claude2", re: /\bclaude-(instant|2)\b/i, label: "Claude 2/Instant family" },
+  { id: "openai.gpt4_legacy", re: /\bgpt-4-(0314|0613)\b/i, label: "Legacy GPT-4 snapshots" },
 ];
 
-const WEAK_TIER_MODEL_PATTERNS: Array<{
-  id: string;
-  re: RegExp;
-  label: string;
-}> = [
-  {
-    id: "anthropic.haiku",
-    re: /\bhaiku\b/i,
-    label: "Haiku tier (smaller model)",
-  },
+const WEAK_TIER_MODEL_PATTERNS: Array<{ id: string; re: RegExp; label: string }> = [
+  { id: "anthropic.haiku", re: /\bhaiku\b/i, label: "Haiku tier (smaller model)" },
 ];
 
 function inferParamBFromIdOrName(text: string): number | null {
@@ -373,11 +357,7 @@ export function collectModelHygieneFindings(cfg: OpenClawConfig): SecurityAuditF
   for (const entry of models) {
     for (const pat of LEGACY_MODEL_PATTERNS) {
       if (pat.re.test(entry.id)) {
-        matches.push({
-          model: entry.id,
-          source: entry.source,
-          reason: pat.label,
-        });
+        matches.push({ model: entry.id, source: entry.source, reason: pat.label });
         break;
       }
     }

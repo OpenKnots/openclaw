@@ -81,9 +81,7 @@ export function inferPlaceholder(params: {
   const fileType = params.fileType?.toLowerCase() ?? "";
 
   const looksLikeImage =
-    mime.startsWith("image/") ||
-    IMAGE_EXT_RE.test(name) ||
-    IMAGE_EXT_RE.test(`x.${fileType}`);
+    mime.startsWith("image/") || IMAGE_EXT_RE.test(name) || IMAGE_EXT_RE.test(`x.${fileType}`);
 
   return looksLikeImage ? "<media:image>" : "<media:document>";
 }
@@ -102,13 +100,11 @@ export function isLikelyImageAttachment(att: MSTeamsAttachmentLike): boolean {
     contentType === "application/vnd.microsoft.teams.file.download.info" &&
     isRecord(att.content)
   ) {
-    const fileType =
-      typeof att.content.fileType === "string" ? att.content.fileType : "";
+    const fileType = typeof att.content.fileType === "string" ? att.content.fileType : "";
     if (fileType && IMAGE_EXT_RE.test(`x.${fileType}`)) {
       return true;
     }
-    const fileName =
-      typeof att.content.fileName === "string" ? att.content.fileName : "";
+    const fileName = typeof att.content.fileName === "string" ? att.content.fileName : "";
     if (fileName && IMAGE_EXT_RE.test(fileName)) {
       return true;
     }
@@ -146,9 +142,7 @@ function isHtmlAttachment(att: MSTeamsAttachmentLike): boolean {
   return contentType.startsWith("text/html");
 }
 
-export function extractHtmlFromAttachment(
-  att: MSTeamsAttachmentLike,
-): string | undefined {
+export function extractHtmlFromAttachment(att: MSTeamsAttachmentLike): string | undefined {
   if (!isHtmlAttachment(att)) {
     return undefined;
   }
@@ -281,9 +275,7 @@ function isHostAllowed(host: string, allowlist: string[]): boolean {
     return true;
   }
   const normalized = host.toLowerCase();
-  return allowlist.some(
-    (entry) => normalized === entry || normalized.endsWith(`.${entry}`),
-  );
+  return allowlist.some((entry) => normalized === entry || normalized.endsWith(`.${entry}`));
 }
 
 export function isUrlAllowed(url: string, allowlist: string[]): boolean {

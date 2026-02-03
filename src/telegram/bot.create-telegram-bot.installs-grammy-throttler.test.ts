@@ -243,10 +243,7 @@ describe("createTelegramBot", () => {
     ).toBe("telegram:123:topic:9");
     expect(
       getTelegramSequentialKey({
-        message: {
-          chat: { id: 123, type: "supergroup" },
-          message_thread_id: 9,
-        },
+        message: { chat: { id: 123, type: "supergroup" }, message_thread_id: 9 },
       }),
     ).toBe("telegram:123");
     expect(

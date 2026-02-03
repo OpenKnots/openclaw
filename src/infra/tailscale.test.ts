@@ -128,9 +128,7 @@ describe("tailscale helpers", () => {
     vi.spyOn(tailscale, "getTailscaleBinary").mockResolvedValue("tailscale");
     const exec = vi
       .fn()
-      .mockResolvedValueOnce({
-        stdout: JSON.stringify({ BackendState: "Running" }),
-      }) // status
+      .mockResolvedValueOnce({ stdout: JSON.stringify({ BackendState: "Running" }) }) // status
       .mockRejectedValueOnce(new Error("permission denied")) // enable normal
       .mockResolvedValueOnce({ stdout: "" }); // enable sudo
 

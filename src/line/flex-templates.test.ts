@@ -49,14 +49,10 @@ describe("createListCard", () => {
   });
 
   it("limits items to 8", () => {
-    const items = Array.from({ length: 15 }, (_, i) => ({
-      title: `Item ${i}`,
-    }));
+    const items = Array.from({ length: 15 }, (_, i) => ({ title: `Item ${i}` }));
     const card = createListCard("List", items);
 
-    const body = card.body as {
-      contents: Array<{ type: string; contents?: unknown[] }>;
-    };
+    const body = card.body as { contents: Array<{ type: string; contents?: unknown[] }> };
     // The list items are in the third content (after title and separator)
     const listBox = body.contents[2] as { contents: unknown[] };
     expect(listBox.contents.length).toBe(8);
@@ -103,17 +99,10 @@ describe("createImageCard", () => {
 describe("createActionCard", () => {
   it("creates a card with action buttons", () => {
     const actions = [
-      {
-        label: "Action 1",
-        action: { type: "message" as const, label: "Act1", text: "action1" },
-      },
+      { label: "Action 1", action: { type: "message" as const, label: "Act1", text: "action1" } },
       {
         label: "Action 2",
-        action: {
-          type: "uri" as const,
-          label: "Act2",
-          uri: "https://example.com",
-        },
+        action: { type: "uri" as const, label: "Act2", uri: "https://example.com" },
       },
     ];
     const card = createActionCard("Title", "Description", actions);
@@ -172,9 +161,7 @@ describe("createNotificationBubble", () => {
   });
 
   it("applies notification type styling", () => {
-    const successBubble = createNotificationBubble("Success!", {
-      type: "success",
-    });
+    const successBubble = createNotificationBubble("Success!", { type: "success" });
     const errorBubble = createNotificationBubble("Error!", { type: "error" });
 
     expect(successBubble.body).toBeDefined();
@@ -418,11 +405,7 @@ describe("createEventCard", () => {
     const card = createEventCard({
       title: "Meeting",
       date: "Jan 24",
-      action: {
-        type: "uri",
-        label: "Join",
-        uri: "https://meet.google.com/abc",
-      },
+      action: { type: "uri", label: "Join", uri: "https://meet.google.com/abc" },
     });
 
     expect(card.body).toBeDefined();

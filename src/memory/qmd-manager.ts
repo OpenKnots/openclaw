@@ -58,11 +58,7 @@ export class QmdMemoryManager implements MemorySearchManager {
     if (!resolved) {
       return null;
     }
-    const manager = new QmdMemoryManager({
-      cfg: params.cfg,
-      agentId: params.agentId,
-      resolved,
-    });
+    const manager = new QmdMemoryManager({ cfg: params.cfg, agentId: params.agentId, resolved });
     await manager.initialize();
     return manager;
   }
@@ -165,10 +161,7 @@ export class QmdMemoryManager implements MemorySearchManager {
     this.sources.clear();
     for (const collection of this.qmd.collections) {
       const kind: MemorySource = collection.kind === "sessions" ? "sessions" : "memory";
-      this.collectionRoots.set(collection.name, {
-        path: collection.path,
-        kind,
-      });
+      this.collectionRoots.set(collection.name, { path: collection.path, kind });
       this.sources.add(kind);
     }
   }
@@ -244,9 +237,7 @@ export class QmdMemoryManager implements MemorySearchManager {
     const args = ["query", trimmed, "--json", "-n", String(limit)];
     let stdout: string;
     try {
-      const result = await this.runQmd(args, {
-        timeoutMs: this.qmd.limits.timeoutMs,
-      });
+      const result = await this.runQmd(args, { timeoutMs: this.qmd.limits.timeoutMs });
       stdout = result.stdout;
     } catch (err) {
       log.warn(`qmd query failed: ${String(err)}`);
@@ -258,9 +249,7 @@ export class QmdMemoryManager implements MemorySearchManager {
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       log.warn(`qmd query returned invalid JSON: ${message}`);
-      throw new Error(`qmd query returned invalid JSON: ${message}`, {
-        cause: err,
-      });
+      throw new Error(`qmd query returned invalid JSON: ${message}`, { cause: err });
     }
     const results: MemorySearchResult[] = [];
     for (const entry of parsed) {
@@ -555,10 +544,7 @@ export class QmdMemoryManager implements MemorySearchManager {
     return location;
   }
 
-  private extractSnippetLines(snippet: string): {
-    startLine: number;
-    endLine: number;
-  } {
+  private extractSnippetLines(snippet: string): { startLine: number; endLine: number } {
     const match = SNIPPET_HEADER_RE.exec(snippet);
     if (match) {
       const start = Number(match[1]);
@@ -573,11 +559,7 @@ export class QmdMemoryManager implements MemorySearchManager {
 
   private readCounts(): {
     totalDocuments: number;
-    sourceCounts: Array<{
-      source: MemorySource;
-      files: number;
-      chunks: number;
-    }>;
+    sourceCounts: Array<{ source: MemorySource; files: number; chunks: number }>;
   } {
     try {
       const db = this.ensureDb();
@@ -612,11 +594,7 @@ export class QmdMemoryManager implements MemorySearchManager {
       log.warn(`failed to read qmd index stats: ${String(err)}`);
       return {
         totalDocuments: 0,
-        sourceCounts: Array.from(this.sources).map((source) => ({
-          source,
-          files: 0,
-          chunks: 0,
-        })),
+        sourceCounts: Array.from(this.sources).map((source) => ({ source, files: 0, chunks: 0 })),
       };
     }
   }

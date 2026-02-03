@@ -79,11 +79,7 @@ async function promptInstallChoice(params: {
   prompter: WizardPrompter;
 }): Promise<InstallChoice> {
   const { entry, localPath, prompter, defaultChoice } = params;
-  const localOptions: Array<{
-    value: InstallChoice;
-    label: string;
-    hint?: string;
-  }> = localPath
+  const localOptions: Array<{ value: InstallChoice; label: string; hint?: string }> = localPath
     ? [
         {
           value: "local",

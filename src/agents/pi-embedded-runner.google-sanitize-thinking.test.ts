@@ -52,11 +52,7 @@ describe("sanitizeSessionHistory (google thinking)", () => {
     });
 
     const assistant = out.find((msg) => (msg as { role?: string }).role === "assistant") as {
-      content?: Array<{
-        type?: string;
-        thinking?: string;
-        thinkingSignature?: string;
-      }>;
+      content?: Array<{ type?: string; thinking?: string; thinkingSignature?: string }>;
     };
     expect(assistant.content?.map((block) => block.type)).toEqual(["thinking"]);
     expect(assistant.content?.[0]?.thinking).toBe("reasoning");
@@ -137,11 +133,7 @@ describe("sanitizeSessionHistory (google thinking)", () => {
     });
 
     const assistant = out.find((msg) => (msg as { role?: string }).role === "assistant") as {
-      content?: Array<{
-        type?: string;
-        thinking?: string;
-        thinkingSignature?: string;
-      }>;
+      content?: Array<{ type?: string; thinking?: string; thinkingSignature?: string }>;
     };
     expect(assistant.content?.map((block) => block.type)).toEqual(["thinking"]);
     expect(assistant.content?.[0]?.thinking).toBe("reasoning");

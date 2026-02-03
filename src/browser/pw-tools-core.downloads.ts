@@ -207,11 +207,7 @@ export async function downloadViaPlaywright(opts: {
 }> {
   const page = await getPageForTargetId(opts);
   const state = ensurePageState(page);
-  restoreRoleRefsForTarget({
-    cdpUrl: opts.cdpUrl,
-    targetId: opts.targetId,
-    page,
-  });
+  restoreRoleRefsForTarget({ cdpUrl: opts.cdpUrl, targetId: opts.targetId, page });
   const timeout = normalizeTimeoutMs(opts.timeoutMs, 120_000);
 
   const ref = requireRef(opts.ref);

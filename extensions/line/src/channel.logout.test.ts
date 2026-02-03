@@ -27,12 +27,9 @@ function createRuntime(): { runtime: PluginRuntime; mocks: LineRuntimeMocks } {
           : lineConfig;
       const hasToken =
         // oxlint-disable-next-line typescript/no-explicit-any
-        Boolean((entry as any).channelAccessToken) ||
-        Boolean((entry as any).tokenFile);
+        Boolean((entry as any).channelAccessToken) || Boolean((entry as any).tokenFile);
       // oxlint-disable-next-line typescript/no-explicit-any
-      const hasSecret =
-        Boolean((entry as any).channelSecret) ||
-        Boolean((entry as any).secretFile);
+      const hasSecret = Boolean((entry as any).channelSecret) || Boolean((entry as any).secretFile);
       return { tokenSource: hasToken && hasSecret ? "config" : "none" };
     },
   );

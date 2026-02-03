@@ -170,9 +170,7 @@ describe("session_status tool", () => {
       throw new Error("missing session_status tool");
     }
 
-    const result = await tool.execute("call4", {
-      sessionKey: "temp:slug-generator",
-    });
+    const result = await tool.execute("call4", { sessionKey: "temp:slug-generator" });
     const details = result.details as { ok?: boolean; sessionKey?: string };
     expect(details.ok).toBe(true);
     expect(details.sessionKey).toBe("temp:slug-generator");
@@ -188,9 +186,9 @@ describe("session_status tool", () => {
       },
     });
 
-    const tool = createOpenClawTools({
-      agentSessionKey: "agent:main:main",
-    }).find((candidate) => candidate.name === "session_status");
+    const tool = createOpenClawTools({ agentSessionKey: "agent:main:main" }).find(
+      (candidate) => candidate.name === "session_status",
+    );
     expect(tool).toBeDefined();
     if (!tool) {
       throw new Error("missing session_status tool");
@@ -230,9 +228,9 @@ describe("session_status tool", () => {
       },
     );
 
-    const tool = createOpenClawTools({
-      agentSessionKey: "agent:support:main",
-    }).find((candidate) => candidate.name === "session_status");
+    const tool = createOpenClawTools({ agentSessionKey: "agent:support:main" }).find(
+      (candidate) => candidate.name === "session_status",
+    );
     expect(tool).toBeDefined();
     if (!tool) {
       throw new Error("missing session_status tool");

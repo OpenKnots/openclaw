@@ -108,10 +108,7 @@ export function registerPluginCommand(
 ): CommandRegistrationResult {
   // Prevent registration while commands are being processed
   if (registryLocked) {
-    return {
-      ok: false,
-      error: "Cannot register commands while processing is in progress",
-    };
+    return { ok: false, error: "Cannot register commands while processing is in progress" };
   }
 
   // Validate handler is a function

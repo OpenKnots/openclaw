@@ -403,12 +403,8 @@ async function hydrateSendAttachmentParams(params: {
     readStringParam(params.args, "filePath", { trim: false });
   const contentTypeParam =
     readStringParam(params.args, "contentType") ?? readStringParam(params.args, "mimeType");
-  const caption = readStringParam(params.args, "caption", {
-    allowEmpty: true,
-  })?.trim();
-  const message = readStringParam(params.args, "message", {
-    allowEmpty: true,
-  })?.trim();
+  const caption = readStringParam(params.args, "caption", { allowEmpty: true })?.trim();
+  const message = readStringParam(params.args, "message", { allowEmpty: true })?.trim();
   if (!caption && message) {
     params.args.caption = message;
   }

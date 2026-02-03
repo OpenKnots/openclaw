@@ -112,12 +112,7 @@ function resolveSenderCandidates(params: {
 
   const normalized: string[] = [];
   for (const sender of candidates) {
-    const entries = normalizeAllowFromEntry({
-      dock,
-      cfg,
-      accountId,
-      value: sender,
-    });
+    const entries = normalizeAllowFromEntry({ dock, cfg, accountId, value: sender });
     for (const entry of entries) {
       if (!normalized.includes(entry)) {
         normalized.push(entry);

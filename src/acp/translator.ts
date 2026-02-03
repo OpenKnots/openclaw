@@ -282,9 +282,7 @@ export class AcpGatewayAgent implements Agent {
 
     this.sessionStore.cancelActiveRun(params.sessionId);
     try {
-      await this.gateway.request("chat.abort", {
-        sessionKey: session.sessionKey,
-      });
+      await this.gateway.request("chat.abort", { sessionKey: session.sessionKey });
     } catch (err) {
       this.log(`cancel error: ${String(err)}`);
     }

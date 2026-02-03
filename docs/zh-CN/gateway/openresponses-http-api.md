@@ -224,12 +224,7 @@ URL 获取默认值：
           },
           images: {
             allowUrl: true,
-            allowedMimes: [
-              "image/jpeg",
-              "image/png",
-              "image/gif",
-              "image/webp",
-            ],
+            allowedMimes: ["image/jpeg", "image/png", "image/gif", "image/webp"],
             maxBytes: 10485760,
             maxRedirects: 3,
             timeoutMs: 10000,

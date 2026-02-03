@@ -13,10 +13,7 @@ async function prepareRoutedCommand(params: {
   loadPlugins?: boolean;
 }) {
   emitCliBanner(VERSION, { argv: params.argv });
-  await ensureConfigReady({
-    runtime: defaultRuntime,
-    commandPath: params.commandPath,
-  });
+  await ensureConfigReady({ runtime: defaultRuntime, commandPath: params.commandPath });
   if (params.loadPlugins) {
     ensurePluginRegistryLoaded();
   }
@@ -38,10 +35,6 @@ export async function tryRouteCli(argv: string[]): Promise<boolean> {
   if (!route) {
     return false;
   }
-  await prepareRoutedCommand({
-    argv,
-    commandPath: path,
-    loadPlugins: route.loadPlugins,
-  });
+  await prepareRoutedCommand({ argv, commandPath: path, loadPlugins: route.loadPlugins });
   return route.run(argv);
 }

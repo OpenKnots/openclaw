@@ -95,9 +95,7 @@ export function normalizeBlueBubblesServerUrl(raw: string): string {
   if (!trimmed) {
     throw new Error("BlueBubbles serverUrl is required");
   }
-  const withScheme = /^https?:\/\//i.test(trimmed)
-    ? trimmed
-    : `http://${trimmed}`;
+  const withScheme = /^https?:\/\//i.test(trimmed) ? trimmed : `http://${trimmed}`;
   return withScheme.replace(/\/+$/, "");
 }
 

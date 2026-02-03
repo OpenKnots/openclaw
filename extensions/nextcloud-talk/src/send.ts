@@ -75,12 +75,11 @@ export async function sendMessageNextcloudTalk(
     throw new Error("Message must be non-empty for Nextcloud Talk sends");
   }
 
-  const tableMode =
-    getNextcloudTalkRuntime().channel.text.resolveMarkdownTableMode({
-      cfg,
-      channel: "nextcloud-talk",
-      accountId: account.accountId,
-    });
+  const tableMode = getNextcloudTalkRuntime().channel.text.resolveMarkdownTableMode({
+    cfg,
+    channel: "nextcloud-talk",
+    accountId: account.accountId,
+  });
   const message = getNextcloudTalkRuntime().channel.text.convertMarkdownTables(
     text.trim(),
     tableMode,
@@ -122,8 +121,7 @@ export async function sendMessageNextcloudTalk(
     } else if (status === 401) {
       errorMsg = "Nextcloud Talk: authentication failed - check bot secret";
     } else if (status === 403) {
-      errorMsg =
-        "Nextcloud Talk: forbidden - bot may not have permission in this room";
+      errorMsg = "Nextcloud Talk: forbidden - bot may not have permission in this room";
     } else if (status === 404) {
       errorMsg = `Nextcloud Talk: room not found (token=${roomToken})`;
     } else if (errorBody) {
@@ -155,9 +153,7 @@ export async function sendMessageNextcloudTalk(
   }
 
   if (opts.verbose) {
-    console.log(
-      `[nextcloud-talk] Sent message ${messageId} to room ${roomToken}`,
-    );
+    console.log(`[nextcloud-talk] Sent message ${messageId} to room ${roomToken}`);
   }
 
   getNextcloudTalkRuntime().channel.activity.record({
@@ -207,9 +203,7 @@ export async function sendReactionNextcloudTalk(
 
   if (!response.ok) {
     const errorBody = await response.text().catch(() => "");
-    throw new Error(
-      `Nextcloud Talk reaction failed: ${response.status} ${errorBody}`.trim(),
-    );
+    throw new Error(`Nextcloud Talk reaction failed: ${response.status} ${errorBody}`.trim());
   }
 
   return { ok: true };

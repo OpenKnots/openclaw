@@ -30,13 +30,8 @@ export function resolveMatrixAllowListMatch(params: {
   }
   const userId = normalizeMatrixUser(params.userId);
   const userName = normalizeMatrixUser(params.userName);
-  const localPart = userId.startsWith("@")
-    ? (userId.slice(1).split(":")[0] ?? "")
-    : "";
-  const candidates: Array<{
-    value?: string;
-    source: MatrixAllowListMatch["matchSource"];
-  }> = [
+  const localPart = userId.startsWith("@") ? (userId.slice(1).split(":")[0] ?? "") : "";
+  const candidates: Array<{ value?: string; source: MatrixAllowListMatch["matchSource"] }> = [
     { value: userId, source: "id" },
     { value: userId ? `matrix:${userId}` : "", source: "prefixed-id" },
     { value: userId ? `user:${userId}` : "", source: "prefixed-user" },

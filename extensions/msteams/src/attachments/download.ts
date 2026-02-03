@@ -22,9 +22,7 @@ type DownloadCandidate = {
   placeholder: string;
 };
 
-function resolveDownloadCandidate(
-  att: MSTeamsAttachmentLike,
-): DownloadCandidate | null {
+function resolveDownloadCandidate(att: MSTeamsAttachmentLike): DownloadCandidate | null {
   const contentType = normalizeContentType(att.contentType);
   const name = typeof att.name === "string" ? att.name.trim() : "";
 
@@ -33,30 +31,16 @@ function resolveDownloadCandidate(
       return null;
     }
     const downloadUrl =
-      typeof att.content.downloadUrl === "string"
-        ? att.content.downloadUrl.trim()
-        : "";
+      typeof att.content.downloadUrl === "string" ? att.content.downloadUrl.trim() : "";
     if (!downloadUrl) {
       return null;
     }
 
-    const fileType =
-      typeof att.content.fileType === "string"
-        ? att.content.fileType.trim()
-        : "";
-    const uniqueId =
-      typeof att.content.uniqueId === "string"
-        ? att.content.uniqueId.trim()
-        : "";
-    const fileName =
-      typeof att.content.fileName === "string"
-        ? att.content.fileName.trim()
-        : "";
+    const fileType = typeof att.content.fileType === "string" ? att.content.fileType.trim() : "";
+    const uniqueId = typeof att.content.uniqueId === "string" ? att.content.uniqueId.trim() : "";
+    const fileName = typeof att.content.fileName === "string" ? att.content.fileName.trim() : "";
 
-    const fileHint =
-      name ||
-      fileName ||
-      (uniqueId && fileType ? `${uniqueId}.${fileType}` : "");
+    const fileHint = name || fileName || (uniqueId && fileType ? `${uniqueId}.${fileType}` : "");
     return {
       url: downloadUrl,
       fileHint: fileHint || undefined,
@@ -69,8 +53,7 @@ function resolveDownloadCandidate(
     };
   }
 
-  const contentUrl =
-    typeof att.contentUrl === "string" ? att.contentUrl.trim() : "";
+  const contentUrl = typeof att.contentUrl === "string" ? att.contentUrl.trim() : "";
   if (!contentUrl) {
     return null;
   }
@@ -274,9 +257,7 @@ export async function downloadMSTeamsAttachments(params: {
         headerMime: res.headers.get("content-type"),
         filePath: candidate.fileHint ?? candidate.url,
       });
-      const originalFilename = params.preserveFilenames
-        ? candidate.fileHint
-        : undefined;
+      const originalFilename = params.preserveFilenames ? candidate.fileHint : undefined;
       const saved = await getMSTeamsRuntime().channel.media.saveMediaBuffer(
         buffer,
         mime ?? candidate.contentTypeHint,

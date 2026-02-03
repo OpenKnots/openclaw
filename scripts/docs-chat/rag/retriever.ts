@@ -14,7 +14,7 @@ export class Retriever {
   constructor(
     private readonly store: DocsStore,
     private readonly embeddings: Embeddings,
-  ) {}
+  ) { }
 
   /**
    * Retrieve relevant chunks using hybrid scoring:

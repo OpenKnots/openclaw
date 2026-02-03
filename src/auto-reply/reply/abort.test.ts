@@ -65,10 +65,7 @@ describe("abort detection", () => {
   it("fast-aborts even when text commands are disabled", async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), "openclaw-abort-"));
     const storePath = path.join(root, "sessions.json");
-    const cfg = {
-      session: { store: storePath },
-      commands: { text: false },
-    } as OpenClawConfig;
+    const cfg = { session: { store: storePath }, commands: { text: false } } as OpenClawConfig;
 
     const result = await tryFastAbortFromMessage({
       ctx: buildTestCtx({

@@ -750,10 +750,7 @@ function resolveProviderQuery(params: {
     return mergedOptions;
   }
   let query = normalizeDeepgramQueryKeys(mergedOptions ?? {});
-  const compat = buildDeepgramCompatQuery({
-    ...config?.deepgram,
-    ...entry.deepgram,
-  });
+  const compat = buildDeepgramCompatQuery({ ...config?.deepgram, ...entry.deepgram });
   for (const [key, value] of Object.entries(compat ?? {})) {
     if (query[key] === undefined) {
       query[key] = value;
@@ -825,18 +822,8 @@ async function runProviderEntry(params: {
     throw new Error(`Provider entry missing provider for ${capability}`);
   }
   const providerId = normalizeMediaProviderId(providerIdRaw);
-  const maxBytes = resolveMaxBytes({
-    capability,
-    entry,
-    cfg,
-    config: params.config,
-  });
-  const maxChars = resolveMaxChars({
-    capability,
-    entry,
-    cfg,
-    config: params.config,
-  });
+  const maxBytes = resolveMaxBytes({ capability, entry, cfg, config: params.config });
+  const maxChars = resolveMaxChars({ capability, entry, cfg, config: params.config });
   const timeoutMs = resolveTimeoutMs(
     entry.timeoutSeconds ??
       params.config?.timeoutSeconds ??
@@ -1017,18 +1004,8 @@ async function runCliEntry(params: {
   if (!command) {
     throw new Error(`CLI entry missing command for ${capability}`);
   }
-  const maxBytes = resolveMaxBytes({
-    capability,
-    entry,
-    cfg,
-    config: params.config,
-  });
-  const maxChars = resolveMaxChars({
-    capability,
-    entry,
-    cfg,
-    config: params.config,
-  });
+  const maxBytes = resolveMaxBytes({ capability, entry, cfg, config: params.config });
+  const maxChars = resolveMaxChars({ capability, entry, cfg, config: params.config });
   const timeoutMs = resolveTimeoutMs(
     entry.timeoutSeconds ??
       params.config?.timeoutSeconds ??
@@ -1133,11 +1110,7 @@ async function runAttachmentEntries(params: {
               config: params.config,
             });
       if (result) {
-        const decision = buildModelDecision({
-          entry,
-          entryType,
-          outcome: "success",
-        });
+        const decision = buildModelDecision({ entry, entryType, outcome: "success" });
         if (result.provider) {
           decision.provider = result.provider;
         }
@@ -1148,12 +1121,7 @@ async function runAttachmentEntries(params: {
         return { output: result, attempts };
       }
       attempts.push(
-        buildModelDecision({
-          entry,
-          entryType,
-          outcome: "skipped",
-          reason: "empty output",
-        }),
+        buildModelDecision({ entry, entryType, outcome: "skipped", reason: "empty output" }),
       );
     } catch (err) {
       if (isMediaUnderstandingSkipError(err)) {
@@ -1230,10 +1198,7 @@ export async function runCapability(params: {
       decision: {
         capability,
         outcome: "scope-deny",
-        attachments: selected.map((item) => ({
-          attachmentIndex: item.index,
-          attempts: [],
-        })),
+        attachments: selected.map((item) => ({ attachmentIndex: item.index, attempts: [] })),
       },
     };
   }
@@ -1296,10 +1261,7 @@ export async function runCapability(params: {
       decision: {
         capability,
         outcome: "skipped",
-        attachments: selected.map((item) => ({
-          attachmentIndex: item.index,
-          attempts: [],
-        })),
+        attachments: selected.map((item) => ({ attachmentIndex: item.index, attempts: [] })),
       },
     };
   }

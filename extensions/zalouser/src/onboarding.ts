@@ -18,12 +18,7 @@ import {
   resolveZalouserAccountSync,
   checkZcaAuthenticated,
 } from "./accounts.js";
-import {
-  runZca,
-  runZcaInteractive,
-  checkZcaInstalled,
-  parseJsonOutput,
-} from "./zca.js";
+import { runZca, runZcaInteractive, checkZcaInstalled, parseJsonOutput } from "./zca.js";
 
 const channel = "zalouser" as const;
 
@@ -32,9 +27,7 @@ function setZalouserDmPolicy(
   dmPolicy: "pairing" | "allowlist" | "open" | "disabled",
 ): OpenClawConfig {
   const allowFrom =
-    dmPolicy === "open"
-      ? addWildcardAllowFrom(cfg.channels?.zalouser?.allowFrom)
-      : undefined;
+    dmPolicy === "open" ? addWildcardAllowFrom(cfg.channels?.zalouser?.allowFrom) : undefined;
   return {
     ...cfg,
     channels: {
@@ -115,11 +108,8 @@ async function promptZalouserAllowFrom(params: {
     const entry = await prompter.text({
       message: "Zalouser allowFrom (username or user id)",
       placeholder: "Alice, 123456789",
-      initialValue: existingAllowFrom[0]
-        ? String(existingAllowFrom[0])
-        : undefined,
-      validate: (value) =>
-        String(value ?? "").trim() ? undefined : "Required",
+      initialValue: existingAllowFrom[0] ? String(existingAllowFrom[0]) : undefined,
+      validate: (value) => (String(value ?? "").trim() ? undefined : "Required"),
     });
     const parts = parseInput(String(entry));
     const results = await Promise.all(parts.map((part) => resolveUserId(part)));
@@ -162,8 +152,7 @@ async function promptZalouserAllowFrom(params: {
             ...cfg.channels?.zalouser?.accounts,
             [accountId]: {
               ...cfg.channels?.zalouser?.accounts?.[accountId],
-              enabled:
-                cfg.channels?.zalouser?.accounts?.[accountId]?.enabled ?? true,
+              enabled: cfg.channels?.zalouser?.accounts?.[accountId]?.enabled ?? true,
               dmPolicy: "allowlist",
               allowFrom: unique,
             },
@@ -203,8 +192,7 @@ function setZalouserGroupPolicy(
           ...cfg.channels?.zalouser?.accounts,
           [accountId]: {
             ...cfg.channels?.zalouser?.accounts?.[accountId],
-            enabled:
-              cfg.channels?.zalouser?.accounts?.[accountId]?.enabled ?? true,
+            enabled: cfg.channels?.zalouser?.accounts?.[accountId]?.enabled ?? true,
             groupPolicy,
           },
         },
@@ -218,9 +206,7 @@ function setZalouserGroupAllowlist(
   accountId: string,
   groupKeys: string[],
 ): OpenClawConfig {
-  const groups = Object.fromEntries(
-    groupKeys.map((key) => [key, { allow: true }]),
-  );
+  const groups = Object.fromEntries(groupKeys.map((key) => [key, { allow: true }]));
   if (accountId === DEFAULT_ACCOUNT_ID) {
     return {
       ...cfg,
@@ -245,8 +231,7 @@ function setZalouserGroupAllowlist(
           ...cfg.channels?.zalouser?.accounts,
           [accountId]: {
             ...cfg.channels?.zalouser?.accounts?.[accountId],
-            enabled:
-              cfg.channels?.zalouser?.accounts?.[accountId]?.enabled ?? true,
+            enabled: cfg.channels?.zalouser?.accounts?.[accountId]?.enabled ?? true,
             groups,
           },
         },
@@ -260,10 +245,7 @@ async function resolveZalouserGroups(params: {
   accountId: string;
   entries: string[];
 }): Promise<Array<{ input: string; resolved: boolean; id?: string }>> {
-  const account = resolveZalouserAccountSync({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveZalouserAccountSync({ cfg: params.cfg, accountId: params.accountId });
   const result = await runZca(["group", "list", "-j"], {
     profile: account.profile,
     timeout: 15000,
@@ -271,8 +253,8 @@ async function resolveZalouserGroups(params: {
   if (!result.ok) {
     throw new Error(result.stderr || "Failed to list groups");
   }
-  const groups = (parseJsonOutput<ZcaGroup[]>(result.stdout) ?? []).filter(
-    (group) => Boolean(group.groupId),
+  const groups = (parseJsonOutput<ZcaGroup[]>(result.stdout) ?? []).filter((group) =>
+    Boolean(group.groupId),
   );
   const byName = new Map<string, ZcaGroup[]>();
   for (const group of groups) {
@@ -306,8 +288,7 @@ const dmPolicy: ChannelOnboardingDmPolicy = {
   channel,
   policyKey: "channels.zalouser.dmPolicy",
   allowFromKey: "channels.zalouser.allowFrom",
-  getCurrent: (cfg) =>
-    (cfg.channels?.zalouser?.dmPolicy ?? "pairing") as "pairing",
+  getCurrent: (cfg) => (cfg.channels?.zalouser?.dmPolicy ?? "pairing") as "pairing",
   setPolicy: (cfg, policy) => setZalouserDmPolicy(cfg, policy),
   promptAllowFrom: async ({ cfg, prompter, accountId }) => {
     const id =
@@ -339,12 +320,8 @@ export const zalouserOnboardingAdapter: ChannelOnboardingAdapter = {
     return {
       channel,
       configured,
-      statusLines: [
-        `Zalo Personal: ${configured ? "logged in" : "needs QR login"}`,
-      ],
-      selectionHint: configured
-        ? "recommended · logged in"
-        : "recommended · QR login",
+      statusLines: [`Zalo Personal: ${configured ? "logged in" : "needs QR login"}`],
+      selectionHint: configured ? "recommended · logged in" : "recommended · QR login",
       quickstartScore: configured ? 1 : 15,
     };
   },
@@ -372,9 +349,7 @@ export const zalouserOnboardingAdapter: ChannelOnboardingAdapter = {
 
     const zalouserOverride = accountOverrides.zalouser?.trim();
     const defaultAccountId = resolveDefaultZalouserAccountId(cfg);
-    let accountId = zalouserOverride
-      ? normalizeAccountId(zalouserOverride)
-      : defaultAccountId;
+    let accountId = zalouserOverride ? normalizeAccountId(zalouserOverride) : defaultAccountId;
 
     if (shouldPromptAccountIds && !zalouserOverride) {
       accountId = await promptAccountId({
@@ -411,10 +386,7 @@ export const zalouserOnboardingAdapter: ChannelOnboardingAdapter = {
         });
 
         if (!result.ok) {
-          await prompter.note(
-            `Login failed: ${result.stderr || "Unknown error"}`,
-            "Error",
-          );
+          await prompter.note(`Login failed: ${result.stderr || "Unknown error"}`, "Error");
         } else {
           const isNowAuth = await checkZcaAuthenticated(account.profile);
           if (isNowAuth) {
@@ -428,12 +400,8 @@ export const zalouserOnboardingAdapter: ChannelOnboardingAdapter = {
         initialValue: true,
       });
       if (!keepSession) {
-        await runZcaInteractive(["auth", "logout"], {
-          profile: account.profile,
-        });
-        await runZcaInteractive(["auth", "login"], {
-          profile: account.profile,
-        });
+        await runZcaInteractive(["auth", "logout"], { profile: account.profile });
+        await runZcaInteractive(["auth", "login"], { profile: account.profile });
       }
     }
 
@@ -446,8 +414,7 @@ export const zalouserOnboardingAdapter: ChannelOnboardingAdapter = {
           zalouser: {
             ...next.channels?.zalouser,
             enabled: true,
-            profile:
-              account.profile !== "default" ? account.profile : undefined,
+            profile: account.profile !== "default" ? account.profile : undefined,
           },
         },
       } as OpenClawConfig;
@@ -506,16 +473,11 @@ export const zalouserOnboardingAdapter: ChannelOnboardingAdapter = {
             const unresolved = resolved
               .filter((entry) => !entry.resolved)
               .map((entry) => entry.input);
-            keys = [
-              ...resolvedIds,
-              ...unresolved.map((entry) => entry.trim()).filter(Boolean),
-            ];
+            keys = [...resolvedIds, ...unresolved.map((entry) => entry.trim()).filter(Boolean)];
             if (resolvedIds.length > 0 || unresolved.length > 0) {
               await prompter.note(
                 [
-                  resolvedIds.length > 0
-                    ? `Resolved: ${resolvedIds.join(", ")}`
-                    : undefined,
+                  resolvedIds.length > 0 ? `Resolved: ${resolvedIds.join(", ")}` : undefined,
                   unresolved.length > 0
                     ? `Unresolved (kept as typed): ${unresolved.join(", ")}`
                     : undefined,

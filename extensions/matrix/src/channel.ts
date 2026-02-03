@@ -12,10 +12,7 @@ import {
 import type { CoreConfig } from "./types.js";
 import { matrixMessageActions } from "./actions.js";
 import { MatrixConfigSchema } from "./config-schema.js";
-import {
-  listMatrixDirectoryGroupsLive,
-  listMatrixDirectoryPeersLive,
-} from "./directory-live.js";
+import { listMatrixDirectoryGroupsLive, listMatrixDirectoryPeersLive } from "./directory-live.js";
 import {
   resolveMatrixGroupRequireMention,
   resolveMatrixGroupToolPolicy,
@@ -112,8 +109,7 @@ export const matrixPlugin: ChannelPlugin<ResolvedMatrixAccount> = {
   configSchema: buildChannelConfigSchema(MatrixConfigSchema),
   config: {
     listAccountIds: (cfg) => listMatrixAccountIds(cfg as CoreConfig),
-    resolveAccount: (cfg, accountId) =>
-      resolveMatrixAccount({ cfg: cfg as CoreConfig, accountId }),
+    resolveAccount: (cfg, accountId) => resolveMatrixAccount({ cfg: cfg as CoreConfig, accountId }),
     defaultAccountId: (cfg) => resolveDefaultMatrixAccountId(cfg as CoreConfig),
     setAccountEnabled: ({ cfg, accountId, enabled }) =>
       setAccountEnabledInConfigSection({
@@ -147,9 +143,7 @@ export const matrixPlugin: ChannelPlugin<ResolvedMatrixAccount> = {
       baseUrl: account.homeserver,
     }),
     resolveAllowFrom: ({ cfg }) =>
-      ((cfg as CoreConfig).channels?.matrix?.dm?.allowFrom ?? []).map((entry) =>
-        String(entry),
-      ),
+      ((cfg as CoreConfig).channels?.matrix?.dm?.allowFrom ?? []).map((entry) => String(entry)),
     formatAllowFrom: ({ allowFrom }) => normalizeAllowListLower(allowFrom),
   },
   security: {
@@ -166,10 +160,8 @@ export const matrixPlugin: ChannelPlugin<ResolvedMatrixAccount> = {
           .toLowerCase(),
     }),
     collectWarnings: ({ account, cfg }) => {
-      const defaultGroupPolicy = (cfg as CoreConfig).channels?.defaults
-        ?.groupPolicy;
-      const groupPolicy =
-        account.config.groupPolicy ?? defaultGroupPolicy ?? "allowlist";
+      const defaultGroupPolicy = (cfg as CoreConfig).channels?.defaults?.groupPolicy;
+      const groupPolicy = account.config.groupPolicy ?? defaultGroupPolicy ?? "allowlist";
       if (groupPolicy !== "open") {
         return [];
       }
@@ -183,16 +175,13 @@ export const matrixPlugin: ChannelPlugin<ResolvedMatrixAccount> = {
     resolveToolPolicy: resolveMatrixGroupToolPolicy,
   },
   threading: {
-    resolveReplyToMode: ({ cfg }) =>
-      (cfg as CoreConfig).channels?.matrix?.replyToMode ?? "off",
+    resolveReplyToMode: ({ cfg }) => (cfg as CoreConfig).channels?.matrix?.replyToMode ?? "off",
     buildToolContext: ({ context, hasRepliedRef }) => {
       const currentTarget = context.To;
       return {
         currentChannelId: currentTarget?.trim() || undefined,
         currentThreadTs:
-          context.MessageThreadId != null
-            ? String(context.MessageThreadId)
-            : context.ReplyToId,
+          context.MessageThreadId != null ? String(context.MessageThreadId) : context.ReplyToId,
         hasRepliedRef,
       };
     },
@@ -216,10 +205,7 @@ export const matrixPlugin: ChannelPlugin<ResolvedMatrixAccount> = {
   directory: {
     self: async () => null,
     listPeers: async ({ cfg, accountId, query, limit }) => {
-      const account = resolveMatrixAccount({
-        cfg: cfg as CoreConfig,
-        accountId,
-      });
+      const account = resolveMatrixAccount({ cfg: cfg as CoreConfig, accountId });
       const q = query?.trim().toLowerCase() || "";
       const ids = new Set<string>();
 
@@ -255,9 +241,7 @@ export const matrixPlugin: ChannelPlugin<ResolvedMatrixAccount> = {
         .filter(Boolean)
         .map((raw) => {
           const lowered = raw.toLowerCase();
-          const cleaned = lowered.startsWith("user:")
-            ? raw.slice("user:".length).trim()
-            : raw;
+          const cleaned = lowered.startsWith("user:") ? raw.slice("user:".length).trim() : raw;
           if (cleaned.startsWith("@")) {
             return `user:${cleaned}`;
           }
@@ -271,17 +255,12 @@ export const matrixPlugin: ChannelPlugin<ResolvedMatrixAccount> = {
           return {
             kind: "user",
             id,
-            ...(incomplete
-              ? { name: "incomplete id; expected @user:server" }
-              : {}),
+            ...(incomplete ? { name: "incomplete id; expected @user:server" } : {}),
           };
         });
     },
     listGroups: async ({ cfg, accountId, query, limit }) => {
-      const account = resolveMatrixAccount({
-        cfg: cfg as CoreConfig,
-        accountId,
-      });
+      const account = resolveMatrixAccount({ cfg: cfg as CoreConfig, accountId });
       const q = query?.trim().toLowerCase() || "";
       const groups = account.config.groups ?? account.config.rooms ?? {};
       const ids = Object.keys(groups)
@@ -385,8 +364,7 @@ export const matrixPlugin: ChannelPlugin<ResolvedMatrixAccount> = {
     },
     collectStatusIssues: (accounts) =>
       accounts.flatMap((account) => {
-        const lastError =
-          typeof account.lastError === "string" ? account.lastError.trim() : "";
+        const lastError = typeof account.lastError === "string" ? account.lastError.trim() : "";
         if (!lastError) {
           return [];
         }
@@ -449,9 +427,7 @@ export const matrixPlugin: ChannelPlugin<ResolvedMatrixAccount> = {
         accountId: account.accountId,
         baseUrl: account.homeserver,
       });
-      ctx.log?.info(
-        `[${account.accountId}] starting provider (${account.homeserver ?? "matrix"})`,
-      );
+      ctx.log?.info(`[${account.accountId}] starting provider (${account.homeserver ?? "matrix"})`);
       // Lazy import: the monitor pulls the reply pipeline; avoid ESM init cycles.
       const { monitorMatrixProvider } = await import("./matrix/index.js");
       return monitorMatrixProvider({

@@ -245,11 +245,7 @@ describe("compaction-safeguard runtime registry", () => {
     const sm2 = {};
     setCompactionSafeguardRuntime(sm1, { maxHistoryShare: 0.3 });
     setCompactionSafeguardRuntime(sm2, { maxHistoryShare: 0.8 });
-    expect(getCompactionSafeguardRuntime(sm1)).toEqual({
-      maxHistoryShare: 0.3,
-    });
-    expect(getCompactionSafeguardRuntime(sm2)).toEqual({
-      maxHistoryShare: 0.8,
-    });
+    expect(getCompactionSafeguardRuntime(sm1)).toEqual({ maxHistoryShare: 0.3 });
+    expect(getCompactionSafeguardRuntime(sm2)).toEqual({ maxHistoryShare: 0.8 });
   });
 });

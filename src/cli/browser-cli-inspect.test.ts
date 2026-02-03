@@ -101,9 +101,7 @@ describe("browser cli snapshot defaults", () => {
     const browser = program.command("browser").option("--json", false);
     registerBrowserInspectCommands(browser, () => ({}));
 
-    await program.parseAsync(["browser", "snapshot", "--format", "aria"], {
-      from: "user",
-    });
+    await program.parseAsync(["browser", "snapshot", "--format", "aria"], { from: "user" });
 
     expect(sharedMocks.callBrowserRequest).toHaveBeenCalled();
     const [, params] = sharedMocks.callBrowserRequest.mock.calls.at(-1) ?? [];

@@ -191,9 +191,7 @@ export async function uploadGoogleChatAttachment(params: {
   });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(
-      `Google Chat upload ${res.status}: ${text || res.statusText}`,
-    );
+    throw new Error(`Google Chat upload ${res.status}: ${text || res.statusText}`);
   }
   const payload = (await res.json()) as {
     attachmentDataRef?: { attachmentUploadToken?: string };
@@ -236,13 +234,9 @@ export async function listGoogleChatReactions(params: {
   if (limit && limit > 0) {
     url.searchParams.set("pageSize", String(limit));
   }
-  const result = await fetchJson<{ reactions?: GoogleChatReaction[] }>(
-    account,
-    url.toString(),
-    {
-      method: "GET",
-    },
-  );
+  const result = await fetchJson<{ reactions?: GoogleChatReaction[] }>(account, url.toString(), {
+    method: "GET",
+  });
   return result.reactions ?? [];
 }
 
@@ -262,18 +256,12 @@ export async function findGoogleChatDirectMessage(params: {
   const { account, userName } = params;
   const url = new URL(`${CHAT_API_BASE}/spaces:findDirectMessage`);
   url.searchParams.set("name", userName);
-  return await fetchJson<{ name?: string; displayName?: string }>(
-    account,
-    url.toString(),
-    {
-      method: "GET",
-    },
-  );
+  return await fetchJson<{ name?: string; displayName?: string }>(account, url.toString(), {
+    method: "GET",
+  });
 }
 
-export async function probeGoogleChat(
-  account: ResolvedGoogleChatAccount,
-): Promise<{
+export async function probeGoogleChat(account: ResolvedGoogleChatAccount): Promise<{
   ok: boolean;
   status?: number;
   error?: string;

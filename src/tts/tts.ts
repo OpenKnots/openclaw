@@ -595,12 +595,7 @@ function parseTtsDirectives(
   policy: ResolvedTtsModelOverrides,
 ): TtsDirectiveParseResult {
   if (!policy.enabled) {
-    return {
-      cleanedText: text,
-      overrides: {},
-      warnings: [],
-      hasDirective: false,
-    };
+    return { cleanedText: text, overrides: {}, warnings: [], hasDirective: false };
   }
 
   const overrides: TtsDirectiveOverrides = {};
@@ -664,10 +659,7 @@ function parseTtsDirectives(
               break;
             }
             if (isValidVoiceId(rawValue)) {
-              overrides.elevenlabs = {
-                ...overrides.elevenlabs,
-                voiceId: rawValue,
-              };
+              overrides.elevenlabs = { ...overrides.elevenlabs, voiceId: rawValue };
             } else {
               warnings.push(`invalid ElevenLabs voiceId "${rawValue}"`);
             }
@@ -685,10 +677,7 @@ function parseTtsDirectives(
             if (isValidOpenAIModel(rawValue)) {
               overrides.openai = { ...overrides.openai, model: rawValue };
             } else {
-              overrides.elevenlabs = {
-                ...overrides.elevenlabs,
-                modelId: rawValue,
-              };
+              overrides.elevenlabs = { ...overrides.elevenlabs, modelId: rawValue };
             }
             break;
           case "stability":
@@ -704,10 +693,7 @@ function parseTtsDirectives(
               requireInRange(value, 0, 1, "stability");
               overrides.elevenlabs = {
                 ...overrides.elevenlabs,
-                voiceSettings: {
-                  ...overrides.elevenlabs?.voiceSettings,
-                  stability: value,
-                },
+                voiceSettings: { ...overrides.elevenlabs?.voiceSettings, stability: value },
               };
             }
             break;
@@ -726,10 +712,7 @@ function parseTtsDirectives(
               requireInRange(value, 0, 1, "similarityBoost");
               overrides.elevenlabs = {
                 ...overrides.elevenlabs,
-                voiceSettings: {
-                  ...overrides.elevenlabs?.voiceSettings,
-                  similarityBoost: value,
-                },
+                voiceSettings: { ...overrides.elevenlabs?.voiceSettings, similarityBoost: value },
               };
             }
             break;
@@ -746,10 +729,7 @@ function parseTtsDirectives(
               requireInRange(value, 0, 1, "style");
               overrides.elevenlabs = {
                 ...overrides.elevenlabs,
-                voiceSettings: {
-                  ...overrides.elevenlabs?.voiceSettings,
-                  style: value,
-                },
+                voiceSettings: { ...overrides.elevenlabs?.voiceSettings, style: value },
               };
             }
             break;
@@ -766,10 +746,7 @@ function parseTtsDirectives(
               requireInRange(value, 0.5, 2, "speed");
               overrides.elevenlabs = {
                 ...overrides.elevenlabs,
-                voiceSettings: {
-                  ...overrides.elevenlabs?.voiceSettings,
-                  speed: value,
-                },
+                voiceSettings: { ...overrides.elevenlabs?.voiceSettings, speed: value },
               };
             }
             break;
@@ -788,10 +765,7 @@ function parseTtsDirectives(
               }
               overrides.elevenlabs = {
                 ...overrides.elevenlabs,
-                voiceSettings: {
-                  ...overrides.elevenlabs?.voiceSettings,
-                  useSpeakerBoost: value,
-                },
+                voiceSettings: { ...overrides.elevenlabs?.voiceSettings, useSpeakerBoost: value },
               };
             }
             break;
@@ -916,10 +890,7 @@ function resolveSummaryModelRef(
     return { ref: defaultRef, source: "default" };
   }
 
-  const aliasIndex = buildModelAliasIndex({
-    cfg,
-    defaultProvider: defaultRef.provider,
-  });
+  const aliasIndex = buildModelAliasIndex({ cfg, defaultProvider: defaultRef.provider });
   const resolved = resolveModelRefFromString({
     raw: override,
     defaultProvider: defaultRef.provider,
@@ -1272,9 +1243,7 @@ export async function textToSpeech(params: {
         }
 
         scheduleCleanup(tempDir);
-        const voiceCompatible = isVoiceCompatibleAudio({
-          fileName: edgeResult.audioPath,
-        });
+        const voiceCompatible = isVoiceCompatibleAudio({ fileName: edgeResult.audioPath });
 
         return {
           success: true,

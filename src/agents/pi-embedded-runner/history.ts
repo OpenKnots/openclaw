@@ -82,12 +82,7 @@ export function getDmHistoryLimitFromSessionKey(
   const resolveProviderConfig = (
     cfg: OpenClawConfig | undefined,
     providerId: string,
-  ):
-    | {
-        dmHistoryLimit?: number;
-        dms?: Record<string, { historyLimit?: number }>;
-      }
-    | undefined => {
+  ): { dmHistoryLimit?: number; dms?: Record<string, { historyLimit?: number }> } | undefined => {
     const channels = cfg?.channels;
     if (!channels || typeof channels !== "object") {
       return undefined;
@@ -96,10 +91,7 @@ export function getDmHistoryLimitFromSessionKey(
     if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
       return undefined;
     }
-    return entry as {
-      dmHistoryLimit?: number;
-      dms?: Record<string, { historyLimit?: number }>;
-    };
+    return entry as { dmHistoryLimit?: number; dms?: Record<string, { historyLimit?: number }> };
   };
 
   return getLimit(resolveProviderConfig(config, provider));

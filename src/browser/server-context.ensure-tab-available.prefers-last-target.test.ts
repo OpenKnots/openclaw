@@ -19,60 +19,20 @@ describe("browser server-context ensureTabAvailable", () => {
     // 2nd call (act): reversed ordering B then A (twice)
     const responses = [
       [
-        {
-          id: "A",
-          type: "page",
-          url: "https://a.example",
-          webSocketDebuggerUrl: "ws://x/a",
-        },
-        {
-          id: "B",
-          type: "page",
-          url: "https://b.example",
-          webSocketDebuggerUrl: "ws://x/b",
-        },
+        { id: "A", type: "page", url: "https://a.example", webSocketDebuggerUrl: "ws://x/a" },
+        { id: "B", type: "page", url: "https://b.example", webSocketDebuggerUrl: "ws://x/b" },
       ],
       [
-        {
-          id: "A",
-          type: "page",
-          url: "https://a.example",
-          webSocketDebuggerUrl: "ws://x/a",
-        },
-        {
-          id: "B",
-          type: "page",
-          url: "https://b.example",
-          webSocketDebuggerUrl: "ws://x/b",
-        },
+        { id: "A", type: "page", url: "https://a.example", webSocketDebuggerUrl: "ws://x/a" },
+        { id: "B", type: "page", url: "https://b.example", webSocketDebuggerUrl: "ws://x/b" },
       ],
       [
-        {
-          id: "B",
-          type: "page",
-          url: "https://b.example",
-          webSocketDebuggerUrl: "ws://x/b",
-        },
-        {
-          id: "A",
-          type: "page",
-          url: "https://a.example",
-          webSocketDebuggerUrl: "ws://x/a",
-        },
+        { id: "B", type: "page", url: "https://b.example", webSocketDebuggerUrl: "ws://x/b" },
+        { id: "A", type: "page", url: "https://a.example", webSocketDebuggerUrl: "ws://x/a" },
       ],
       [
-        {
-          id: "B",
-          type: "page",
-          url: "https://b.example",
-          webSocketDebuggerUrl: "ws://x/b",
-        },
-        {
-          id: "A",
-          type: "page",
-          url: "https://a.example",
-          webSocketDebuggerUrl: "ws://x/a",
-        },
+        { id: "B", type: "page", url: "https://b.example", webSocketDebuggerUrl: "ws://x/b" },
+        { id: "A", type: "page", url: "https://a.example", webSocketDebuggerUrl: "ws://x/a" },
       ],
     ];
 
@@ -136,22 +96,8 @@ describe("browser server-context ensureTabAvailable", () => {
   it("falls back to the only attached tab when an invalid targetId is provided (extension)", async () => {
     const fetchMock = vi.fn();
     const responses = [
-      [
-        {
-          id: "A",
-          type: "page",
-          url: "https://a.example",
-          webSocketDebuggerUrl: "ws://x/a",
-        },
-      ],
-      [
-        {
-          id: "A",
-          type: "page",
-          url: "https://a.example",
-          webSocketDebuggerUrl: "ws://x/a",
-        },
-      ],
+      [{ id: "A", type: "page", url: "https://a.example", webSocketDebuggerUrl: "ws://x/a" }],
+      [{ id: "A", type: "page", url: "https://a.example", webSocketDebuggerUrl: "ws://x/a" }],
     ];
 
     fetchMock.mockImplementation(async (url: unknown) => {

@@ -63,10 +63,7 @@ beforeEach(() => {
     trace: console.trace,
   };
   originalIsTty = process.stdout.isTTY;
-  Object.defineProperty(process.stdout, "isTTY", {
-    value: false,
-    configurable: true,
-  });
+  Object.defineProperty(process.stdout, "isTTY", { value: false, configurable: true });
 });
 
 afterEach(() => {
@@ -76,10 +73,7 @@ afterEach(() => {
   console.error = snapshot.error;
   console.debug = snapshot.debug;
   console.trace = snapshot.trace;
-  Object.defineProperty(process.stdout, "isTTY", {
-    value: originalIsTty,
-    configurable: true,
-  });
+  Object.defineProperty(process.stdout, "isTTY", { value: originalIsTty, configurable: true });
   vi.restoreAllMocks();
 });
 

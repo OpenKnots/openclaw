@@ -150,11 +150,7 @@ x-i18n:
   },
   "broadcast": {
     "strategy": "parallel",
-    "120363403215116621@g.us": [
-      "code-reviewer",
-      "security-auditor",
-      "docs-generator"
-    ],
+    "120363403215116621@g.us": ["code-reviewer", "security-auditor", "docs-generator"],
     "120363424282127706@g.us": ["support-en", "support-de"],
     "+15555550123": ["assistant", "logger"]
   }
@@ -300,10 +296,7 @@ x-i18n:
 {
   "bindings": [
     {
-      "match": {
-        "channel": "whatsapp",
-        "peer": { "kind": "group", "id": "GROUP_A" }
-      },
+      "match": { "channel": "whatsapp", "peer": { "kind": "group", "id": "GROUP_A" } },
       "agentId": "alfred"
     }
   ],
@@ -380,11 +373,7 @@ tail -f ~/.openclaw/logs/gateway.log | grep broadcast
         "workspace": "~/agents/testing",
         "tools": { "allow": ["read", "exec"] }
       },
-      {
-        "id": "docs-checker",
-        "workspace": "~/agents/docs",
-        "tools": { "allow": ["read"] }
-      }
+      { "id": "docs-checker", "workspace": "~/agents/docs", "tools": { "allow": ["read"] } }
     ]
   }
 }

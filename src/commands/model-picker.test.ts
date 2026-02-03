@@ -199,10 +199,7 @@ describe("applyModelFallbacksFromSelection", () => {
     const config = {
       agents: {
         defaults: {
-          model: {
-            primary: "anthropic/claude-opus-4-5",
-            fallbacks: ["openai/gpt-5.2"],
-          },
+          model: { primary: "anthropic/claude-opus-4-5", fallbacks: ["openai/gpt-5.2"] },
         },
       },
     } as OpenClawConfig;

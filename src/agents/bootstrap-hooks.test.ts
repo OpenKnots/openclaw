@@ -25,12 +25,7 @@ describe("applyBootstrapHookOverrides", () => {
       const context = event.context as AgentBootstrapHookContext;
       context.bootstrapFiles = [
         ...context.bootstrapFiles,
-        {
-          name: "EXTRA.md",
-          path: "/tmp/EXTRA.md",
-          content: "extra",
-          missing: false,
-        },
+        { name: "EXTRA.md", path: "/tmp/EXTRA.md", content: "extra", missing: false },
       ];
     });
 

@@ -397,11 +397,7 @@ describe("runHeartbeatOnce", () => {
             { id: "main", default: true },
             {
               id: "ops",
-              heartbeat: {
-                every: "5m",
-                target: "whatsapp",
-                prompt: "Ops check",
-              },
+              heartbeat: { every: "5m", target: "whatsapp", prompt: "Ops check" },
             },
           ],
         },

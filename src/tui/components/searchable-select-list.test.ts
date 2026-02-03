@@ -24,16 +24,8 @@ const testItems = [
     description: "Claude 3 Sonnet",
   },
   { value: "openai/gpt-4", label: "openai/gpt-4", description: "GPT-4" },
-  {
-    value: "openai/gpt-4-turbo",
-    label: "openai/gpt-4-turbo",
-    description: "GPT-4 Turbo",
-  },
-  {
-    value: "google/gemini-pro",
-    label: "google/gemini-pro",
-    description: "Gemini Pro",
-  },
+  { value: "openai/gpt-4-turbo", label: "openai/gpt-4-turbo", description: "GPT-4 Turbo" },
+  { value: "google/gemini-pro", label: "google/gemini-pro", description: "Gemini Pro" },
 ];
 
 describe("SearchableSelectList", () => {
@@ -64,16 +56,8 @@ describe("SearchableSelectList", () => {
   it("prioritizes exact substring matches over fuzzy matches", () => {
     // Add items where one has early exact match, others are fuzzy or late matches
     const items = [
-      {
-        value: "openrouter/auto",
-        label: "openrouter/auto",
-        description: "Routes to best",
-      },
-      {
-        value: "opus-direct",
-        label: "opus-direct",
-        description: "Direct opus model",
-      },
+      { value: "openrouter/auto", label: "openrouter/auto", description: "Routes to best" },
+      { value: "opus-direct", label: "opus-direct", description: "Direct opus model" },
       {
         value: "anthropic/claude-3-opus",
         label: "anthropic/claude-3-opus",
@@ -95,16 +79,8 @@ describe("SearchableSelectList", () => {
   it("keeps exact label matches ahead of description matches", () => {
     const longPrefix = "x".repeat(250);
     const items = [
-      {
-        value: "late-label",
-        label: `${longPrefix}opus`,
-        description: "late exact match",
-      },
-      {
-        value: "desc-first",
-        label: "provider/other",
-        description: "opus in description",
-      },
+      { value: "late-label", label: `${longPrefix}opus`, description: "late exact match" },
+      { value: "desc-first", label: "provider/other", description: "opus in description" },
     ];
     const list = new SearchableSelectList(items, 5, mockTheme);
 
@@ -123,11 +99,7 @@ describe("SearchableSelectList", () => {
         label: "provider/other",
         description: "This mentions opus in description",
       },
-      {
-        value: "provider/opus-model",
-        label: "provider/opus-model",
-        description: "Something else",
-      },
+      { value: "provider/opus-model", label: "provider/opus-model", description: "Something else" },
     ];
     const list = new SearchableSelectList(items, 5, mockTheme);
 

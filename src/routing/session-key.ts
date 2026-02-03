@@ -41,10 +41,7 @@ export function toAgentStoreSessionKey(params: {
 }): string {
   const raw = (params.requestKey ?? "").trim();
   if (!raw || raw === DEFAULT_MAIN_KEY) {
-    return buildAgentMainSessionKey({
-      agentId: params.agentId,
-      mainKey: params.mainKey,
-    });
+    return buildAgentMainSessionKey({ agentId: params.agentId, mainKey: params.mainKey });
   }
   const lowered = raw.toLowerCase();
   if (lowered.startsWith("agent:")) {

@@ -54,9 +54,7 @@ describe("models cli", () => {
     const program = new Command();
     registerModelsCli(program);
 
-    await program.parseAsync(["models", "status", "--agent", "poe"], {
-      from: "user",
-    });
+    await program.parseAsync(["models", "status", "--agent", "poe"], { from: "user" });
 
     expect(modelsStatusCommand).toHaveBeenCalledWith(
       expect.objectContaining({ agent: "poe" }),
@@ -71,9 +69,7 @@ describe("models cli", () => {
     const program = new Command();
     registerModelsCli(program);
 
-    await program.parseAsync(["models", "--agent", "poe", "status"], {
-      from: "user",
-    });
+    await program.parseAsync(["models", "--agent", "poe", "status"], { from: "user" });
 
     expect(modelsStatusCommand).toHaveBeenCalledWith(
       expect.objectContaining({ agent: "poe" }),

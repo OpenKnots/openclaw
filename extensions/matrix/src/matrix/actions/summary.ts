@@ -7,9 +7,7 @@ import {
   type RoomPinnedEventsEventContent,
 } from "./types.js";
 
-export function summarizeMatrixRawEvent(
-  event: MatrixRawEvent,
-): MatrixMessageSummary {
+export function summarizeMatrixRawEvent(event: MatrixRawEvent): MatrixMessageSummary {
   const content = event.content as RoomMessageEventContent;
   const relates = content["m.relates_to"];
   let relType: string | undefined;
@@ -39,10 +37,7 @@ export function summarizeMatrixRawEvent(
   };
 }
 
-export async function readPinnedEvents(
-  client: MatrixClient,
-  roomId: string,
-): Promise<string[]> {
+export async function readPinnedEvents(client: MatrixClient, roomId: string): Promise<string[]> {
   try {
     const content = (await client.getRoomStateEvent(
       roomId,

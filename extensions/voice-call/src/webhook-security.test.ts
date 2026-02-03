@@ -38,9 +38,7 @@ function plivoV3Signature(params: {
 
   const sortedQuery = Array.from(queryMap.keys())
     .toSorted()
-    .flatMap((k) =>
-      [...(queryMap.get(k) ?? [])].toSorted().map((v) => `${k}=${v}`),
-    )
+    .flatMap((k) => [...(queryMap.get(k) ?? [])].toSorted().map((v) => `${k}=${v}`))
     .join("&");
 
   const postParams = new URLSearchParams(params.postBody);
@@ -51,9 +49,7 @@ function plivoV3Signature(params: {
 
   const sortedPost = Array.from(postMap.keys())
     .toSorted()
-    .flatMap((k) =>
-      [...(postMap.get(k) ?? [])].toSorted().map((v) => `${k}${v}`),
-    )
+    .flatMap((k) => [...(postMap.get(k) ?? [])].toSorted().map((v) => `${k}${v}`))
     .join("");
 
   const hasPost = sortedPost.length > 0;
@@ -73,24 +69,17 @@ function plivoV3Signature(params: {
   return canonicalizeBase64(digest);
 }
 
-function twilioSignature(params: {
-  authToken: string;
-  url: string;
-  postBody: string;
-}): string {
+function twilioSignature(params: { authToken: string; url: string; postBody: string }): string {
   let dataToSign = params.url;
-  const sortedParams = Array.from(
-    new URLSearchParams(params.postBody).entries(),
-  ).toSorted((a, b) => a[0].localeCompare(b[0]));
+  const sortedParams = Array.from(new URLSearchParams(params.postBody).entries()).toSorted((a, b) =>
+    a[0].localeCompare(b[0]),
+  );
 
   for (const [key, value] of sortedParams) {
     dataToSign += key + value;
   }
 
-  return crypto
-    .createHmac("sha1", params.authToken)
-    .update(dataToSign)
-    .digest("base64");
+  return crypto.createHmac("sha1", params.authToken).update(dataToSign).digest("base64");
 }
 
 describe("verifyPlivoWebhook", () => {
@@ -130,8 +119,7 @@ describe("verifyPlivoWebhook", () => {
     const authToken = "test-auth-token";
     const nonce = "nonce-456";
 
-    const urlWithQuery =
-      "https://example.com/voice/webhook?flow=answer&callId=abc";
+    const urlWithQuery = "https://example.com/voice/webhook?flow=answer&callId=abc";
     const postBody = "CallUUID=uuid&CallStatus=in-progress&From=%2B15550000000";
 
     const good = plivoV3Signature({

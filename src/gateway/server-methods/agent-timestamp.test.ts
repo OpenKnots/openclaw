@@ -67,9 +67,7 @@ describe("injectTimestamp", () => {
 
   it("does NOT double-stamp messages already injected by us", () => {
     const alreadyStamped = "[Wed 2026-01-28 20:30 EST] hello there";
-    const result = injectTimestamp(alreadyStamped, {
-      timezone: "America/New_York",
-    });
+    const result = injectTimestamp(alreadyStamped, { timezone: "America/New_York" });
 
     expect(result).toBe(alreadyStamped);
   });
@@ -77,9 +75,7 @@ describe("injectTimestamp", () => {
   it("does NOT double-stamp messages with cron-injected timestamps", () => {
     const cronMessage =
       "[cron:abc123 my-job] do the thing\nCurrent time: Wednesday, January 28th, 2026 — 8:30 PM (America/New_York)";
-    const result = injectTimestamp(cronMessage, {
-      timezone: "America/New_York",
-    });
+    const result = injectTimestamp(cronMessage, { timezone: "America/New_York" });
 
     expect(result).toBe(cronMessage);
   });

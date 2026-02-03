@@ -62,10 +62,7 @@ export const telegramOutbound: ChannelOutboundAdapter = {
     const replyToMessageId = parseReplyToMessageId(replyToId);
     const messageThreadId = parseThreadId(threadId);
     const telegramData = payload.channelData?.telegram as
-      | {
-          buttons?: Array<Array<{ text: string; callback_data: string }>>;
-          quoteText?: string;
-        }
+      | { buttons?: Array<Array<{ text: string; callback_data: string }>>; quoteText?: string }
       | undefined;
     const quoteText =
       typeof telegramData?.quoteText === "string" ? telegramData.quoteText : undefined;
@@ -103,9 +100,6 @@ export const telegramOutbound: ChannelOutboundAdapter = {
         ...(isFirst ? { buttons: telegramData?.buttons } : {}),
       });
     }
-    return {
-      channel: "telegram",
-      ...(finalResult ?? { messageId: "unknown", chatId: to }),
-    };
+    return { channel: "telegram", ...(finalResult ?? { messageId: "unknown", chatId: to }) };
   },
 };

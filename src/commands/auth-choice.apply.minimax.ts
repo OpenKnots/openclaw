@@ -35,11 +35,7 @@ export async function applyAuthChoiceMiniMax(
     const endpoint = await params.prompter.select({
       message: "Select MiniMax endpoint",
       options: [
-        {
-          value: "oauth",
-          label: "Global",
-          hint: "OAuth for international users",
-        },
+        { value: "oauth", label: "Global", hint: "OAuth for international users" },
         { value: "oauth-cn", label: "CN", hint: "OAuth for users in China" },
       ],
     });

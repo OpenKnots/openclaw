@@ -106,13 +106,7 @@ const writeAuthStore = async (
       "openai:p1": { type: "api_key", provider: "openai", key: "sk-one" },
       "openai:p2": { type: "api_key", provider: "openai", key: "sk-two" },
       ...(opts?.includeAnthropic
-        ? {
-            "anthropic:default": {
-              type: "api_key",
-              provider: "anthropic",
-              key: "sk-anth",
-            },
-          }
+        ? { "anthropic:default": { type: "api_key", provider: "anthropic", key: "sk-anth" } }
         : {}),
     },
     usageStats:
@@ -384,9 +378,7 @@ describe("runEmbeddedPiAgent auth profile rotation", () => {
 
         const stored = JSON.parse(
           await fs.readFile(path.join(agentDir, "auth-profiles.json"), "utf-8"),
-        ) as {
-          usageStats?: Record<string, { lastUsed?: number; cooldownUntil?: number }>;
-        };
+        ) as { usageStats?: Record<string, { lastUsed?: number; cooldownUntil?: number }> };
         expect(stored.usageStats?.["openai:p1"]?.cooldownUntil).toBe(now + 60 * 60 * 1000);
         expect(typeof stored.usageStats?.["openai:p2"]?.lastUsed).toBe("number");
       } finally {
@@ -499,11 +491,7 @@ describe("runEmbeddedPiAgent auth profile rotation", () => {
           profiles: {
             "openai:p1": { type: "api_key", provider: "openai", key: "sk-one" },
             "openai:p2": { type: "api_key", provider: "openai", key: "sk-two" },
-            "openai:p3": {
-              type: "api_key",
-              provider: "openai",
-              key: "sk-three",
-            },
+            "openai:p3": { type: "api_key", provider: "openai", key: "sk-three" },
           },
           usageStats: {
             "openai:p1": { lastUsed: 1 },

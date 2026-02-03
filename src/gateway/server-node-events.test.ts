@@ -61,9 +61,7 @@ describe("node exec events", () => {
       "Exec started (node=node-1 id=run-1): ls -la",
       { sessionKey: "agent:main:main", contextKey: "exec:run-1" },
     );
-    expect(requestHeartbeatNowMock).toHaveBeenCalledWith({
-      reason: "exec-event",
-    });
+    expect(requestHeartbeatNowMock).toHaveBeenCalledWith({ reason: "exec-event" });
   });
 
   it("enqueues exec.finished events with output", async () => {
@@ -82,9 +80,7 @@ describe("node exec events", () => {
       "Exec finished (node=node-2 id=run-2, code 0)\ndone",
       { sessionKey: "node-node-2", contextKey: "exec:run-2" },
     );
-    expect(requestHeartbeatNowMock).toHaveBeenCalledWith({
-      reason: "exec-event",
-    });
+    expect(requestHeartbeatNowMock).toHaveBeenCalledWith({ reason: "exec-event" });
   });
 
   it("enqueues exec.denied events with reason", async () => {
@@ -103,8 +99,6 @@ describe("node exec events", () => {
       "Exec denied (node=node-3 id=run-3, allowlist-miss): rm -rf /",
       { sessionKey: "agent:demo:main", contextKey: "exec:run-3" },
     );
-    expect(requestHeartbeatNowMock).toHaveBeenCalledWith({
-      reason: "exec-event",
-    });
+    expect(requestHeartbeatNowMock).toHaveBeenCalledWith({ reason: "exec-event" });
   });
 });

@@ -93,11 +93,7 @@ async function promptRemovalAccountId(params: {
     return DEFAULT_ACCOUNT_ID;
   }
   const accountIds = plugin.config.listAccountIds(cfg).filter(Boolean);
-  const defaultAccountId = resolveChannelDefaultAccountId({
-    plugin,
-    cfg,
-    accountIds,
-  });
+  const defaultAccountId = resolveChannelDefaultAccountId({ plugin, cfg, accountIds });
   if (accountIds.length <= 1) {
     return defaultAccountId;
   }
@@ -120,9 +116,9 @@ async function collectChannelStatus(params: {
   const installedPlugins = listChannelPlugins();
   const installedIds = new Set(installedPlugins.map((plugin) => plugin.id));
   const workspaceDir = resolveAgentWorkspaceDir(params.cfg, resolveDefaultAgentId(params.cfg));
-  const catalogEntries = listChannelPluginCatalogEntries({
-    workspaceDir,
-  }).filter((entry) => !installedIds.has(entry.id));
+  const catalogEntries = listChannelPluginCatalogEntries({ workspaceDir }).filter(
+    (entry) => !installedIds.has(entry.id),
+  );
   const statusEntries = await Promise.all(
     listChannelOnboardingAdapters().map((adapter) =>
       adapter.getStatus({
@@ -443,11 +439,7 @@ export async function setupChannels(
     if (!adapter) {
       return;
     }
-    const status = await adapter.getStatus({
-      cfg: next,
-      options,
-      accountOverrides,
-    });
+    const status = await adapter.getStatus({ cfg: next, options, accountOverrides });
     statusByChannel.set(channel, status);
   };
 
@@ -557,10 +549,7 @@ export async function setupChannels(
         return;
       }
       if (plugin?.config.deleteAccount) {
-        next = plugin.config.deleteAccount({
-          cfg: next,
-          accountId: resolvedAccountId,
-        });
+        next = plugin.config.deleteAccount({ cfg: next, accountId: resolvedAccountId });
       }
       await refreshStatus(channel);
       return;

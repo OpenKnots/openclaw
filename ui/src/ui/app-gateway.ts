@@ -4,27 +4,10 @@ import type { ExecApprovalRequest } from "./controllers/exec-approval";
 import type { GatewayEventFrame, GatewayHelloOk } from "./gateway";
 import type { Tab } from "./navigation";
 import type { UiSettings } from "./storage";
-import type {
-  AgentsListResult,
-  PresenceEntry,
-  HealthSnapshot,
-  StatusSummary,
-} from "./types";
-import {
-  CHAT_SESSIONS_ACTIVE_MINUTES,
-  flushChatQueueForEvent,
-} from "./app-chat";
-import {
-  applySettings,
-  loadCron,
-  refreshActiveTab,
-  setLastActiveSessionKey,
-} from "./app-settings";
-import {
-  handleAgentEvent,
-  resetToolStream,
-  type AgentEventPayload,
-} from "./app-tool-stream";
+import type { AgentsListResult, PresenceEntry, HealthSnapshot, StatusSummary } from "./types";
+import { CHAT_SESSIONS_ACTIVE_MINUTES, flushChatQueueForEvent } from "./app-chat";
+import { applySettings, loadCron, refreshActiveTab, setLastActiveSessionKey } from "./app-settings";
+import { handleAgentEvent, resetToolStream, type AgentEventPayload } from "./app-tool-stream";
 import { loadAgents } from "./controllers/agents";
 import { loadAssistantIdentity } from "./controllers/assistant-identity";
 import { loadChatHistory } from "./controllers/chat";
@@ -93,22 +76,15 @@ function normalizeSessionKeyForDefaults(
     raw === "main" ||
     raw === mainKey ||
     (defaultAgentId &&
-      (raw === `agent:${defaultAgentId}:main` ||
-        raw === `agent:${defaultAgentId}:${mainKey}`));
+      (raw === `agent:${defaultAgentId}:main` || raw === `agent:${defaultAgentId}:${mainKey}`));
   return isAlias ? mainSessionKey : raw;
 }
 
-function applySessionDefaults(
-  host: GatewayHost,
-  defaults?: SessionDefaultsSnapshot,
-) {
+function applySessionDefaults(host: GatewayHost, defaults?: SessionDefaultsSnapshot) {
   if (!defaults?.mainSessionKey) {
     return;
   }
-  const resolvedSessionKey = normalizeSessionKeyForDefaults(
-    host.sessionKey,
-    defaults,
-  );
+  const resolvedSessionKey = normalizeSessionKeyForDefaults(host.sessionKey, defaults);
   const resolvedSettingsSessionKey = normalizeSessionKeyForDefaults(
     host.settings.sessionKey,
     defaults,
@@ -117,8 +93,7 @@ function applySessionDefaults(
     host.settings.lastActiveSessionKey,
     defaults,
   );
-  const nextSessionKey =
-    resolvedSessionKey || resolvedSettingsSessionKey || host.sessionKey;
+  const nextSessionKey = resolvedSessionKey || resolvedSettingsSessionKey || host.sessionKey;
   const nextSettings = {
     ...host.settings,
     sessionKey: resolvedSettingsSessionKey || nextSessionKey,
@@ -131,10 +106,7 @@ function applySessionDefaults(
     host.sessionKey = nextSessionKey;
   }
   if (shouldUpdateSettings) {
-    applySettings(
-      host as unknown as Parameters<typeof applySettings>[0],
-      nextSettings,
-    );
+    applySettings(host as unknown as Parameters<typeof applySettings>[0], nextSettings);
   }
 }
 
@@ -161,17 +133,13 @@ export function connectGateway(host: GatewayHost) {
       // Any in-flight run's final event was lost during the disconnect window.
       host.chatRunId = null;
       (host as unknown as { chatStream: string | null }).chatStream = null;
-      (
-        host as unknown as { chatStreamStartedAt: number | null }
-      ).chatStreamStartedAt = null;
+      (host as unknown as { chatStreamStartedAt: number | null }).chatStreamStartedAt = null;
       resetToolStream(host as unknown as Parameters<typeof resetToolStream>[0]);
       void loadAssistantIdentity(host as unknown as OpenClawApp);
       void loadAgents(host as unknown as OpenClawApp);
       void loadNodes(host as unknown as OpenClawApp, { quiet: true });
       void loadDevices(host as unknown as OpenClawApp, { quiet: true });
-      void refreshActiveTab(
-        host as unknown as Parameters<typeof refreshActiveTab>[0],
-      );
+      void refreshActiveTab(host as unknown as Parameters<typeof refreshActiveTab>[0]);
     },
     onClose: ({ code, reason }) => {
       host.connected = false;
@@ -227,9 +195,7 @@ function handleGatewayEventUnsafe(host: GatewayHost, evt: GatewayEventFrame) {
     const state = handleChatEvent(host as unknown as OpenClawApp, payload);
     if (state === "final" || state === "error" || state === "aborted") {
       resetToolStream(host as unknown as Parameters<typeof resetToolStream>[0]);
-      void flushChatQueueForEvent(
-        host as unknown as Parameters<typeof flushChatQueueForEvent>[0],
-      );
+      void flushChatQueueForEvent(host as unknown as Parameters<typeof flushChatQueueForEvent>[0]);
       const runId = payload?.runId;
       if (runId && host.refreshSessionsAfterChat.has(runId)) {
         host.refreshSessionsAfterChat.delete(runId);
@@ -260,10 +226,7 @@ function handleGatewayEventUnsafe(host: GatewayHost, evt: GatewayEventFrame) {
     void loadCron(host as unknown as Parameters<typeof loadCron>[0]);
   }
 
-  if (
-    evt.event === "device.pair.requested" ||
-    evt.event === "device.pair.resolved"
-  ) {
+  if (evt.event === "device.pair.requested" || evt.event === "device.pair.resolved") {
     void loadDevices(host as unknown as OpenClawApp, { quiet: true });
   }
 
@@ -274,10 +237,7 @@ function handleGatewayEventUnsafe(host: GatewayHost, evt: GatewayEventFrame) {
       host.execApprovalError = null;
       const delay = Math.max(0, entry.expiresAtMs - Date.now() + 500);
       window.setTimeout(() => {
-        host.execApprovalQueue = removeExecApproval(
-          host.execApprovalQueue,
-          entry.id,
-        );
+        host.execApprovalQueue = removeExecApproval(host.execApprovalQueue, entry.id);
       }, delay);
     }
     return;
@@ -286,10 +246,7 @@ function handleGatewayEventUnsafe(host: GatewayHost, evt: GatewayEventFrame) {
   if (evt.event === "exec.approval.resolved") {
     const resolved = parseExecApprovalResolved(evt.payload);
     if (resolved) {
-      host.execApprovalQueue = removeExecApproval(
-        host.execApprovalQueue,
-        resolved.id,
-      );
+      host.execApprovalQueue = removeExecApproval(host.execApprovalQueue, resolved.id);
     }
   }
 }

@@ -267,9 +267,7 @@ export function chunkMarkdownTextWithMode(text: string, limit: number, mode: Chu
   if (mode === "newline") {
     // Paragraph chunking is fence-safe because we never split at arbitrary indices.
     // If a paragraph must be split by length, defer to the markdown-aware chunker.
-    const paragraphChunks = chunkByParagraph(text, limit, {
-      splitLongParagraphs: false,
-    });
+    const paragraphChunks = chunkByParagraph(text, limit, { splitLongParagraphs: false });
     const out: string[] = [];
     for (const chunk of paragraphChunks) {
       const nested = chunkMarkdownText(chunk, limit);

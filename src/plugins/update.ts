@@ -61,9 +61,7 @@ async function readInstalledPackageVersion(dir: string): Promise<string | undefi
 function resolveBundledPluginSources(params: {
   workspaceDir?: string;
 }): Map<string, BundledPluginSource> {
-  const discovery = discoverOpenClawPlugins({
-    workspaceDir: params.workspaceDir,
-  });
+  const discovery = discoverOpenClawPlugins({ workspaceDir: params.workspaceDir });
   const bundled = new Map<string, BundledPluginSource>();
 
   for (const candidate of discovery.candidates) {
@@ -324,9 +322,7 @@ export async function syncPluginsForUpdateChannel(params: {
     warnings: [],
     errors: [],
   };
-  const bundled = resolveBundledPluginSources({
-    workspaceDir: params.workspaceDir,
-  });
+  const bundled = resolveBundledPluginSources({ workspaceDir: params.workspaceDir });
   if (bundled.size === 0) {
     return { config: params.config, changed: false, summary };
   }

@@ -12,10 +12,7 @@ import {
 } from "../../test-utils/channel-plugins.js";
 
 const mocks = vi.hoisted(() => ({
-  appendAssistantMessageToSessionTranscript: vi.fn(async () => ({
-    ok: true,
-    sessionFile: "x",
-  })),
+  appendAssistantMessageToSessionTranscript: vi.fn(async () => ({ ok: true, sessionFile: "x" })),
 }));
 
 vi.mock("../../config/sessions.js", async () => {
@@ -57,11 +54,7 @@ describe("deliverOutboundPayloads", () => {
       expect(sendTelegram).toHaveBeenCalledTimes(2);
       for (const call of sendTelegram.mock.calls) {
         expect(call[2]).toEqual(
-          expect.objectContaining({
-            accountId: undefined,
-            verbose: false,
-            textMode: "html",
-          }),
+          expect.objectContaining({ accountId: undefined, verbose: false, textMode: "html" }),
         );
       }
       expect(results).toHaveLength(2);
@@ -93,11 +86,7 @@ describe("deliverOutboundPayloads", () => {
     expect(sendTelegram).toHaveBeenCalledWith(
       "123",
       "hi",
-      expect.objectContaining({
-        accountId: "default",
-        verbose: false,
-        textMode: "html",
-      }),
+      expect.objectContaining({ accountId: "default", verbose: false, textMode: "html" }),
     );
   });
 
@@ -338,10 +327,7 @@ describe("deliverOutboundPayloads", () => {
     expect(onError).toHaveBeenCalledTimes(1);
     expect(onError).toHaveBeenCalledWith(
       expect.any(Error),
-      expect.objectContaining({
-        text: "hi",
-        mediaUrls: ["https://x.test/a.jpg"],
-      }),
+      expect.objectContaining({ text: "hi", mediaUrls: ["https://x.test/a.jpg"] }),
     );
   });
 
@@ -356,12 +342,7 @@ describe("deliverOutboundPayloads", () => {
       cfg,
       channel: "telegram",
       to: "123",
-      payloads: [
-        {
-          text: "caption",
-          mediaUrl: "https://example.com/files/report.pdf?sig=1",
-        },
-      ],
+      payloads: [{ text: "caption", mediaUrl: "https://example.com/files/report.pdf?sig=1" }],
       deps: { sendTelegram },
       mirror: {
         sessionKey: "agent:main:main",
@@ -380,26 +361,17 @@ const emptyRegistry = createTestRegistry([]);
 const defaultRegistry = createTestRegistry([
   {
     pluginId: "telegram",
-    plugin: createOutboundTestPlugin({
-      id: "telegram",
-      outbound: telegramOutbound,
-    }),
+    plugin: createOutboundTestPlugin({ id: "telegram", outbound: telegramOutbound }),
     source: "test",
   },
   {
     pluginId: "signal",
-    plugin: createOutboundTestPlugin({
-      id: "signal",
-      outbound: signalOutbound,
-    }),
+    plugin: createOutboundTestPlugin({ id: "signal", outbound: signalOutbound }),
     source: "test",
   },
   {
     pluginId: "whatsapp",
-    plugin: createOutboundTestPlugin({
-      id: "whatsapp",
-      outbound: whatsappOutbound,
-    }),
+    plugin: createOutboundTestPlugin({ id: "whatsapp", outbound: whatsappOutbound }),
     source: "test",
   },
   {

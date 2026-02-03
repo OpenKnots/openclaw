@@ -277,9 +277,7 @@ export async function runReplyAgent(params: {
     defaultRuntime.error(buildLogMessage(nextSessionId));
     if (cleanupTranscripts && prevSessionId) {
       const transcriptCandidates = new Set<string>();
-      const resolved = resolveSessionFilePath(prevSessionId, prevEntry, {
-        agentId,
-      });
+      const resolved = resolveSessionFilePath(prevSessionId, prevEntry, { agentId });
       if (resolved) {
         transcriptCandidates.add(resolved);
       }

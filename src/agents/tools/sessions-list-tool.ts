@@ -77,10 +77,7 @@ export function createSessionsListTool(opts?: {
           : 0;
       const messageLimit = Math.min(messageLimitRaw, 20);
 
-      const list = await callGateway<{
-        sessions: Array<SessionListRow>;
-        path: string;
-      }>({
+      const list = await callGateway<{ sessions: Array<SessionListRow>; path: string }>({
         method: "sessions.list",
         params: {
           limit,

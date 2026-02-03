@@ -133,11 +133,7 @@ export async function resolveDiscordUserAllowlist(params: {
         ? guilds.filter((g) => g.slug === normalizeDiscordSlug(guildName))
         : guilds;
 
-    let best: {
-      member: DiscordMember;
-      guild: DiscordGuildSummary;
-      score: number;
-    } | null = null;
+    let best: { member: DiscordMember; guild: DiscordGuildSummary; score: number } | null = null;
     let matches = 0;
 
     for (const guild of guildList) {

@@ -10,9 +10,7 @@ export function normalizeMSTeamsConversationId(raw: string): string {
   return raw.split(";")[0] ?? raw;
 }
 
-export function extractMSTeamsConversationMessageId(
-  raw: string,
-): string | undefined {
+export function extractMSTeamsConversationMessageId(raw: string): string | undefined {
   if (!raw) {
     return undefined;
   }
@@ -21,9 +19,7 @@ export function extractMSTeamsConversationMessageId(
   return value || undefined;
 }
 
-export function parseMSTeamsActivityTimestamp(
-  value: unknown,
-): Date | undefined {
+export function parseMSTeamsActivityTimestamp(value: unknown): Date | undefined {
   if (!value) {
     return undefined;
   }
@@ -48,7 +44,5 @@ export function wasMSTeamsBotMentioned(activity: MentionableActivity): boolean {
     return false;
   }
   const entities = activity.entities ?? [];
-  return entities.some(
-    (e) => e.type === "mention" && e.mentioned?.id === botId,
-  );
+  return entities.some((e) => e.type === "mention" && e.mentioned?.id === botId);
 }

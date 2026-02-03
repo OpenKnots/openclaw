@@ -194,11 +194,7 @@ function buildProbeTargets(params: {
         for (const profileId of filteredProfiles) {
           const profile = store.profiles[profileId];
           const mode = profile?.type;
-          const label = resolveAuthProfileDisplayLabel({
-            cfg,
-            store,
-            profileId,
-          });
+          const label = resolveAuthProfileDisplayLabel({ cfg, store, profileId });
           if (explicitOrder && !explicitOrder.includes(profileId)) {
             results.push({
               provider: providerKey,
@@ -384,9 +380,7 @@ async function runTargetsWithConcurrency(params: {
   await fs.mkdir(workspaceDir, { recursive: true });
 
   let completed = 0;
-  const results: Array<AuthProbeResult | undefined> = Array.from({
-    length: targets.length,
-  });
+  const results: Array<AuthProbeResult | undefined> = Array.from({ length: targets.length });
   let cursor = 0;
 
   const worker = async () => {

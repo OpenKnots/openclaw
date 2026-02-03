@@ -19,10 +19,7 @@ vi.mock("./bot-message-context.js", () => ({
 
 const { readAllowFromStoreMock, upsertPairingRequestMock } = vi.hoisted(() => ({
   readAllowFromStoreMock: vi.fn(async () => [] as string[]),
-  upsertPairingRequestMock: vi.fn(async () => ({
-    code: "CODE",
-    created: true,
-  })),
+  upsertPairingRequestMock: vi.fn(async () => ({ code: "CODE", created: true })),
 }));
 
 let handleLineWebhookEvents: typeof import("./bot-handlers.js").handleLineWebhookEvents;
@@ -123,9 +120,7 @@ describe("handleLineWebhookEvents", () => {
 
     await handleLineWebhookEvents([event], {
       cfg: {
-        channels: {
-          line: { groupPolicy: "allowlist", groupAllowFrom: ["user-3"] },
-        },
+        channels: { line: { groupPolicy: "allowlist", groupAllowFrom: ["user-3"] } },
       },
       account: {
         accountId: "default",

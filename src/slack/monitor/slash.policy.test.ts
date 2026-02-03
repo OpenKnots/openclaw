@@ -77,10 +77,7 @@ function createHarness(overrides?: {
     resolveUserName: async () => ({ name: "Ada" }),
   } as unknown;
 
-  const account = {
-    accountId: "acct",
-    config: { commands: { native: false } },
-  } as unknown;
+  const account = { accountId: "acct", config: { commands: { native: false } } } as unknown;
 
   return { commands, ctx, account, postEphemeral, channelId, channelName };
 }
@@ -104,10 +101,7 @@ describe("slack slash commands channel policy", () => {
       channelId: "C_UNLISTED",
       channelName: "unlisted",
     });
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = [...commands.values()][0];
     if (!handler) {
@@ -141,10 +135,7 @@ describe("slack slash commands channel policy", () => {
       channelId: "C_DENIED",
       channelName: "denied",
     });
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = [...commands.values()][0];
     if (!handler) {
@@ -179,10 +170,7 @@ describe("slack slash commands channel policy", () => {
       channelId: "C_UNLISTED",
       channelName: "unlisted",
     });
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = [...commands.values()][0];
     if (!handler) {
@@ -219,10 +207,7 @@ describe("slack slash commands access groups", () => {
       channelName: "unknown",
       resolveChannelName: async () => ({}),
     });
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = [...commands.values()][0];
     if (!handler) {
@@ -257,10 +242,7 @@ describe("slack slash commands access groups", () => {
       channelName: "notdirectmessage",
       resolveChannelName: async () => ({}),
     });
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = [...commands.values()][0];
     if (!handler) {
@@ -283,9 +265,7 @@ describe("slack slash commands access groups", () => {
 
     expect(dispatchMock).toHaveBeenCalledTimes(1);
     expect(respond).not.toHaveBeenCalledWith(
-      expect.objectContaining({
-        text: "You are not authorized to use this command.",
-      }),
+      expect.objectContaining({ text: "You are not authorized to use this command." }),
     );
   });
 
@@ -296,10 +276,7 @@ describe("slack slash commands access groups", () => {
       channelName: "private",
       resolveChannelName: async () => ({}),
     });
-    registerSlackMonitorSlashCommands({
-      ctx: ctx as never,
-      account: account as never,
-    });
+    registerSlackMonitorSlashCommands({ ctx: ctx as never, account: account as never });
 
     const handler = [...commands.values()][0];
     if (!handler) {

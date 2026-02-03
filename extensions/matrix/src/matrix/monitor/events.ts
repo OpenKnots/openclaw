@@ -12,10 +12,7 @@ export function registerMatrixMonitorEvents(params: {
   warnedCryptoMissingRooms: Set<string>;
   logger: { warn: (meta: Record<string, unknown>, message: string) => void };
   formatNativeDependencyHint: PluginRuntime["system"]["formatNativeDependencyHint"];
-  onRoomMessage: (
-    roomId: string,
-    event: MatrixRawEvent,
-  ) => void | Promise<void>;
+  onRoomMessage: (roomId: string, event: MatrixRawEvent) => void | Promise<void>;
 }): void {
   const {
     client,
@@ -33,17 +30,13 @@ export function registerMatrixMonitorEvents(params: {
   client.on("room.encrypted_event", (roomId: string, event: MatrixRawEvent) => {
     const eventId = event?.event_id ?? "unknown";
     const eventType = event?.type ?? "unknown";
-    logVerboseMessage(
-      `matrix: encrypted event room=${roomId} type=${eventType} id=${eventId}`,
-    );
+    logVerboseMessage(`matrix: encrypted event room=${roomId} type=${eventType} id=${eventId}`);
   });
 
   client.on("room.decrypted_event", (roomId: string, event: MatrixRawEvent) => {
     const eventId = event?.event_id ?? "unknown";
     const eventType = event?.type ?? "unknown";
-    logVerboseMessage(
-      `matrix: decrypted event room=${roomId} type=${eventType} id=${eventId}`,
-    );
+    logVerboseMessage(`matrix: decrypted event room=${roomId} type=${eventType} id=${eventId}`);
   });
 
   client.on(
@@ -62,9 +55,7 @@ export function registerMatrixMonitorEvents(params: {
   client.on("room.invite", (roomId: string, event: MatrixRawEvent) => {
     const eventId = event?.event_id ?? "unknown";
     const sender = event?.sender ?? "unknown";
-    const isDirect =
-      (event?.content as { is_direct?: boolean } | undefined)?.is_direct ===
-      true;
+    const isDirect = (event?.content as { is_direct?: boolean } | undefined)?.is_direct === true;
     logVerboseMessage(
       `matrix: invite room=${roomId} sender=${sender} direct=${String(isDirect)} id=${eventId}`,
     );
@@ -87,17 +78,12 @@ export function registerMatrixMonitorEvents(params: {
           "matrix: encrypted event received without encryption enabled; set channels.matrix.encryption=true and verify the device to decrypt";
         logger.warn({ roomId }, warning);
       }
-      if (
-        auth.encryption === true &&
-        !client.crypto &&
-        !warnedCryptoMissingRooms.has(roomId)
-      ) {
+      if (auth.encryption === true && !client.crypto && !warnedCryptoMissingRooms.has(roomId)) {
         warnedCryptoMissingRooms.add(roomId);
         const hint = formatNativeDependencyHint({
           packageName: "@matrix-org/matrix-sdk-crypto-nodejs",
           manager: "pnpm",
-          downloadCommand:
-            "node node_modules/@matrix-org/matrix-sdk-crypto-nodejs/download-lib.js",
+          downloadCommand: "node node_modules/@matrix-org/matrix-sdk-crypto-nodejs/download-lib.js",
         });
         const warning = `matrix: encryption enabled but crypto is unavailable; ${hint}`;
         logger.warn({ roomId }, warning);
@@ -105,8 +91,7 @@ export function registerMatrixMonitorEvents(params: {
       return;
     }
     if (eventType === EventType.RoomMember) {
-      const membership = (event?.content as { membership?: string } | undefined)
-        ?.membership;
+      const membership = (event?.content as { membership?: string } | undefined)?.membership;
       const stateKey = (event as { state_key?: string }).state_key ?? "";
       logVerboseMessage(
         `matrix: member event room=${roomId} stateKey=${stateKey} membership=${membership ?? "unknown"}`,

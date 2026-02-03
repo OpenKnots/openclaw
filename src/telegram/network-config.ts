@@ -23,16 +23,10 @@ export function resolveTelegramAutoSelectFamilyDecision(params?: {
       : Number(process.versions.node.split(".")[0]);
 
   if (isTruthyEnvValue(env[TELEGRAM_ENABLE_AUTO_SELECT_FAMILY_ENV])) {
-    return {
-      value: true,
-      source: `env:${TELEGRAM_ENABLE_AUTO_SELECT_FAMILY_ENV}`,
-    };
+    return { value: true, source: `env:${TELEGRAM_ENABLE_AUTO_SELECT_FAMILY_ENV}` };
   }
   if (isTruthyEnvValue(env[TELEGRAM_DISABLE_AUTO_SELECT_FAMILY_ENV])) {
-    return {
-      value: false,
-      source: `env:${TELEGRAM_DISABLE_AUTO_SELECT_FAMILY_ENV}`,
-    };
+    return { value: false, source: `env:${TELEGRAM_DISABLE_AUTO_SELECT_FAMILY_ENV}` };
   }
   if (typeof params?.network?.autoSelectFamily === "boolean") {
     return { value: params.network.autoSelectFamily, source: "config" };

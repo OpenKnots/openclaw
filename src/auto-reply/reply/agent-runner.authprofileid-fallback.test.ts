@@ -91,10 +91,7 @@ function createBaseRun(params: { runOverrides?: Partial<FollowupRun["run"]> }) {
 describe("authProfileId fallback scoping", () => {
   it("drops authProfileId when provider changes during fallback", async () => {
     runEmbeddedPiAgentMock.mockReset();
-    runEmbeddedPiAgentMock.mockResolvedValue({
-      payloads: [{ text: "ok" }],
-      meta: {},
-    });
+    runEmbeddedPiAgentMock.mockResolvedValue({ payloads: [{ text: "ok" }], meta: {} });
 
     const sessionKey = "main";
     const sessionEntry = {

@@ -6,9 +6,7 @@ import { resolveMemoryBackendConfig } from "./backend-config.js";
 
 describe("resolveMemoryBackendConfig", () => {
   it("defaults to builtin backend when config missing", () => {
-    const cfg = {
-      agents: { defaults: { workspace: "/tmp/memory-test" } },
-    } as OpenClawConfig;
+    const cfg = { agents: { defaults: { workspace: "/tmp/memory-test" } } } as OpenClawConfig;
     const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" });
     expect(resolved.backend).toBe("builtin");
     expect(resolved.citations).toBe("auto");

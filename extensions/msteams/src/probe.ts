@@ -21,8 +21,7 @@ function readAccessToken(value: unknown): string | null {
   }
   if (value && typeof value === "object") {
     const token =
-      (value as { accessToken?: unknown }).accessToken ??
-      (value as { token?: unknown }).token;
+      (value as { accessToken?: unknown }).accessToken ?? (value as { token?: unknown }).token;
     return typeof token === "string" ? token : null;
   }
   return null;
@@ -34,10 +33,7 @@ function decodeJwtPayload(token: string): Record<string, unknown> | null {
     return null;
   }
   const payload = parts[1] ?? "";
-  const padded = payload.padEnd(
-    payload.length + ((4 - (payload.length % 4)) % 4),
-    "=",
-  );
+  const padded = payload.padEnd(payload.length + ((4 - (payload.length % 4)) % 4), "=");
   const normalized = padded.replace(/-/g, "+").replace(/_/g, "/");
   try {
     const decoded = Buffer.from(normalized, "base64").toString("utf8");
@@ -67,9 +63,7 @@ function readScopes(value: unknown): string[] | undefined {
   return out.length > 0 ? out : undefined;
 }
 
-export async function probeMSTeams(
-  cfg?: MSTeamsConfig,
-): Promise<ProbeMSTeamsResult> {
+export async function probeMSTeams(cfg?: MSTeamsConfig): Promise<ProbeMSTeamsResult> {
   const creds = resolveMSTeamsCredentials(cfg);
   if (!creds) {
     return {
@@ -91,9 +85,7 @@ export async function probeMSTeams(
         }
       | undefined;
     try {
-      const graphToken = await tokenProvider.getAccessToken(
-        "https://graph.microsoft.com",
-      );
+      const graphToken = await tokenProvider.getAccessToken("https://graph.microsoft.com");
       const accessToken = readAccessToken(graphToken);
       const payload = accessToken ? decodeJwtPayload(accessToken) : null;
       graph = {

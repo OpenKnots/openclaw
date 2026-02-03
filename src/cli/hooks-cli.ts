@@ -172,12 +172,7 @@ export function formatHooksList(report: HookStatusReport, opts: HooksListOptions
     { key: "Source", header: "Source", minWidth: 12, flex: true },
   ];
   if (opts.verbose) {
-    columns.push({
-      key: "Missing",
-      header: "Missing",
-      minWidth: 18,
-      flex: true,
-    });
+    columns.push({ key: "Missing", header: "Missing", minWidth: 18, flex: true });
   }
 
   const lines: string[] = [];
@@ -549,10 +544,7 @@ export function registerHooksCli(program: Command): void {
 
           const existing = cfg.hooks?.internal?.load?.extraDirs ?? [];
           const merged = Array.from(new Set([...existing, resolved]));
-          const probe = await installHooksFromPath({
-            path: resolved,
-            dryRun: true,
-          });
+          const probe = await installHooksFromPath({ path: resolved, dryRun: true });
           if (!probe.ok) {
             defaultRuntime.error(probe.error);
             process.exit(1);

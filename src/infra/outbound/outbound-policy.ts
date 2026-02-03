@@ -126,13 +126,7 @@ export function enforceCrossContextPolicy(params: {
     return;
   }
 
-  if (
-    !isCrossContextTarget({
-      channel: params.channel,
-      target,
-      toolContext: params.toolContext,
-    })
-  ) {
+  if (!isCrossContextTarget({ channel: params.channel, target, toolContext: params.toolContext })) {
     return;
   }
 
@@ -201,11 +195,7 @@ export function applyCrossContextDecoration(params: {
 }): { message: string; embeds?: unknown[]; usedEmbeds: boolean } {
   const useEmbeds = params.preferEmbeds && params.decoration.embeds?.length;
   if (useEmbeds) {
-    return {
-      message: params.message,
-      embeds: params.decoration.embeds,
-      usedEmbeds: true,
-    };
+    return { message: params.message, embeds: params.decoration.embeds, usedEmbeds: true };
   }
   const message = `${params.decoration.prefix}${params.message}${params.decoration.suffix}`;
   return { message, usedEmbeds: false };

@@ -372,9 +372,7 @@ describe("createTelegramBot", () => {
     });
 
     expect(sendMessageSpy).toHaveBeenCalledTimes(1);
-    const sendParams = sendMessageSpy.mock.calls[0]?.[2] as {
-      message_thread_id?: number;
-    };
+    const sendParams = sendMessageSpy.mock.calls[0]?.[2] as { message_thread_id?: number };
     expect(sendParams?.message_thread_id).toBeUndefined();
   });
 });

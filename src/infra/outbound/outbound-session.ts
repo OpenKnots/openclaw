@@ -147,10 +147,7 @@ async function resolveSlackChannelType(params: {
     return cached;
   }
 
-  const account = resolveSlackAccount({
-    cfg: params.cfg,
-    accountId: params.accountId,
-  });
+  const account = resolveSlackAccount({ cfg: params.cfg, accountId: params.accountId });
   const groupChannels = normalizeAllowListLower(account.dm?.groupChannels);
   const channelIdLower = channelId.toLowerCase();
   if (

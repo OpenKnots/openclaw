@@ -104,12 +104,7 @@ describe("parseLineDirectives", () => {
     });
 
     it("does not override existing location", () => {
-      const existing = {
-        title: "Existing",
-        address: "Addr",
-        latitude: 1,
-        longitude: 2,
-      };
+      const existing = { title: "Existing", address: "Addr", latitude: 1, longitude: 2 };
       const result = parseLineDirectives({
         text: "[[location: New | New Addr | 35.6 | 139.7]]",
         channelData: { line: { location: existing } },
@@ -239,9 +234,7 @@ describe("parseLineDirectives", () => {
       };
       expect(flexMessage).toBeDefined();
       expect(flexMessage?.altText).toBe("🎵 Bohemian Rhapsody - Queen");
-      const contents = flexMessage?.contents as {
-        footer?: { contents?: unknown[] };
-      };
+      const contents = flexMessage?.contents as { footer?: { contents?: unknown[] } };
       expect(contents.footer?.contents?.length).toBeGreaterThan(0);
       expect(result.text).toBe("Now playing:");
     });
@@ -251,9 +244,7 @@ describe("parseLineDirectives", () => {
         text: "[[media_player: Unknown Track]]",
       });
 
-      const flexMessage = getLineData(result).flexMessage as {
-        altText?: string;
-      };
+      const flexMessage = getLineData(result).flexMessage as { altText?: string };
       expect(flexMessage).toBeDefined();
       expect(flexMessage?.altText).toBe("🎵 Unknown Track");
     });
@@ -267,9 +258,7 @@ describe("parseLineDirectives", () => {
         contents?: { body: { contents: unknown[] } };
       };
       expect(flexMessage).toBeDefined();
-      const contents = flexMessage?.contents as {
-        body: { contents: unknown[] };
-      };
+      const contents = flexMessage?.contents as { body: { contents: unknown[] } };
       expect(contents).toBeDefined();
     });
   });
@@ -280,9 +269,7 @@ describe("parseLineDirectives", () => {
         text: "[[event: Team Meeting | January 24, 2026 | 2:00 PM - 3:00 PM | Conference Room A | Discuss Q1 roadmap]]",
       });
 
-      const flexMessage = getLineData(result).flexMessage as {
-        altText?: string;
-      };
+      const flexMessage = getLineData(result).flexMessage as { altText?: string };
       expect(flexMessage).toBeDefined();
       expect(flexMessage?.altText).toBe("📅 Team Meeting - January 24, 2026 2:00 PM - 3:00 PM");
     });
@@ -292,9 +279,7 @@ describe("parseLineDirectives", () => {
         text: "[[event: Birthday Party | March 15]]",
       });
 
-      const flexMessage = getLineData(result).flexMessage as {
-        altText?: string;
-      };
+      const flexMessage = getLineData(result).flexMessage as { altText?: string };
       expect(flexMessage).toBeDefined();
       expect(flexMessage?.altText).toBe("📅 Birthday Party - March 15");
     });
@@ -306,9 +291,7 @@ describe("parseLineDirectives", () => {
         text: "[[agenda: Today's Schedule | Team Meeting:9:00 AM, Lunch:12:00 PM, Review:3:00 PM]]",
       });
 
-      const flexMessage = getLineData(result).flexMessage as {
-        altText?: string;
-      };
+      const flexMessage = getLineData(result).flexMessage as { altText?: string };
       expect(flexMessage).toBeDefined();
       expect(flexMessage?.altText).toBe("📋 Today's Schedule (3 events)");
     });
@@ -318,9 +301,7 @@ describe("parseLineDirectives", () => {
         text: "[[agenda: Tasks | Buy groceries, Call mom, Workout]]",
       });
 
-      const flexMessage = getLineData(result).flexMessage as {
-        altText?: string;
-      };
+      const flexMessage = getLineData(result).flexMessage as { altText?: string };
       expect(flexMessage).toBeDefined();
       expect(flexMessage?.altText).toBe("📋 Tasks (3 events)");
     });
@@ -332,9 +313,7 @@ describe("parseLineDirectives", () => {
         text: "[[device: TV | Streaming Box | Playing | Play/Pause:toggle, Menu:menu]]",
       });
 
-      const flexMessage = getLineData(result).flexMessage as {
-        altText?: string;
-      };
+      const flexMessage = getLineData(result).flexMessage as { altText?: string };
       expect(flexMessage).toBeDefined();
       expect(flexMessage?.altText).toBe("📱 TV: Playing");
     });
@@ -344,9 +323,7 @@ describe("parseLineDirectives", () => {
         text: "[[device: Speaker]]",
       });
 
-      const flexMessage = getLineData(result).flexMessage as {
-        altText?: string;
-      };
+      const flexMessage = getLineData(result).flexMessage as { altText?: string };
       expect(flexMessage).toBeDefined();
       expect(flexMessage?.altText).toBe("📱 Speaker");
     });
@@ -358,9 +335,7 @@ describe("parseLineDirectives", () => {
         text: "[[appletv_remote: Apple TV | Playing]]",
       });
 
-      const flexMessage = getLineData(result).flexMessage as {
-        altText?: string;
-      };
+      const flexMessage = getLineData(result).flexMessage as { altText?: string };
       expect(flexMessage).toBeDefined();
       expect(flexMessage?.altText).toContain("Apple TV");
     });
@@ -370,9 +345,7 @@ describe("parseLineDirectives", () => {
         text: "[[appletv_remote: Apple TV]]",
       });
 
-      const flexMessage = getLineData(result).flexMessage as {
-        altText?: string;
-      };
+      const flexMessage = getLineData(result).flexMessage as { altText?: string };
       expect(flexMessage).toBeDefined();
     });
   });

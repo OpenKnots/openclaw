@@ -234,9 +234,7 @@ describe("createTelegramBot", () => {
       description: string;
     }>;
     const skillCommands = resolveSkillCommands(config);
-    const native = listNativeCommandSpecsForConfig(config, {
-      skillCommands,
-    }).map((command) => ({
+    const native = listNativeCommandSpecsForConfig(config, { skillCommands }).map((command) => ({
       command: command.name,
       description: command.description,
     }));
@@ -277,22 +275,14 @@ describe("createTelegramBot", () => {
       description: string;
     }>;
     const skillCommands = resolveSkillCommands(config);
-    const native = listNativeCommandSpecsForConfig(config, {
-      skillCommands,
-    }).map((command) => ({
+    const native = listNativeCommandSpecsForConfig(config, { skillCommands }).map((command) => ({
       command: command.name,
       description: command.description,
     }));
     const nativeStatus = native.find((command) => command.command === "status");
     expect(nativeStatus).toBeDefined();
-    expect(registered).toContainEqual({
-      command: "custom_backup",
-      description: "Git backup",
-    });
-    expect(registered).not.toContainEqual({
-      command: "status",
-      description: "Custom status",
-    });
+    expect(registered).toContainEqual({ command: "custom_backup", description: "Git backup" });
+    expect(registered).not.toContainEqual({ command: "status", description: "Custom status" });
     expect(registered.filter((command) => command.command === "status")).toEqual([nativeStatus]);
     expect(errorSpy).toHaveBeenCalled();
   });
@@ -356,10 +346,7 @@ describe("createTelegramBot", () => {
     ).toBe("telegram:123:topic:9");
     expect(
       getTelegramSequentialKey({
-        message: {
-          chat: { id: 123, type: "supergroup" },
-          message_thread_id: 9,
-        },
+        message: { chat: { id: 123, type: "supergroup" }, message_thread_id: 9 },
       }),
     ).toBe("telegram:123");
     expect(
@@ -2182,9 +2169,7 @@ describe("createTelegramBot", () => {
     });
 
     expect(sendMessageSpy).toHaveBeenCalledTimes(1);
-    const sendParams = sendMessageSpy.mock.calls[0]?.[2] as {
-      message_thread_id?: number;
-    };
+    const sendParams = sendMessageSpy.mock.calls[0]?.[2] as { message_thread_id?: number };
     expect(sendParams?.message_thread_id).toBeUndefined();
   });
 

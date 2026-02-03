@@ -32,10 +32,7 @@ type DeviceTokenResult =
 
 function toFormUrlEncoded(data: Record<string, string>): string {
   return Object.entries(data)
-    .map(
-      ([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
-    )
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join("&");
 }
 
@@ -45,9 +42,7 @@ function generatePkce(): { verifier: string; challenge: string } {
   return { verifier, challenge };
 }
 
-async function requestDeviceCode(params: {
-  challenge: string;
-}): Promise<QwenDeviceAuthorization> {
+async function requestDeviceCode(params: { challenge: string }): Promise<QwenDeviceAuthorization> {
   const response = await fetch(QWEN_OAUTH_DEVICE_CODE_ENDPOINT, {
     method: "POST",
     headers: {
@@ -65,14 +60,10 @@ async function requestDeviceCode(params: {
 
   if (!response.ok) {
     const text = await response.text();
-    throw new Error(
-      `Qwen device authorization failed: ${text || response.statusText}`,
-    );
+    throw new Error(`Qwen device authorization failed: ${text || response.statusText}`);
   }
 
-  const payload = (await response.json()) as QwenDeviceAuthorization & {
-    error?: string;
-  };
+  const payload = (await response.json()) as QwenDeviceAuthorization & { error?: string };
   if (!payload.device_code || !payload.user_code || !payload.verification_uri) {
     throw new Error(
       payload.error ??
@@ -103,10 +94,7 @@ async function pollDeviceToken(params: {
   if (!response.ok) {
     let payload: { error?: string; error_description?: string } | undefined;
     try {
-      payload = (await response.json()) as {
-        error?: string;
-        error_description?: string;
-      };
+      payload = (await response.json()) as { error?: string; error_description?: string };
     } catch {
       const text = await response.text();
       return { status: "error", message: text || response.statusText };
@@ -122,8 +110,7 @@ async function pollDeviceToken(params: {
 
     return {
       status: "error",
-      message:
-        payload?.error_description || payload?.error || response.statusText,
+      message: payload?.error_description || payload?.error || response.statusText,
     };
   }
 
@@ -135,15 +122,8 @@ async function pollDeviceToken(params: {
     resource_url?: string;
   };
 
-  if (
-    !tokenPayload.access_token ||
-    !tokenPayload.refresh_token ||
-    !tokenPayload.expires_in
-  ) {
-    return {
-      status: "error",
-      message: "Qwen OAuth returned incomplete token payload.",
-    };
+  if (!tokenPayload.access_token || !tokenPayload.refresh_token || !tokenPayload.expires_in) {
+    return { status: "error", message: "Qwen OAuth returned incomplete token payload." };
   }
 
   return {
@@ -160,15 +140,11 @@ async function pollDeviceToken(params: {
 export async function loginQwenPortalOAuth(params: {
   openUrl: (url: string) => Promise<void>;
   note: (message: string, title?: string) => Promise<void>;
-  progress: {
-    update: (message: string) => void;
-    stop: (message?: string) => void;
-  };
+  progress: { update: (message: string) => void; stop: (message?: string) => void };
 }): Promise<QwenOAuthToken> {
   const { verifier, challenge } = generatePkce();
   const device = await requestDeviceCode({ challenge });
-  const verificationUrl =
-    device.verification_uri_complete || device.verification_uri;
+  const verificationUrl = device.verification_uri_complete || device.verification_uri;
 
   await params.note(
     [

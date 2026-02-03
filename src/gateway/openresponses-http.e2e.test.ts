@@ -158,10 +158,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       await ensureResponseConsumed(resHeader);
 
       mockAgentOnce([{ text: "hello" }]);
-      const resModel = await postResponses(port, {
-        model: "openclaw:beta",
-        input: "hi",
-      });
+      const resModel = await postResponses(port, { model: "openclaw:beta", input: "hi" });
       expect(resModel.status).toBe(200);
       const [optsModel] = agentCommand.mock.calls[0] ?? [];
       expect((optsModel as { sessionKey?: string } | undefined)?.sessionKey ?? "").toMatch(
@@ -206,11 +203,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       const resSystemDeveloper = await postResponses(port, {
         model: "openclaw",
         input: [
-          {
-            type: "message",
-            role: "system",
-            content: "You are a helpful assistant.",
-          },
+          { type: "message", role: "system", content: "You are a helpful assistant." },
           { type: "message", role: "developer", content: "Be concise." },
           { type: "message", role: "user", content: "Hello" },
         ],
@@ -241,18 +234,10 @@ describe("OpenResponses HTTP API (e2e)", () => {
       const resHistory = await postResponses(port, {
         model: "openclaw",
         input: [
-          {
-            type: "message",
-            role: "system",
-            content: "You are a helpful assistant.",
-          },
+          { type: "message", role: "system", content: "You are a helpful assistant." },
           { type: "message", role: "user", content: "Hello, who are you?" },
           { type: "message", role: "assistant", content: "I am Claude." },
-          {
-            type: "message",
-            role: "user",
-            content: "What did I just ask you?",
-          },
+          { type: "message", role: "user", content: "What did I just ask you?" },
         ],
       });
       expect(resHistory.status).toBe(200);
@@ -270,11 +255,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
         model: "openclaw",
         input: [
           { type: "message", role: "user", content: "What's the weather?" },
-          {
-            type: "function_call_output",
-            call_id: "call_1",
-            output: "Sunny, 70F.",
-          },
+          { type: "function_call_output", call_id: "call_1", output: "Sunny, 70F." },
         ],
       });
       expect(resFunctionOutput.status).toBe(200);
@@ -353,11 +334,8 @@ describe("OpenResponses HTTP API (e2e)", () => {
       expect(resToolChoice.status).toBe(200);
       const [optsToolChoice] = agentCommand.mock.calls[0] ?? [];
       const clientTools =
-        (
-          optsToolChoice as {
-            clientTools?: Array<{ function?: { name?: string } }>;
-          }
-        )?.clientTools ?? [];
+        (optsToolChoice as { clientTools?: Array<{ function?: { name?: string } }> })
+          ?.clientTools ?? [];
       expect(clientTools).toHaveLength(1);
       expect(clientTools[0]?.function?.name).toBe("get_time");
       await ensureResponseConsumed(resToolChoice);
@@ -402,11 +380,7 @@ describe("OpenResponses HTTP API (e2e)", () => {
       });
       expect(resUsage.status).toBe(200);
       const usageJson = (await resUsage.json()) as Record<string, unknown>;
-      expect(usageJson.usage).toEqual({
-        input_tokens: 3,
-        output_tokens: 5,
-        total_tokens: 10,
-      });
+      expect(usageJson.usage).toEqual({ input_tokens: 3, output_tokens: 5, total_tokens: 10 });
       await ensureResponseConsumed(resUsage);
 
       mockAgentOnce([{ text: "hello" }]);

@@ -192,10 +192,7 @@ async function installHookPackageFromDir(params: {
   }
   const targetDir = targetDirResult.path;
   if (mode === "install" && (await fileExists(targetDir))) {
-    return {
-      ok: false,
-      error: `hook pack already exists: ${targetDir} (delete it first)`,
-    };
+    return { ok: false, error: `hook pack already exists: ${targetDir} (delete it first)` };
   }
 
   const resolvedHooks = [] as string[];
@@ -303,10 +300,7 @@ async function installHookFromDir(params: {
   }
   const targetDir = targetDirResult.path;
   if (mode === "install" && (await fileExists(targetDir))) {
-    return {
-      ok: false,
-      error: `hook already exists: ${targetDir} (delete it first)`,
-    };
+    return { ok: false, error: `hook already exists: ${targetDir} (delete it first)` };
   }
 
   if (dryRun) {
@@ -364,12 +358,7 @@ export async function installHooksFromArchive(params: {
 
   logger.info?.(`Extracting ${archivePath}…`);
   try {
-    await extractArchive({
-      archivePath,
-      destDir: extractDir,
-      timeoutMs,
-      logger,
-    });
+    await extractArchive({ archivePath, destDir: extractDir, timeoutMs, logger });
   } catch (err) {
     return { ok: false, error: `failed to extract archive: ${String(err)}` };
   }
@@ -431,10 +420,7 @@ export async function installHooksFromNpmSpec(params: {
     env: { COREPACK_ENABLE_DOWNLOAD_PROMPT: "0" },
   });
   if (res.code !== 0) {
-    return {
-      ok: false,
-      error: `npm pack failed: ${res.stderr.trim() || res.stdout.trim()}`,
-    };
+    return { ok: false, error: `npm pack failed: ${res.stderr.trim() || res.stdout.trim()}` };
   }
 
   const packed = (res.stdout || "")

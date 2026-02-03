@@ -37,10 +37,7 @@ export const imessagePlugin: ChannelPlugin<ResolvedIMessageAccount> = {
   pairing: {
     idLabel: "imessageSenderId",
     notifyApproval: async ({ id }) => {
-      await getIMessageRuntime().channel.imessage.sendMessageIMessage(
-        id,
-        PAIRING_APPROVED_MESSAGE,
-      );
+      await getIMessageRuntime().channel.imessage.sendMessageIMessage(id, PAIRING_APPROVED_MESSAGE);
     },
   },
   capabilities: {
@@ -51,8 +48,7 @@ export const imessagePlugin: ChannelPlugin<ResolvedIMessageAccount> = {
   configSchema: buildChannelConfigSchema(IMessageConfigSchema),
   config: {
     listAccountIds: (cfg) => listIMessageAccountIds(cfg),
-    resolveAccount: (cfg, accountId) =>
-      resolveIMessageAccount({ cfg, accountId }),
+    resolveAccount: (cfg, accountId) => resolveIMessageAccount({ cfg, accountId }),
     defaultAccountId: (cfg) => resolveDefaultIMessageAccountId(cfg),
     setAccountEnabled: ({ cfg, accountId, enabled }) =>
       setAccountEnabledInConfigSection({
@@ -77,19 +73,16 @@ export const imessagePlugin: ChannelPlugin<ResolvedIMessageAccount> = {
       configured: account.configured,
     }),
     resolveAllowFrom: ({ cfg, accountId }) =>
-      (resolveIMessageAccount({ cfg, accountId }).config.allowFrom ?? []).map(
-        (entry) => String(entry),
+      (resolveIMessageAccount({ cfg, accountId }).config.allowFrom ?? []).map((entry) =>
+        String(entry),
       ),
     formatAllowFrom: ({ allowFrom }) =>
       allowFrom.map((entry) => String(entry).trim()).filter(Boolean),
   },
   security: {
     resolveDmPolicy: ({ cfg, accountId, account }) => {
-      const resolvedAccountId =
-        accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
-      const useAccountPath = Boolean(
-        cfg.channels?.imessage?.accounts?.[resolvedAccountId],
-      );
+      const resolvedAccountId = accountId ?? account.accountId ?? DEFAULT_ACCOUNT_ID;
+      const useAccountPath = Boolean(cfg.channels?.imessage?.accounts?.[resolvedAccountId]);
       const basePath = useAccountPath
         ? `channels.imessage.accounts.${resolvedAccountId}.`
         : "channels.imessage.";
@@ -103,8 +96,7 @@ export const imessagePlugin: ChannelPlugin<ResolvedIMessageAccount> = {
     },
     collectWarnings: ({ account, cfg }) => {
       const defaultGroupPolicy = cfg.channels?.defaults?.groupPolicy;
-      const groupPolicy =
-        account.config.groupPolicy ?? defaultGroupPolicy ?? "allowlist";
+      const groupPolicy = account.config.groupPolicy ?? defaultGroupPolicy ?? "allowlist";
       if (groupPolicy !== "open") {
         return [];
       }
@@ -188,14 +180,11 @@ export const imessagePlugin: ChannelPlugin<ResolvedIMessageAccount> = {
   },
   outbound: {
     deliveryMode: "direct",
-    chunker: (text, limit) =>
-      getIMessageRuntime().channel.text.chunkText(text, limit),
+    chunker: (text, limit) => getIMessageRuntime().channel.text.chunkText(text, limit),
     chunkerMode: "text",
     textChunkLimit: 4000,
     sendText: async ({ cfg, to, text, accountId, deps }) => {
-      const send =
-        deps?.sendIMessage ??
-        getIMessageRuntime().channel.imessage.sendMessageIMessage;
+      const send = deps?.sendIMessage ?? getIMessageRuntime().channel.imessage.sendMessageIMessage;
       const maxBytes = resolveChannelMediaMaxBytes({
         cfg,
         resolveChannelLimitMb: ({ cfg, accountId }) =>
@@ -210,9 +199,7 @@ export const imessagePlugin: ChannelPlugin<ResolvedIMessageAccount> = {
       return { channel: "imessage", ...result };
     },
     sendMedia: async ({ cfg, to, text, mediaUrl, accountId, deps }) => {
-      const send =
-        deps?.sendIMessage ??
-        getIMessageRuntime().channel.imessage.sendMessageIMessage;
+      const send = deps?.sendIMessage ?? getIMessageRuntime().channel.imessage.sendMessageIMessage;
       const maxBytes = resolveChannelMediaMaxBytes({
         cfg,
         resolveChannelLimitMb: ({ cfg, accountId }) =>
@@ -240,8 +227,7 @@ export const imessagePlugin: ChannelPlugin<ResolvedIMessageAccount> = {
     },
     collectStatusIssues: (accounts) =>
       accounts.flatMap((account) => {
-        const lastError =
-          typeof account.lastError === "string" ? account.lastError.trim() : "";
+        const lastError = typeof account.lastError === "string" ? account.lastError.trim() : "";
         if (!lastError) {
           return [];
         }

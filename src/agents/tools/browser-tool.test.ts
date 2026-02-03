@@ -130,11 +130,7 @@ describe("browser tool snapshot maxChars", () => {
 
   it("passes refs mode through to browser snapshot", async () => {
     const tool = createBrowserTool();
-    await tool.execute?.(null, {
-      action: "snapshot",
-      snapshotFormat: "ai",
-      refs: "aria",
-    });
+    await tool.execute?.(null, { action: "snapshot", snapshotFormat: "ai", refs: "aria" });
 
     expect(browserClientMocks.browserSnapshot).toHaveBeenCalledWith(
       undefined,
@@ -173,14 +169,8 @@ describe("browser tool snapshot maxChars", () => {
   });
 
   it("defaults to host when using profile=chrome (even in sandboxed sessions)", async () => {
-    const tool = createBrowserTool({
-      sandboxBridgeUrl: "http://127.0.0.1:9999",
-    });
-    await tool.execute?.(null, {
-      action: "snapshot",
-      profile: "chrome",
-      snapshotFormat: "ai",
-    });
+    const tool = createBrowserTool({ sandboxBridgeUrl: "http://127.0.0.1:9999" });
+    await tool.execute?.(null, { action: "snapshot", profile: "chrome", snapshotFormat: "ai" });
 
     expect(browserClientMocks.browserSnapshot).toHaveBeenCalledWith(
       undefined,
@@ -224,9 +214,7 @@ describe("browser tool snapshot maxChars", () => {
         commands: ["browser.proxy"],
       },
     ]);
-    const tool = createBrowserTool({
-      sandboxBridgeUrl: "http://127.0.0.1:9999",
-    });
+    const tool = createBrowserTool({ sandboxBridgeUrl: "http://127.0.0.1:9999" });
     await tool.execute?.(null, { action: "status" });
 
     expect(browserClientMocks.browserStatus).toHaveBeenCalledWith(
@@ -297,10 +285,7 @@ describe("browser tool snapshot labels", () => {
     );
     expect(result).toEqual(imageResult);
     expect(result?.content).toHaveLength(2);
-    expect(result?.content?.[0]).toMatchObject({
-      type: "text",
-      text: "label text",
-    });
+    expect(result?.content?.[0]).toMatchObject({ type: "text", text: "label text" });
     expect(result?.content?.[1]).toMatchObject({ type: "image" });
   });
 });

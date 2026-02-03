@@ -1,9 +1,5 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import {
-  markBlueBubblesChatRead,
-  sendBlueBubblesTyping,
-  setGroupIconBlueBubbles,
-} from "./chat.js";
+import { markBlueBubblesChatRead, sendBlueBubblesTyping, setGroupIconBlueBubbles } from "./chat.js";
 
 vi.mock("./accounts.js", () => ({
   resolveBlueBubblesAccount: vi.fn(({ cfg, accountId }) => {
@@ -72,9 +68,7 @@ describe("chat", () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining(
-          "/api/v1/chat/iMessage%3B-%3B%2B15551234567/read",
-        ),
+        expect.stringContaining("/api/v1/chat/iMessage%3B-%3B%2B15551234567/read"),
         expect.objectContaining({ method: "POST" }),
       );
     });
@@ -166,9 +160,9 @@ describe("chat", () => {
     });
 
     it("throws when serverUrl is missing", async () => {
-      await expect(
-        sendBlueBubblesTyping("chat-guid", true, {}),
-      ).rejects.toThrow("serverUrl is required");
+      await expect(sendBlueBubblesTyping("chat-guid", true, {})).rejects.toThrow(
+        "serverUrl is required",
+      );
     });
 
     it("throws when password is missing", async () => {
@@ -191,9 +185,7 @@ describe("chat", () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining(
-          "/api/v1/chat/iMessage%3B-%3B%2B15551234567/typing",
-        ),
+        expect.stringContaining("/api/v1/chat/iMessage%3B-%3B%2B15551234567/typing"),
         expect.objectContaining({ method: "POST" }),
       );
     });
@@ -210,9 +202,7 @@ describe("chat", () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining(
-          "/api/v1/chat/iMessage%3B-%3B%2B15551234567/typing",
-        ),
+        expect.stringContaining("/api/v1/chat/iMessage%3B-%3B%2B15551234567/typing"),
         expect.objectContaining({ method: "DELETE" }),
       );
     });
@@ -346,25 +336,15 @@ describe("chat", () => {
 
     it("throws when serverUrl is missing", async () => {
       await expect(
-        setGroupIconBlueBubbles(
-          "chat-guid",
-          new Uint8Array([1, 2, 3]),
-          "icon.png",
-          {},
-        ),
+        setGroupIconBlueBubbles("chat-guid", new Uint8Array([1, 2, 3]), "icon.png", {}),
       ).rejects.toThrow("serverUrl is required");
     });
 
     it("throws when password is missing", async () => {
       await expect(
-        setGroupIconBlueBubbles(
-          "chat-guid",
-          new Uint8Array([1, 2, 3]),
-          "icon.png",
-          {
-            serverUrl: "http://localhost:1234",
-          },
-        ),
+        setGroupIconBlueBubbles("chat-guid", new Uint8Array([1, 2, 3]), "icon.png", {
+          serverUrl: "http://localhost:1234",
+        }),
       ).rejects.toThrow("password is required");
     });
 
@@ -375,16 +355,11 @@ describe("chat", () => {
       });
 
       const buffer = new Uint8Array([0x89, 0x50, 0x4e, 0x47]); // PNG magic bytes
-      await setGroupIconBlueBubbles(
-        "iMessage;-;chat-guid",
-        buffer,
-        "icon.png",
-        {
-          serverUrl: "http://localhost:1234",
-          password: "test-password",
-          contentType: "image/png",
-        },
-      );
+      await setGroupIconBlueBubbles("iMessage;-;chat-guid", buffer, "icon.png", {
+        serverUrl: "http://localhost:1234",
+        password: "test-password",
+        contentType: "image/png",
+      });
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining("/api/v1/chat/iMessage%3B-%3Bchat-guid/icon"),
@@ -403,15 +378,10 @@ describe("chat", () => {
         text: () => Promise.resolve(""),
       });
 
-      await setGroupIconBlueBubbles(
-        "chat-123",
-        new Uint8Array([1, 2, 3]),
-        "icon.png",
-        {
-          serverUrl: "http://localhost:1234",
-          password: "my-secret",
-        },
-      );
+      await setGroupIconBlueBubbles("chat-123", new Uint8Array([1, 2, 3]), "icon.png", {
+        serverUrl: "http://localhost:1234",
+        password: "my-secret",
+      });
 
       const calledUrl = mockFetch.mock.calls[0][0] as string;
       expect(calledUrl).toContain("password=my-secret");
@@ -425,15 +395,10 @@ describe("chat", () => {
       });
 
       await expect(
-        setGroupIconBlueBubbles(
-          "chat-123",
-          new Uint8Array([1, 2, 3]),
-          "icon.png",
-          {
-            serverUrl: "http://localhost:1234",
-            password: "test",
-          },
-        ),
+        setGroupIconBlueBubbles("chat-123", new Uint8Array([1, 2, 3]), "icon.png", {
+          serverUrl: "http://localhost:1234",
+          password: "test",
+        }),
       ).rejects.toThrow("setGroupIcon failed (500): Internal error");
     });
 
@@ -443,15 +408,10 @@ describe("chat", () => {
         text: () => Promise.resolve(""),
       });
 
-      await setGroupIconBlueBubbles(
-        "  chat-with-spaces  ",
-        new Uint8Array([1]),
-        "icon.png",
-        {
-          serverUrl: "http://localhost:1234",
-          password: "test",
-        },
-      );
+      await setGroupIconBlueBubbles("  chat-with-spaces  ", new Uint8Array([1]), "icon.png", {
+        serverUrl: "http://localhost:1234",
+        password: "test",
+      });
 
       const calledUrl = mockFetch.mock.calls[0][0] as string;
       expect(calledUrl).toContain("/api/v1/chat/chat-with-spaces/icon");
@@ -464,21 +424,16 @@ describe("chat", () => {
         text: () => Promise.resolve(""),
       });
 
-      await setGroupIconBlueBubbles(
-        "chat-123",
-        new Uint8Array([1]),
-        "icon.png",
-        {
-          cfg: {
-            channels: {
-              bluebubbles: {
-                serverUrl: "http://config-server:9999",
-                password: "config-pass",
-              },
+      await setGroupIconBlueBubbles("chat-123", new Uint8Array([1]), "icon.png", {
+        cfg: {
+          channels: {
+            bluebubbles: {
+              serverUrl: "http://config-server:9999",
+              password: "config-pass",
             },
           },
         },
-      );
+      });
 
       const calledUrl = mockFetch.mock.calls[0][0] as string;
       expect(calledUrl).toContain("config-server:9999");
@@ -491,16 +446,11 @@ describe("chat", () => {
         text: () => Promise.resolve(""),
       });
 
-      await setGroupIconBlueBubbles(
-        "chat-123",
-        new Uint8Array([1, 2, 3]),
-        "custom-icon.jpg",
-        {
-          serverUrl: "http://localhost:1234",
-          password: "test",
-          contentType: "image/jpeg",
-        },
-      );
+      await setGroupIconBlueBubbles("chat-123", new Uint8Array([1, 2, 3]), "custom-icon.jpg", {
+        serverUrl: "http://localhost:1234",
+        password: "test",
+        contentType: "image/jpeg",
+      });
 
       const body = mockFetch.mock.calls[0][1].body as Uint8Array;
       const bodyString = new TextDecoder().decode(body);

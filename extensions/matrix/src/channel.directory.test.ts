@@ -41,11 +41,7 @@ describe("matrix directory", () => {
     ).resolves.toEqual(
       expect.arrayContaining([
         { kind: "user", id: "user:@alice:example.org" },
-        {
-          kind: "user",
-          id: "bob",
-          name: "incomplete id; expected @user:server",
-        },
+        { kind: "user", id: "bob", name: "incomplete id; expected @user:server" },
         { kind: "user", id: "user:@carol:example.org" },
         { kind: "user", id: "user:@dana:example.org" },
       ]),

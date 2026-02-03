@@ -39,23 +39,18 @@ export async function uploadToOneDrive(params: {
   // Use "OpenClawShared" folder to organize bot-uploaded files
   const uploadPath = `/OpenClawShared/${encodeURIComponent(params.filename)}`;
 
-  const res = await fetchFn(
-    `${GRAPH_ROOT}/me/drive/root:${uploadPath}:/content`,
-    {
-      method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": params.contentType ?? "application/octet-stream",
-      },
-      body: new Uint8Array(params.buffer),
+  const res = await fetchFn(`${GRAPH_ROOT}/me/drive/root:${uploadPath}:/content`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": params.contentType ?? "application/octet-stream",
     },
-  );
+    body: new Uint8Array(params.buffer),
+  });
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(
-      `OneDrive upload failed: ${res.status} ${res.statusText} - ${body}`,
-    );
+    throw new Error(`OneDrive upload failed: ${res.status} ${res.statusText} - ${body}`);
   }
 
   const data = (await res.json()) as {
@@ -93,26 +88,21 @@ export async function createSharingLink(params: {
   const fetchFn = params.fetchFn ?? fetch;
   const token = await params.tokenProvider.getAccessToken(GRAPH_SCOPE);
 
-  const res = await fetchFn(
-    `${GRAPH_ROOT}/me/drive/items/${params.itemId}/createLink`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        type: "view",
-        scope: params.scope ?? "organization",
-      }),
+  const res = await fetchFn(`${GRAPH_ROOT}/me/drive/items/${params.itemId}/createLink`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({
+      type: "view",
+      scope: params.scope ?? "organization",
+    }),
+  });
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(
-      `Create sharing link failed: ${res.status} ${res.statusText} - ${body}`,
-    );
+    throw new Error(`Create sharing link failed: ${res.status} ${res.statusText} - ${body}`);
   }
 
   const data = (await res.json()) as {
@@ -206,9 +196,7 @@ export async function uploadToSharePoint(params: {
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(
-      `SharePoint upload failed: ${res.status} ${res.statusText} - ${body}`,
-    );
+    throw new Error(`SharePoint upload failed: ${res.status} ${res.statusText} - ${body}`);
   }
 
   const data = (await res.json()) as {
@@ -269,9 +257,7 @@ export async function getDriveItemProperties(params: {
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(
-      `Get driveItem properties failed: ${res.status} ${res.statusText} - ${body}`,
-    );
+    throw new Error(`Get driveItem properties failed: ${res.status} ${res.statusText} - ${body}`);
   }
 
   const data = (await res.json()) as {
@@ -281,9 +267,7 @@ export async function getDriveItemProperties(params: {
   };
 
   if (!data.eTag || !data.webDavUrl || !data.name) {
-    throw new Error(
-      "DriveItem response missing required properties (eTag, webDavUrl, or name)",
-    );
+    throw new Error("DriveItem response missing required properties (eTag, webDavUrl, or name)");
   }
 
   return {
@@ -311,9 +295,7 @@ export async function getChatMembers(params: {
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(
-      `Get chat members failed: ${res.status} ${res.statusText} - ${body}`,
-    );
+    throw new Error(`Get chat members failed: ${res.status} ${res.statusText} - ${body}`);
   }
 
   const data = (await res.json()) as {

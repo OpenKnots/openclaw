@@ -17,10 +17,7 @@ declare global {
   }
 }
 
-function coerceIdentityValue(
-  value: string | undefined,
-  maxLength: number,
-): string | undefined {
+function coerceIdentityValue(value: string | undefined, maxLength: number): string | undefined {
   if (typeof value !== "string") {
     return undefined;
   }
@@ -37,16 +34,10 @@ function coerceIdentityValue(
 export function normalizeAssistantIdentity(
   input?: Partial<AssistantIdentity> | null,
 ): AssistantIdentity {
-  const name =
-    coerceIdentityValue(input?.name, MAX_ASSISTANT_NAME) ??
-    DEFAULT_ASSISTANT_NAME;
-  const avatar =
-    coerceIdentityValue(input?.avatar ?? undefined, MAX_ASSISTANT_AVATAR) ??
-    null;
+  const name = coerceIdentityValue(input?.name, MAX_ASSISTANT_NAME) ?? DEFAULT_ASSISTANT_NAME;
+  const avatar = coerceIdentityValue(input?.avatar ?? undefined, MAX_ASSISTANT_AVATAR) ?? null;
   const agentId =
-    typeof input?.agentId === "string" && input.agentId.trim()
-      ? input.agentId.trim()
-      : null;
+    typeof input?.agentId === "string" && input.agentId.trim() ? input.agentId.trim() : null;
   return { agentId, name, avatar };
 }
 

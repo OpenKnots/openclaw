@@ -8,10 +8,7 @@ describe("agent event handler", () => {
     const nodeSendToSession = vi.fn();
     const agentRunSeq = new Map<string, number>();
     const chatRunState = createChatRunState();
-    chatRunState.registry.add("run-1", {
-      sessionKey: "session-1",
-      clientRunId: "client-1",
-    });
+    chatRunState.registry.add("run-1", { sessionKey: "session-1", clientRunId: "client-1" });
 
     const handler = createAgentEventHandler({
       broadcast,

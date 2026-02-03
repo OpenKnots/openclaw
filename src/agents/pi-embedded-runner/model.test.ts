@@ -21,10 +21,7 @@ const makeModel = (id: string) => ({
 describe("buildInlineProviderModels", () => {
   it("attaches provider ids to inline models", () => {
     const providers = {
-      " alpha ": {
-        baseUrl: "http://alpha.local",
-        models: [makeModel("alpha-model")],
-      },
+      " alpha ": { baseUrl: "http://alpha.local", models: [makeModel("alpha-model")] },
       beta: { baseUrl: "http://beta.local", models: [makeModel("beta-model")] },
     };
 

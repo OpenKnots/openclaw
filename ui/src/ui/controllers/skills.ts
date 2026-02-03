@@ -23,11 +23,7 @@ type LoadSkillsOptions = {
   clearMessages?: boolean;
 };
 
-function setSkillMessage(
-  state: SkillsState,
-  key: string,
-  message?: SkillMessage,
-) {
+function setSkillMessage(state: SkillsState, key: string, message?: SkillMessage) {
   if (!key.trim()) {
     return;
   }
@@ -47,10 +43,7 @@ function getErrorMessage(err: unknown) {
   return String(err);
 }
 
-export async function loadSkills(
-  state: SkillsState,
-  options?: LoadSkillsOptions,
-) {
+export async function loadSkills(state: SkillsState, options?: LoadSkillsOptions) {
   if (options?.clearMessages && Object.keys(state.skillMessages).length > 0) {
     state.skillMessages = {};
   }
@@ -74,19 +67,11 @@ export async function loadSkills(
   }
 }
 
-export function updateSkillEdit(
-  state: SkillsState,
-  skillKey: string,
-  value: string,
-) {
+export function updateSkillEdit(state: SkillsState, skillKey: string, value: string) {
   state.skillEdits = { ...state.skillEdits, [skillKey]: value };
 }
 
-export async function updateSkillEnabled(
-  state: SkillsState,
-  skillKey: string,
-  enabled: boolean,
-) {
+export async function updateSkillEnabled(state: SkillsState, skillKey: string, enabled: boolean) {
   if (!state.client || !state.connected) {
     return;
   }

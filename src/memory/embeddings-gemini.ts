@@ -108,9 +108,7 @@ export async function createGeminiEmbeddingProvider(
       const payload = await res.text();
       throw new Error(`gemini embeddings failed: ${res.status} ${payload}`);
     }
-    const payload = (await res.json()) as {
-      embeddings?: Array<{ values?: number[] }>;
-    };
+    const payload = (await res.json()) as { embeddings?: Array<{ values?: number[] }> };
     const embeddings = Array.isArray(payload.embeddings) ? payload.embeddings : [];
     return texts.map((_, index) => embeddings[index]?.values ?? []);
   };

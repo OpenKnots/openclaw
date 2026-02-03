@@ -52,11 +52,9 @@ describe("argv helpers", () => {
   it("parses verbose flags", () => {
     expect(getVerboseFlag(["node", "openclaw", "status", "--verbose"])).toBe(true);
     expect(getVerboseFlag(["node", "openclaw", "status", "--debug"])).toBe(false);
-    expect(
-      getVerboseFlag(["node", "openclaw", "status", "--debug"], {
-        includeDebug: true,
-      }),
-    ).toBe(true);
+    expect(getVerboseFlag(["node", "openclaw", "status", "--debug"], { includeDebug: true })).toBe(
+      true,
+    );
   });
 
   it("parses positive integer flag values", () => {

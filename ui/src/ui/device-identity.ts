@@ -21,10 +21,7 @@ function base64UrlEncode(bytes: Uint8Array): string {
   for (const byte of bytes) {
     binary += String.fromCharCode(byte);
   }
-  return btoa(binary)
-    .replaceAll("+", "-")
-    .replaceAll("/", "_")
-    .replace(/=+$/g, "");
+  return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/g, "");
 }
 
 function base64UrlDecode(input: string): Uint8Array {
@@ -71,9 +68,7 @@ export async function loadOrCreateDeviceIdentity(): Promise<DeviceIdentity> {
         typeof parsed.publicKey === "string" &&
         typeof parsed.privateKey === "string"
       ) {
-        const derivedId = await fingerprintPublicKey(
-          base64UrlDecode(parsed.publicKey),
-        );
+        const derivedId = await fingerprintPublicKey(base64UrlDecode(parsed.publicKey));
         if (derivedId !== parsed.deviceId) {
           const updated: StoredIdentity = {
             ...parsed,
@@ -109,10 +104,7 @@ export async function loadOrCreateDeviceIdentity(): Promise<DeviceIdentity> {
   return identity;
 }
 
-export async function signDevicePayload(
-  privateKeyBase64Url: string,
-  payload: string,
-) {
+export async function signDevicePayload(privateKeyBase64Url: string, payload: string) {
   const key = base64UrlDecode(privateKeyBase64Url);
   const data = new TextEncoder().encode(payload);
   const sig = await signAsync(data, key);

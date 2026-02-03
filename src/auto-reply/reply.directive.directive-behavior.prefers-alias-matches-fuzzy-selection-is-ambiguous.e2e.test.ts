@@ -68,12 +68,7 @@ describe("directive behavior", () => {
       const storePath = path.join(home, "sessions.json");
 
       const res = await getReplyFromConfig(
-        {
-          Body: "/model ki",
-          From: "+1222",
-          To: "+1222",
-          CommandAuthorized: true,
-        },
+        { Body: "/model ki", From: "+1222", To: "+1222", CommandAuthorized: true },
         {},
         {
           agents: {
@@ -142,12 +137,7 @@ describe("directive behavior", () => {
       );
 
       const res = await getReplyFromConfig(
-        {
-          Body: "/model Opus@anthropic:work",
-          From: "+1222",
-          To: "+1222",
-          CommandAuthorized: true,
-        },
+        { Body: "/model Opus@anthropic:work", From: "+1222", To: "+1222", CommandAuthorized: true },
         {},
         {
           agents: {
@@ -179,12 +169,7 @@ describe("directive behavior", () => {
       const storePath = path.join(home, "sessions.json");
 
       await getReplyFromConfig(
-        {
-          Body: "/model Opus",
-          From: "+1222",
-          To: "+1222",
-          CommandAuthorized: true,
-        },
+        { Body: "/model Opus", From: "+1222", To: "+1222", CommandAuthorized: true },
         {},
         {
           agents: {

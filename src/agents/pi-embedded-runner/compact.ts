@@ -211,10 +211,7 @@ export async function compactEmbeddedPiSessionDirect(
       config: params.config,
       sessionKey: params.sessionKey,
       sessionId: params.sessionId,
-      warn: makeBootstrapWarn({
-        sessionLabel,
-        warn: (message) => log.warn(message),
-      }),
+      warn: makeBootstrapWarn({ sessionLabel, warn: (message) => log.warn(message) }),
     });
     const runAbortController = new AbortController();
     const toolsRaw = createOpenClawCodingTools({

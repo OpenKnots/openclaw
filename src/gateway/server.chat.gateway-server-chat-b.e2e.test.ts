@@ -64,20 +64,13 @@ describe("gateway server chat", () => {
         const writeStore = async (
           entries: Record<
             string,
-            {
-              sessionId: string;
-              updatedAt: number;
-              lastChannel?: string;
-              lastTo?: string;
-            }
+            { sessionId: string; updatedAt: number; lastChannel?: string; lastTo?: string }
           >,
         ) => {
           await writeSessionStore({ entries });
         };
 
-        await writeStore({
-          main: { sessionId: "sess-main", updatedAt: Date.now() },
-        });
+        await writeStore({ main: { sessionId: "sess-main", updatedAt: Date.now() } });
         const bigText = "x".repeat(4_000);
         const largeLines: string[] = [];
         for (let i = 0; i < 60; i += 1) {
@@ -127,9 +120,7 @@ describe("gateway server chat", () => {
         expect(stored["agent:main:main"]?.lastChannel).toBe("whatsapp");
         expect(stored["agent:main:main"]?.lastTo).toBe("+1555");
 
-        await writeStore({
-          main: { sessionId: "sess-main", updatedAt: Date.now() },
-        });
+        await writeStore({ main: { sessionId: "sess-main", updatedAt: Date.now() } });
         resetSpy();
         let abortInFlight: Promise<unknown> | undefined;
         try {
@@ -193,9 +184,7 @@ describe("gateway server chat", () => {
           await abortInFlight;
         }
 
-        await writeStore({
-          main: { sessionId: "sess-main", updatedAt: Date.now() },
-        });
+        await writeStore({ main: { sessionId: "sess-main", updatedAt: Date.now() } });
         sessionStoreSaveDelayMs.value = 120;
         resetSpy();
         try {
@@ -239,9 +228,7 @@ describe("gateway server chat", () => {
           sessionStoreSaveDelayMs.value = 0;
         }
 
-        await writeStore({
-          main: { sessionId: "sess-main", updatedAt: Date.now() },
-        });
+        await writeStore({ main: { sessionId: "sess-main", updatedAt: Date.now() } });
         resetSpy();
         const callsBeforeStop = spy.mock.calls.length;
         spy.mockImplementationOnce(async (_ctx, opts) => {
@@ -393,9 +380,7 @@ describe("gateway server chat", () => {
         expect(abortUnknown.ok).toBe(true);
         expect(abortUnknown.payload?.aborted).toBe(false);
 
-        await writeStore({
-          main: { sessionId: "sess-main", updatedAt: Date.now() },
-        });
+        await writeStore({ main: { sessionId: "sess-main", updatedAt: Date.now() } });
         resetSpy();
         let agentStartedResolve: (() => void) | undefined;
         const agentStartedP = new Promise<void>((resolve) => {
@@ -440,9 +425,7 @@ describe("gateway server chat", () => {
         const sendRes = await sendResP;
         expect(sendRes.ok).toBe(true);
 
-        await writeStore({
-          main: { sessionId: "sess-main", updatedAt: Date.now() },
-        });
+        await writeStore({ main: { sessionId: "sess-main", updatedAt: Date.now() } });
         resetSpy();
         spy.mockResolvedValueOnce(undefined);
         sendReq(ws, "send-complete-1", "chat.send", {
@@ -478,9 +461,7 @@ describe("gateway server chat", () => {
         expect(abortCompleteRes.ok).toBe(true);
         expect(abortCompleteRes.payload?.aborted).toBe(false);
 
-        await writeStore({
-          main: { sessionId: "sess-main", updatedAt: Date.now() },
-        });
+        await writeStore({ main: { sessionId: "sess-main", updatedAt: Date.now() } });
         const res1 = await rpcReq(ws, "chat.send", {
           sessionKey: "main",
           message: "first",

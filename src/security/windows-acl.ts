@@ -77,10 +77,7 @@ function classifyPrincipal(
   return "group";
 }
 
-function rightsFromTokens(tokens: string[]): {
-  canRead: boolean;
-  canWrite: boolean;
-} {
+function rightsFromTokens(tokens: string[]): { canRead: boolean; canWrite: boolean } {
   const upper = tokens.join("").toUpperCase();
   const canWrite =
     upper.includes("F") || upper.includes("M") || upper.includes("W") || upper.includes("D");
@@ -227,9 +224,5 @@ export function createIcaclsResetCommand(
     "/grant:r",
     `SYSTEM:${grant}`,
   ];
-  return {
-    command: "icacls",
-    args,
-    display: formatIcaclsResetCommand(targetPath, opts),
-  };
+  return { command: "icacls", args, display: formatIcaclsResetCommand(targetPath, opts) };
 }

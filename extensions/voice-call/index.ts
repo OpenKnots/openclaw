@@ -7,10 +7,7 @@ import {
   validateProviderConfig,
   type VoiceCallConfig,
 } from "./src/config.js";
-import {
-  createVoiceCallRuntime,
-  type VoiceCallRuntime,
-} from "./src/runtime.js";
+import { createVoiceCallRuntime, type VoiceCallRuntime } from "./src/runtime.js";
 
 const voiceCallConfigSchema = {
   parse(value: unknown): VoiceCallConfig {
@@ -20,8 +17,7 @@ const voiceCallConfigSchema = {
         : {};
 
     const twilio = raw.twilio as Record<string, unknown> | undefined;
-    const legacyFrom =
-      typeof twilio?.from === "string" ? twilio.from : undefined;
+    const legacyFrom = typeof twilio?.from === "string" ? twilio.from : undefined;
 
     const enabled = typeof raw.enabled === "boolean" ? raw.enabled : true;
     const providerRaw = raw.provider === "log" ? "mock" : raw.provider;
@@ -115,9 +111,7 @@ const VoiceCallToolSchema = Type.Union([
     action: Type.Literal("initiate_call"),
     to: Type.Optional(Type.String({ description: "Call target" })),
     message: Type.String({ description: "Intro message" }),
-    mode: Type.Optional(
-      Type.Union([Type.Literal("notify"), Type.Literal("conversation")]),
-    ),
+    mode: Type.Optional(Type.Union([Type.Literal("notify"), Type.Literal("conversation")])),
   }),
   Type.Object({
     action: Type.Literal("continue_call"),
@@ -138,14 +132,10 @@ const VoiceCallToolSchema = Type.Union([
     callId: Type.String({ description: "Call ID" }),
   }),
   Type.Object({
-    mode: Type.Optional(
-      Type.Union([Type.Literal("call"), Type.Literal("status")]),
-    ),
+    mode: Type.Optional(Type.Union([Type.Literal("call"), Type.Literal("status")])),
     to: Type.Optional(Type.String({ description: "Call target" })),
     sid: Type.Optional(Type.String({ description: "Call SID" })),
-    message: Type.Optional(
-      Type.String({ description: "Optional intro message" }),
-    ),
+    message: Type.Optional(Type.String({ description: "Optional intro message" })),
   }),
 ]);
 
@@ -155,23 +145,17 @@ const voiceCallPlugin = {
   description: "Voice-call plugin with Telnyx/Twilio/Plivo providers",
   configSchema: voiceCallConfigSchema,
   register(api) {
-    const config = resolveVoiceCallConfig(
-      voiceCallConfigSchema.parse(api.pluginConfig),
-    );
+    const config = resolveVoiceCallConfig(voiceCallConfigSchema.parse(api.pluginConfig));
     const validation = validateProviderConfig(config);
 
     if (api.pluginConfig && typeof api.pluginConfig === "object") {
       const raw = api.pluginConfig as Record<string, unknown>;
       const twilio = raw.twilio as Record<string, unknown> | undefined;
       if (raw.provider === "log") {
-        api.logger.warn(
-          '[voice-call] provider "log" is deprecated; use "mock" instead',
-        );
+        api.logger.warn('[voice-call] provider "log" is deprecated; use "mock" instead');
       }
       if (typeof twilio?.from === "string") {
-        api.logger.warn(
-          "[voice-call] twilio.from is deprecated; use fromNumber instead",
-        );
+        api.logger.warn("[voice-call] twilio.from is deprecated; use fromNumber instead");
       }
     }
 
@@ -200,107 +184,85 @@ const voiceCallPlugin = {
       return runtime;
     };
 
-    const sendError = (
-      respond: (ok: boolean, payload?: unknown) => void,
-      err: unknown,
-    ) => {
-      respond(false, {
-        error: err instanceof Error ? err.message : String(err),
-      });
+    const sendError = (respond: (ok: boolean, payload?: unknown) => void, err: unknown) => {
+      respond(false, { error: err instanceof Error ? err.message : String(err) });
     };
 
-    api.registerGatewayMethod(
-      "voicecall.initiate",
-      async ({ params, respond }) => {
-        try {
-          const message =
-            typeof params?.message === "string" ? params.message.trim() : "";
-          if (!message) {
-            respond(false, { error: "message required" });
-            return;
-          }
-          const rt = await ensureRuntime();
-          const to =
-            typeof params?.to === "string" && params.to.trim()
-              ? params.to.trim()
-              : rt.config.toNumber;
-          if (!to) {
-            respond(false, { error: "to required" });
-            return;
-          }
-          const mode =
-            params?.mode === "notify" || params?.mode === "conversation"
-              ? params.mode
-              : undefined;
-          const result = await rt.manager.initiateCall(to, undefined, {
-            message,
-            mode,
-          });
-          if (!result.success) {
-            respond(false, { error: result.error || "initiate failed" });
-            return;
-          }
-          respond(true, { callId: result.callId, initiated: true });
-        } catch (err) {
-          sendError(respond, err);
+    api.registerGatewayMethod("voicecall.initiate", async ({ params, respond }) => {
+      try {
+        const message = typeof params?.message === "string" ? params.message.trim() : "";
+        if (!message) {
+          respond(false, { error: "message required" });
+          return;
         }
-      },
-    );
+        const rt = await ensureRuntime();
+        const to =
+          typeof params?.to === "string" && params.to.trim()
+            ? params.to.trim()
+            : rt.config.toNumber;
+        if (!to) {
+          respond(false, { error: "to required" });
+          return;
+        }
+        const mode =
+          params?.mode === "notify" || params?.mode === "conversation" ? params.mode : undefined;
+        const result = await rt.manager.initiateCall(to, undefined, {
+          message,
+          mode,
+        });
+        if (!result.success) {
+          respond(false, { error: result.error || "initiate failed" });
+          return;
+        }
+        respond(true, { callId: result.callId, initiated: true });
+      } catch (err) {
+        sendError(respond, err);
+      }
+    });
 
-    api.registerGatewayMethod(
-      "voicecall.continue",
-      async ({ params, respond }) => {
-        try {
-          const callId =
-            typeof params?.callId === "string" ? params.callId.trim() : "";
-          const message =
-            typeof params?.message === "string" ? params.message.trim() : "";
-          if (!callId || !message) {
-            respond(false, { error: "callId and message required" });
-            return;
-          }
-          const rt = await ensureRuntime();
-          const result = await rt.manager.continueCall(callId, message);
-          if (!result.success) {
-            respond(false, { error: result.error || "continue failed" });
-            return;
-          }
-          respond(true, { success: true, transcript: result.transcript });
-        } catch (err) {
-          sendError(respond, err);
+    api.registerGatewayMethod("voicecall.continue", async ({ params, respond }) => {
+      try {
+        const callId = typeof params?.callId === "string" ? params.callId.trim() : "";
+        const message = typeof params?.message === "string" ? params.message.trim() : "";
+        if (!callId || !message) {
+          respond(false, { error: "callId and message required" });
+          return;
         }
-      },
-    );
+        const rt = await ensureRuntime();
+        const result = await rt.manager.continueCall(callId, message);
+        if (!result.success) {
+          respond(false, { error: result.error || "continue failed" });
+          return;
+        }
+        respond(true, { success: true, transcript: result.transcript });
+      } catch (err) {
+        sendError(respond, err);
+      }
+    });
 
-    api.registerGatewayMethod(
-      "voicecall.speak",
-      async ({ params, respond }) => {
-        try {
-          const callId =
-            typeof params?.callId === "string" ? params.callId.trim() : "";
-          const message =
-            typeof params?.message === "string" ? params.message.trim() : "";
-          if (!callId || !message) {
-            respond(false, { error: "callId and message required" });
-            return;
-          }
-          const rt = await ensureRuntime();
-          const result = await rt.manager.speak(callId, message);
-          if (!result.success) {
-            respond(false, { error: result.error || "speak failed" });
-            return;
-          }
-          respond(true, { success: true });
-        } catch (err) {
-          sendError(respond, err);
+    api.registerGatewayMethod("voicecall.speak", async ({ params, respond }) => {
+      try {
+        const callId = typeof params?.callId === "string" ? params.callId.trim() : "";
+        const message = typeof params?.message === "string" ? params.message.trim() : "";
+        if (!callId || !message) {
+          respond(false, { error: "callId and message required" });
+          return;
         }
-      },
-    );
+        const rt = await ensureRuntime();
+        const result = await rt.manager.speak(callId, message);
+        if (!result.success) {
+          respond(false, { error: result.error || "speak failed" });
+          return;
+        }
+        respond(true, { success: true });
+      } catch (err) {
+        sendError(respond, err);
+      }
+    });
 
     api.registerGatewayMethod("voicecall.end", async ({ params, respond }) => {
       try {
-        const callId =
-          typeof params?.callId === "string" ? params.callId.trim() : "";
+        const callId = typeof params?.callId === "string" ? params.callId.trim() : "";
         if (!callId) {
           respond(false, { error: "callId required" });
           return;
@@ -317,65 +279,56 @@ const voiceCallPlugin = {
       }
     });
 
-    api.registerGatewayMethod(
-      "voicecall.status",
-      async ({ params, respond }) => {
-        try {
-          const raw =
-            typeof params?.callId === "string"
-              ? params.callId.trim()
-              : typeof params?.sid === "string"
-                ? params.sid.trim()
-                : "";
-          if (!raw) {
-            respond(false, { error: "callId required" });
-            return;
-          }
-          const rt = await ensureRuntime();
-          const call =
-            rt.manager.getCall(raw) || rt.manager.getCallByProviderCallId(raw);
-          if (!call) {
-            respond(true, { found: false });
-            return;
-          }
-          respond(true, { found: true, call });
-        } catch (err) {
-          sendError(respond, err);
+    api.registerGatewayMethod("voicecall.status", async ({ params, respond }) => {
+      try {
+        const raw =
+          typeof params?.callId === "string"
+            ? params.callId.trim()
+            : typeof params?.sid === "string"
+              ? params.sid.trim()
+              : "";
+        if (!raw) {
+          respond(false, { error: "callId required" });
+          return;
         }
-      },
-    );
+        const rt = await ensureRuntime();
+        const call = rt.manager.getCall(raw) || rt.manager.getCallByProviderCallId(raw);
+        if (!call) {
+          respond(true, { found: false });
+          return;
+        }
+        respond(true, { found: true, call });
+      } catch (err) {
+        sendError(respond, err);
+      }
+    });
 
-    api.registerGatewayMethod(
-      "voicecall.start",
-      async ({ params, respond }) => {
-        try {
-          const to = typeof params?.to === "string" ? params.to.trim() : "";
-          const message =
-            typeof params?.message === "string" ? params.message.trim() : "";
-          if (!to) {
-            respond(false, { error: "to required" });
-            return;
-          }
-          const rt = await ensureRuntime();
-          const result = await rt.manager.initiateCall(to, undefined, {
-            message: message || undefined,
-          });
-          if (!result.success) {
-            respond(false, { error: result.error || "initiate failed" });
-            return;
-          }
-          respond(true, { callId: result.callId, initiated: true });
-        } catch (err) {
-          sendError(respond, err);
+    api.registerGatewayMethod("voicecall.start", async ({ params, respond }) => {
+      try {
+        const to = typeof params?.to === "string" ? params.to.trim() : "";
+        const message = typeof params?.message === "string" ? params.message.trim() : "";
+        if (!to) {
+          respond(false, { error: "to required" });
+          return;
         }
-      },
-    );
+        const rt = await ensureRuntime();
+        const result = await rt.manager.initiateCall(to, undefined, {
+          message: message || undefined,
+        });
+        if (!result.success) {
+          respond(false, { error: result.error || "initiate failed" });
+          return;
+        }
+        respond(true, { callId: result.callId, initiated: true });
+      } catch (err) {
+        sendError(respond, err);
+      }
+    });
 
     api.registerTool({
       name: "voice_call",
       label: "Voice Call",
-      description:
-        "Make phone calls and have voice conversations via the voice-call plugin.",
+      description: "Make phone calls and have voice conversations via the voice-call plugin.",
       parameters: VoiceCallToolSchema,
       async execute(_toolCallId, params) {
         const json = (payload: unknown) => ({
@@ -453,8 +406,7 @@ const voiceCallPlugin = {
                   throw new Error("callId required");
                 }
                 const call =
-                  rt.manager.getCall(callId) ||
-                  rt.manager.getCallByProviderCallId(callId);
+                  rt.manager.getCall(callId) || rt.manager.getCallByProviderCallId(callId);
                 return json(call ? { found: true, call } : { found: false });
               }
             }
@@ -466,9 +418,7 @@ const voiceCallPlugin = {
             if (!sid) {
               throw new Error("sid required for status");
             }
-            const call =
-              rt.manager.getCall(sid) ||
-              rt.manager.getCallByProviderCallId(sid);
+            const call = rt.manager.getCall(sid) || rt.manager.getCallByProviderCallId(sid);
             return json(call ? { found: true, call } : { found: false });
           }
 

@@ -445,9 +445,7 @@ export function createNodesTool(options?: {
           case "invoke": {
             const node = readStringParam(params, "node", { required: true });
             const nodeId = await resolveNodeId(gatewayOpts, node);
-            const invokeCommand = readStringParam(params, "invokeCommand", {
-              required: true,
-            });
+            const invokeCommand = readStringParam(params, "invokeCommand", { required: true });
             const invokeParamsJson =
               typeof params.invokeParamsJson === "string" ? params.invokeParamsJson.trim() : "";
             let invokeParams: unknown = {};

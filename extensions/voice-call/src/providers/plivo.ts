@@ -14,10 +14,7 @@ import type {
 } from "../types.js";
 import type { VoiceCallProvider } from "./base.js";
 import { escapeXml } from "../voice-mapping.js";
-import {
-  reconstructWebhookUrl,
-  verifyPlivoWebhook,
-} from "../webhook-security.js";
+import { reconstructWebhookUrl, verifyPlivoWebhook } from "../webhook-security.js";
 
 export interface PlivoProviderOptions {
   /** Override public URL origin for signature verification */
@@ -105,8 +102,7 @@ export class PlivoProvider implements VoiceCallProvider {
   }
 
   parseWebhookEvent(ctx: WebhookContext): ProviderWebhookParseResult {
-    const flow =
-      typeof ctx.query?.flow === "string" ? ctx.query.flow.trim() : "";
+    const flow = typeof ctx.query?.flow === "string" ? ctx.query.flow.trim() : "";
 
     const parsed = this.parseBody(ctx.rawBody);
     if (!parsed) {
@@ -125,9 +121,7 @@ export class PlivoProvider implements VoiceCallProvider {
     // Special flows that exist only to return Plivo XML (no events).
     if (flow === "xml-speak") {
       const callId = this.getCallIdFromQuery(ctx);
-      const pending = callId
-        ? this.pendingSpeakByCallId.get(callId)
-        : undefined;
+      const pending = callId ? this.pendingSpeakByCallId.get(callId) : undefined;
       if (callId) {
         this.pendingSpeakByCallId.delete(callId);
       }
@@ -145,9 +139,7 @@ export class PlivoProvider implements VoiceCallProvider {
 
     if (flow === "xml-listen") {
       const callId = this.getCallIdFromQuery(ctx);
-      const pending = callId
-        ? this.pendingListenByCallId.get(callId)
-        : undefined;
+      const pending = callId ? this.pendingListenByCallId.get(callId) : undefined;
       if (callId) {
         this.pendingListenByCallId.delete(callId);
       }
@@ -188,10 +180,7 @@ export class PlivoProvider implements VoiceCallProvider {
     };
   }
 
-  private normalizeEvent(
-    params: URLSearchParams,
-    callIdOverride?: string,
-  ): NormalizedEvent | null {
+  private normalizeEvent(params: URLSearchParams, callIdOverride?: string): NormalizedEvent | null {
     const callUuid = params.get("CallUUID") || "";
     const requestUuid = params.get("RequestUUID") || "";
 
@@ -337,16 +326,11 @@ export class PlivoProvider implements VoiceCallProvider {
   }
 
   async playTts(input: PlayTtsInput): Promise<void> {
-    const callUuid =
-      this.requestUuidToCallUuid.get(input.providerCallId) ??
-      input.providerCallId;
+    const callUuid = this.requestUuidToCallUuid.get(input.providerCallId) ?? input.providerCallId;
     const webhookBase =
-      this.callUuidToWebhookUrl.get(callUuid) ||
-      this.callIdToWebhookUrl.get(input.callId);
+      this.callUuidToWebhookUrl.get(callUuid) || this.callIdToWebhookUrl.get(input.callId);
     if (!webhookBase) {
-      throw new Error(
-        "Missing webhook URL for this call (provider state missing)",
-      );
+      throw new Error("Missing webhook URL for this call (provider state missing)");
     }
 
     if (!callUuid) {
@@ -375,16 +359,11 @@ export class PlivoProvider implements VoiceCallProvider {
   }
 
   async startListening(input: StartListeningInput): Promise<void> {
-    const callUuid =
-      this.requestUuidToCallUuid.get(input.providerCallId) ??
-      input.providerCallId;
+    const callUuid = this.requestUuidToCallUuid.get(input.providerCallId) ?? input.providerCallId;
     const webhookBase =
-      this.callUuidToWebhookUrl.get(callUuid) ||
-      this.callIdToWebhookUrl.get(input.callId);
+      this.callUuidToWebhookUrl.get(callUuid) || this.callIdToWebhookUrl.get(input.callId);
     if (!webhookBase) {
-      throw new Error(
-        "Missing webhook URL for this call (provider state missing)",
-      );
+      throw new Error("Missing webhook URL for this call (provider state missing)");
     }
 
     if (!callUuid) {
@@ -443,10 +422,7 @@ export class PlivoProvider implements VoiceCallProvider {
 </Response>`;
   }
 
-  private static xmlGetInputSpeech(params: {
-    actionUrl: string;
-    language?: string;
-  }): string {
+  private static xmlGetInputSpeech(params: { actionUrl: string; language?: string }): string {
     const language = params.language || "en-US";
     return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>

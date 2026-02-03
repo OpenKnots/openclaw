@@ -101,10 +101,7 @@ function isValidAgentId(agentId: string): boolean {
 export function handleControlUiAvatarRequest(
   req: IncomingMessage,
   res: ServerResponse,
-  opts: {
-    basePath?: string;
-    resolveAvatar: (agentId: string) => ControlUiAvatarResolution;
-  },
+  opts: { basePath?: string; resolveAvatar: (agentId: string) => ControlUiAvatarResolution },
 ): boolean {
   const urlRaw = req.url;
   if (!urlRaw) {

@@ -115,16 +115,10 @@ describe("fetchAntigravityUsage", () => {
         return makeResponse(200, {
           models: {
             "gemini-pro-1.5": {
-              quotaInfo: {
-                remainingFraction: 0.5,
-                resetTime: "2026-01-08T00:00:00Z",
-              },
+              quotaInfo: { remainingFraction: 0.5, resetTime: "2026-01-08T00:00:00Z" },
             },
             "gemini-flash-2.0": {
-              quotaInfo: {
-                remainingFraction: 0.7,
-                resetTime: "2026-01-08T00:00:00Z",
-              },
+              quotaInfo: { remainingFraction: 0.7, resetTime: "2026-01-08T00:00:00Z" },
             },
           },
         });
@@ -535,10 +529,7 @@ describe("fetchAntigravityUsage", () => {
         return makeResponse(200, {
           models: {
             "gemini-pro-test": {
-              quotaInfo: {
-                remainingFraction: 0.4,
-                resetTime: "invalid-date",
-              },
+              quotaInfo: { remainingFraction: 0.4, resetTime: "invalid-date" },
             },
           },
         });

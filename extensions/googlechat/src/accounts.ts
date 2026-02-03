@@ -127,10 +127,7 @@ export function resolveGoogleChatAccount(params: {
   const merged = mergeGoogleChatAccountConfig(params.cfg, accountId);
   const accountEnabled = merged.enabled !== false;
   const enabled = baseEnabled && accountEnabled;
-  const credentials = resolveCredentialsFromConfig({
-    accountId,
-    account: merged,
-  });
+  const credentials = resolveCredentialsFromConfig({ accountId, account: merged });
 
   return {
     accountId,
@@ -143,9 +140,7 @@ export function resolveGoogleChatAccount(params: {
   };
 }
 
-export function listEnabledGoogleChatAccounts(
-  cfg: OpenClawConfig,
-): ResolvedGoogleChatAccount[] {
+export function listEnabledGoogleChatAccounts(cfg: OpenClawConfig): ResolvedGoogleChatAccount[] {
   return listGoogleChatAccountIds(cfg)
     .map((accountId) => resolveGoogleChatAccount({ cfg, accountId }))
     .filter((account) => account.enabled);

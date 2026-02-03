@@ -303,10 +303,7 @@ export const sessionsHandlers: GatewayRequestHandlers = {
       queueKeys.add(sessionId);
     }
     clearSessionQueues([...queueKeys]);
-    stopSubagentsForRequester({
-      cfg,
-      requesterSessionKey: target.canonicalKey,
-    });
+    stopSubagentsForRequester({ cfg, requesterSessionKey: target.canonicalKey });
     if (sessionId) {
       abortEmbeddedPiRun(sessionId);
       const ended = await waitForEmbeddedPiRunEnd(sessionId, 15_000);

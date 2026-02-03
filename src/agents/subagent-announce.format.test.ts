@@ -17,10 +17,7 @@ let configOverride: ReturnType<(typeof import("../config/config.js"))["loadConfi
 
 vi.mock("../gateway/call.js", () => ({
   callGateway: vi.fn(async (req: unknown) => {
-    const typed = req as {
-      method?: string;
-      params?: { message?: string; sessionKey?: string };
-    };
+    const typed = req as { method?: string; params?: { message?: string; sessionKey?: string } };
     if (typed.method === "agent") {
       return await agentSpy(typed);
     }
@@ -122,9 +119,7 @@ describe("subagent announce formatting", () => {
       outcome: { status: "ok" },
     });
 
-    const call = agentSpy.mock.calls[0]?.[0] as {
-      params?: { message?: string };
-    };
+    const call = agentSpy.mock.calls[0]?.[0] as { params?: { message?: string } };
     const msg = call?.params?.message as string;
     expect(msg).toContain("completed successfully");
   });
@@ -197,9 +192,7 @@ describe("subagent announce formatting", () => {
     expect(didAnnounce).toBe(true);
     await expect.poll(() => agentSpy.mock.calls.length).toBe(1);
 
-    const call = agentSpy.mock.calls[0]?.[0] as {
-      params?: Record<string, unknown>;
-    };
+    const call = agentSpy.mock.calls[0]?.[0] as { params?: Record<string, unknown> };
     expect(call?.params?.channel).toBe("whatsapp");
     expect(call?.params?.to).toBe("+1555");
     expect(call?.params?.accountId).toBe("kev");
@@ -279,9 +272,7 @@ describe("subagent announce formatting", () => {
     });
 
     expect(didAnnounce).toBe(true);
-    const call = agentSpy.mock.calls[0]?.[0] as {
-      params?: Record<string, unknown>;
-    };
+    const call = agentSpy.mock.calls[0]?.[0] as { params?: Record<string, unknown> };
     expect(call?.params?.channel).toBe("whatsapp");
     expect(call?.params?.accountId).toBe("acct-123");
   });
@@ -307,9 +298,7 @@ describe("subagent announce formatting", () => {
     });
 
     expect(didAnnounce).toBe(true);
-    const call = agentSpy.mock.calls[0]?.[0] as {
-      params?: Record<string, unknown>;
-    };
+    const call = agentSpy.mock.calls[0]?.[0] as { params?: Record<string, unknown> };
     expect(call?.params?.channel).toBe("whatsapp");
     expect(call?.params?.accountId).toBe("acct-987");
   });
@@ -332,10 +321,7 @@ describe("subagent announce formatting", () => {
       childSessionKey: "agent:main:subagent:test",
       childRunId: "run-stale-channel",
       requesterSessionKey: "main",
-      requesterOrigin: {
-        channel: "bluebubbles",
-        to: "bluebubbles:chat_guid:123",
-      },
+      requesterOrigin: { channel: "bluebubbles", to: "bluebubbles:chat_guid:123" },
       requesterDisplayKey: "main",
       task: "do thing",
       timeoutMs: 1000,
@@ -349,9 +335,7 @@ describe("subagent announce formatting", () => {
     expect(didAnnounce).toBe(true);
     await expect.poll(() => agentSpy.mock.calls.length).toBe(1);
 
-    const call = agentSpy.mock.calls[0]?.[0] as {
-      params?: Record<string, unknown>;
-    };
+    const call = agentSpy.mock.calls[0]?.[0] as { params?: Record<string, unknown> };
     // The channel should match requesterOrigin, NOT the stale session entry.
     expect(call?.params?.channel).toBe("bluebubbles");
     expect(call?.params?.to).toBe("bluebubbles:chat_guid:123");

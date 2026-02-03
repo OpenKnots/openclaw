@@ -47,10 +47,7 @@ async function loadNodes(cfg: OpenClawConfig): Promise<NodeSummary[]> {
     });
     return Array.isArray(res.nodes) ? res.nodes : [];
   } catch {
-    const res = await callGateway<{
-      pending?: unknown[];
-      paired?: NodeSummary[];
-    }>({
+    const res = await callGateway<{ pending?: unknown[]; paired?: NodeSummary[] }>({
       method: "node.pair.list",
       params: {},
       config: cfg,
@@ -160,10 +157,7 @@ export const handlePTTCommand: CommandHandler = async (params, allowTextCommands
   }
   if (!command.isAuthorizedSender) {
     logVerbose(`Ignoring /ptt from unauthorized sender: ${command.senderId || "<unknown>"}`);
-    return {
-      shouldContinue: false,
-      reply: { text: "PTT requires an authorized sender." },
-    };
+    return { shouldContinue: false, reply: { text: "PTT requires an authorized sender." } };
   }
 
   const parsed = parsePTTArgs(normalized);

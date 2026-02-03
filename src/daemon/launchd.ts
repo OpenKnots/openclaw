@@ -240,17 +240,11 @@ export async function repairLaunchAgentBootstrap(args: {
   const plistPath = resolveLaunchAgentPlistPath(env);
   const boot = await execLaunchctl(["bootstrap", domain, plistPath]);
   if (boot.code !== 0) {
-    return {
-      ok: false,
-      detail: (boot.stderr || boot.stdout).trim() || undefined,
-    };
+    return { ok: false, detail: (boot.stderr || boot.stdout).trim() || undefined };
   }
   const kick = await execLaunchctl(["kickstart", "-k", `${domain}/${label}`]);
   if (kick.code !== 0) {
-    return {
-      ok: false,
-      detail: (kick.stderr || kick.stdout).trim() || undefined,
-    };
+    return { ok: false, detail: (kick.stderr || kick.stdout).trim() || undefined };
   }
   return { ok: true };
 }

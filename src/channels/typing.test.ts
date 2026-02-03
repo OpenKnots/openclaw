@@ -30,12 +30,7 @@ describe("createTypingCallbacks", () => {
     const stop = vi.fn().mockRejectedValue(new Error("stop"));
     const onStartError = vi.fn();
     const onStopError = vi.fn();
-    const callbacks = createTypingCallbacks({
-      start,
-      stop,
-      onStartError,
-      onStopError,
-    });
+    const callbacks = createTypingCallbacks({ start, stop, onStartError, onStopError });
 
     callbacks.onIdle?.();
     await flush();

@@ -21,14 +21,8 @@ describe("acquireSessionWriteLock", () => {
       const sessionReal = path.join(realDir, "sessions.json");
       const sessionLink = path.join(linkDir, "sessions.json");
 
-      const lockA = await acquireSessionWriteLock({
-        sessionFile: sessionReal,
-        timeoutMs: 500,
-      });
-      const lockB = await acquireSessionWriteLock({
-        sessionFile: sessionLink,
-        timeoutMs: 500,
-      });
+      const lockA = await acquireSessionWriteLock({ sessionFile: sessionReal, timeoutMs: 500 });
+      const lockB = await acquireSessionWriteLock({ sessionFile: sessionLink, timeoutMs: 500 });
 
       await lockB.release();
       await lockA.release();
@@ -43,14 +37,8 @@ describe("acquireSessionWriteLock", () => {
       const sessionFile = path.join(root, "sessions.json");
       const lockPath = `${sessionFile}.lock`;
 
-      const lockA = await acquireSessionWriteLock({
-        sessionFile,
-        timeoutMs: 500,
-      });
-      const lockB = await acquireSessionWriteLock({
-        sessionFile,
-        timeoutMs: 500,
-      });
+      const lockA = await acquireSessionWriteLock({ sessionFile, timeoutMs: 500 });
+      const lockB = await acquireSessionWriteLock({ sessionFile, timeoutMs: 500 });
 
       await expect(fs.access(lockPath)).resolves.toBeUndefined();
       await lockA.release();
@@ -69,18 +57,11 @@ describe("acquireSessionWriteLock", () => {
       const lockPath = `${sessionFile}.lock`;
       await fs.writeFile(
         lockPath,
-        JSON.stringify({
-          pid: 123456,
-          createdAt: new Date(Date.now() - 60_000).toISOString(),
-        }),
+        JSON.stringify({ pid: 123456, createdAt: new Date(Date.now() - 60_000).toISOString() }),
         "utf8",
       );
 
-      const lock = await acquireSessionWriteLock({
-        sessionFile,
-        timeoutMs: 500,
-        staleMs: 10,
-      });
+      const lock = await acquireSessionWriteLock({ sessionFile, timeoutMs: 500, staleMs: 10 });
       const raw = await fs.readFile(lockPath, "utf8");
       const payload = JSON.parse(raw) as { pid: number };
 

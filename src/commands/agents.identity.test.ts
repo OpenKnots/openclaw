@@ -78,9 +78,7 @@ describe("agents set-identity command", () => {
 
     expect(configMocks.writeConfigFile).toHaveBeenCalledTimes(1);
     const written = configMocks.writeConfigFile.mock.calls[0]?.[0] as {
-      agents?: {
-        list?: Array<{ id: string; identity?: Record<string, string> }>;
-      };
+      agents?: { list?: Array<{ id: string; identity?: Record<string, string> }> };
     };
     const main = written.agents?.list?.find((entry) => entry.id === "main");
     expect(main?.identity).toEqual({
@@ -149,9 +147,7 @@ describe("agents set-identity command", () => {
     );
 
     const written = configMocks.writeConfigFile.mock.calls[0]?.[0] as {
-      agents?: {
-        list?: Array<{ id: string; identity?: Record<string, string> }>;
-      };
+      agents?: { list?: Array<{ id: string; identity?: Record<string, string> }> };
     };
     const main = written.agents?.list?.find((entry) => entry.id === "main");
     expect(main?.identity).toEqual({
@@ -187,9 +183,7 @@ describe("agents set-identity command", () => {
     await agentsSetIdentityCommand({ agent: "main", identityFile: identityPath }, runtime);
 
     const written = configMocks.writeConfigFile.mock.calls[0]?.[0] as {
-      agents?: {
-        list?: Array<{ id: string; identity?: Record<string, string> }>;
-      };
+      agents?: { list?: Array<{ id: string; identity?: Record<string, string> }> };
     };
     const main = written.agents?.list?.find((entry) => entry.id === "main");
     expect(main?.identity).toEqual({
@@ -218,9 +212,7 @@ describe("agents set-identity command", () => {
     await agentsSetIdentityCommand({ workspace, fromIdentity: true }, runtime);
 
     const written = configMocks.writeConfigFile.mock.calls[0]?.[0] as {
-      agents?: {
-        list?: Array<{ id: string; identity?: Record<string, string> }>;
-      };
+      agents?: { list?: Array<{ id: string; identity?: Record<string, string> }> };
     };
     const main = written.agents?.list?.find((entry) => entry.id === "main");
     expect(main?.identity).toEqual({
@@ -240,9 +232,7 @@ describe("agents set-identity command", () => {
     );
 
     const written = configMocks.writeConfigFile.mock.calls[0]?.[0] as {
-      agents?: {
-        list?: Array<{ id: string; identity?: Record<string, string> }>;
-      };
+      agents?: { list?: Array<{ id: string; identity?: Record<string, string> }> };
     };
     const main = written.agents?.list?.find((entry) => entry.id === "main");
     expect(main?.identity).toEqual({

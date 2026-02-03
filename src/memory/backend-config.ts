@@ -217,11 +217,7 @@ function resolveDefaultCollections(
   const entries: Array<{ path: string; pattern: string; base: string }> = [
     { path: workspaceDir, pattern: "MEMORY.md", base: "memory-root" },
     { path: workspaceDir, pattern: "memory.md", base: "memory-alt" },
-    {
-      path: path.join(workspaceDir, "memory"),
-      pattern: "**/*.md",
-      base: "memory-dir",
-    },
+    { path: path.join(workspaceDir, "memory"), pattern: "**/*.md", base: "memory-dir" },
   ];
   return entries.map((entry) => ({
     name: ensureUniqueName(entry.base, existing),

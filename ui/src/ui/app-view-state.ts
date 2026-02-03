@@ -1,10 +1,7 @@
 import type { EventLogEntry } from "./app-events";
 import type { DevicePairingList } from "./controllers/devices";
 import type { ExecApprovalRequest } from "./controllers/exec-approval";
-import type {
-  ExecApprovalsFile,
-  ExecApprovalsSnapshot,
-} from "./controllers/exec-approvals";
+import type { ExecApprovalsFile, ExecApprovalsSnapshot } from "./controllers/exec-approvals";
 import type { SkillMessage } from "./controllers/skills";
 import type { GatewayBrowserClient, GatewayHelloOk } from "./gateway";
 import type { Tab } from "./navigation";
@@ -179,21 +176,13 @@ export type AppViewState = {
   handleWhatsAppLogout: () => Promise<void>;
   handleChannelConfigSave: () => Promise<void>;
   handleChannelConfigReload: () => Promise<void>;
-  handleNostrProfileEdit: (
-    accountId: string,
-    profile: NostrProfile | null,
-  ) => void;
+  handleNostrProfileEdit: (accountId: string, profile: NostrProfile | null) => void;
   handleNostrProfileCancel: () => void;
-  handleNostrProfileFieldChange: (
-    field: keyof NostrProfile,
-    value: string,
-  ) => void;
+  handleNostrProfileFieldChange: (field: keyof NostrProfile, value: string) => void;
   handleNostrProfileSave: () => Promise<void>;
   handleNostrProfileImport: () => Promise<void>;
   handleNostrProfileToggleAdvanced: () => void;
-  handleExecApprovalDecision: (
-    decision: "allow-once" | "allow-always" | "deny",
-  ) => Promise<void>;
+  handleExecApprovalDecision: (decision: "allow-once" | "allow-always" | "deny") => Promise<void>;
   handleGatewayUrlConfirm: () => void;
   handleGatewayUrlCancel: () => void;
   handleConfigLoad: () => Promise<void>;

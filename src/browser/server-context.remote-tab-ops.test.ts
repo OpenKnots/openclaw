@@ -11,9 +11,9 @@ vi.mock("./chrome.js", () => ({
   stopOpenClawChrome: vi.fn(async () => {}),
 }));
 
-function makeState(profile: "remote" | "openclaw"): BrowserServerState & {
-  profiles: Map<string, { lastTargetId?: string | null }>;
-} {
+function makeState(
+  profile: "remote" | "openclaw",
+): BrowserServerState & { profiles: Map<string, { lastTargetId?: string | null }> } {
   return {
     // oxlint-disable-next-line typescript/no-explicit-any
     server: null as any,
@@ -48,12 +48,7 @@ describe("browser server-context remote profile tab operations", () => {
   it("uses Playwright tab operations when available", async () => {
     vi.resetModules();
     const listPagesViaPlaywright = vi.fn(async () => [
-      {
-        targetId: "T1",
-        title: "Tab 1",
-        url: "https://a.example",
-        type: "page",
-      },
+      { targetId: "T1", title: "Tab 1", url: "https://a.example", type: "page" },
     ]);
     const createPageViaPlaywright = vi.fn(async () => ({
       targetId: "T2",
@@ -156,12 +151,7 @@ describe("browser server-context remote profile tab operations", () => {
   it("uses Playwright focus for remote profiles when available", async () => {
     vi.resetModules();
     const listPagesViaPlaywright = vi.fn(async () => [
-      {
-        targetId: "T1",
-        title: "Tab 1",
-        url: "https://a.example",
-        type: "page",
-      },
+      { targetId: "T1", title: "Tab 1", url: "https://a.example", type: "page" },
     ]);
     const focusPageByTargetIdViaPlaywright = vi.fn(async () => {});
 

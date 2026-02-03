@@ -331,11 +331,7 @@ export function resolveCommandArgMenu(params: {
   command: ChatCommandDefinition;
   args?: CommandArgs;
   cfg?: OpenClawConfig;
-}): {
-  arg: CommandArgDefinition;
-  choices: ResolvedCommandArgChoice[];
-  title?: string;
-} | null {
+}): { arg: CommandArgDefinition; choices: ResolvedCommandArgChoice[]; title?: string } | null {
   const { command, args, cfg } = params;
   if (!command.args || !command.argsMenu) {
     return null;

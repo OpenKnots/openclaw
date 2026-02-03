@@ -47,9 +47,7 @@ export function createLineWebhookMiddleware(
 
       const rawBody = readRawBody(req);
       if (!rawBody) {
-        res.status(400).json({
-          error: "Missing raw request body for signature verification",
-        });
+        res.status(400).json({ error: "Missing raw request body for signature verification" });
         return;
       }
 

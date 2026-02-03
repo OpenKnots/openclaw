@@ -265,13 +265,9 @@ describe("convertTableToFlexBubble", () => {
 
     const bubble = convertTableToFlexBubble(table);
     const body = bubble.body as {
-      contents: Array<{
-        contents?: Array<{ contents?: Array<{ text: string }> }>;
-      }>;
+      contents: Array<{ contents?: Array<{ contents?: Array<{ text: string }> }> }>;
     };
-    const rowsBox = body.contents[2] as {
-      contents: Array<{ contents: Array<{ text: string }> }>;
-    };
+    const rowsBox = body.contents[2] as { contents: Array<{ contents: Array<{ text: string }> }> };
 
     expect(rowsBox.contents[0].contents[0].text).toBe("-");
     expect(rowsBox.contents[0].contents[1].text).toBe("-");
@@ -287,12 +283,8 @@ describe("convertTableToFlexBubble", () => {
     const body = bubble.body as {
       contents: Array<{ contents?: Array<{ text: string; weight?: string }> }>;
     };
-    const headerRow = body.contents[0] as {
-      contents: Array<{ text: string; weight?: string }>;
-    };
-    const dataRow = body.contents[2] as {
-      contents: Array<{ text: string; weight?: string }>;
-    };
+    const headerRow = body.contents[0] as { contents: Array<{ text: string; weight?: string }> };
+    const dataRow = body.contents[2] as { contents: Array<{ text: string; weight?: string }> };
 
     expect(headerRow.contents[0].text).toBe("Name");
     expect(headerRow.contents[0].weight).toBe("bold");
@@ -329,9 +321,7 @@ describe("convertCodeBlockToFlexBubble", () => {
 
     const bubble = convertCodeBlockToFlexBubble(block);
 
-    const body = bubble.body as {
-      contents: Array<{ contents: Array<{ text: string }> }>;
-    };
+    const body = bubble.body as { contents: Array<{ contents: Array<{ text: string }> }> };
     const codeText = body.contents[1].contents[0].text;
     expect(codeText.length).toBeLessThan(longCode.length);
     expect(codeText).toContain("...");

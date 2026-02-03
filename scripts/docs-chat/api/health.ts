@@ -35,8 +35,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.status(200).json({ ok: true, chunks: count, mode: "upstash-vector" });
   } catch (err) {
     console.error("Health check error:", err);
-    res
-      .status(500)
-      .json({ ok: false, error: "Failed to connect to vector store" });
+    res.status(500).json({ ok: false, error: "Failed to connect to vector store" });
   }
 }

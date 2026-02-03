@@ -286,10 +286,7 @@ export async function closeDispatcher(dispatcher?: Dispatcher | null): Promise<v
   if (!dispatcher) {
     return;
   }
-  const candidate = dispatcher as {
-    close?: () => Promise<void> | void;
-    destroy?: () => void;
-  };
+  const candidate = dispatcher as { close?: () => Promise<void> | void; destroy?: () => void };
   try {
     if (typeof candidate.close === "function") {
       await candidate.close();

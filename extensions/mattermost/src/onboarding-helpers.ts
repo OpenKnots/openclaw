@@ -10,12 +10,9 @@ type PromptAccountIdParams = {
   defaultAccountId: string;
 };
 
-export async function promptAccountId(
-  params: PromptAccountIdParams,
-): Promise<string> {
+export async function promptAccountId(params: PromptAccountIdParams): Promise<string> {
   const existingIds = params.listAccountIds(params.cfg);
-  const initial =
-    params.currentId?.trim() || params.defaultAccountId || DEFAULT_ACCOUNT_ID;
+  const initial = params.currentId?.trim() || params.defaultAccountId || DEFAULT_ACCOUNT_ID;
   const choice = await params.prompter.select({
     message: `${params.label} account`,
     options: [

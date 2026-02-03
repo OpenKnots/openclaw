@@ -130,9 +130,7 @@ function detectSystemTimeFormat(): boolean {
 
   try {
     const sample = new Date(2000, 0, 1, 13, 0);
-    const formatted = new Intl.DateTimeFormat(undefined, {
-      hour: "numeric",
-    }).format(sample);
+    const formatted = new Intl.DateTimeFormat(undefined, { hour: "numeric" }).format(sample);
     return formatted.includes("13");
   } catch {
     return false;

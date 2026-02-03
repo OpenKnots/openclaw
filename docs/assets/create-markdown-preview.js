@@ -62,7 +62,7 @@ function V(e, n, t, r) {
       : { type: "code_content", raw: e, content: e, indent: 0, line: i };
   let o = e.match(d.codeFence);
   if (o) {
-    ((n.inCodeBlock = !0), (n.codeBlockFence = o[2]));
+    (n.inCodeBlock = !0), (n.codeBlockFence = o[2]);
     let f = o[3] || "";
     return {
       type: "code_fence_start",
@@ -208,13 +208,13 @@ function b(e) {
     };
   for (; t < e.length; ) {
     if (e[t] === "\\" && t + 1 < e.length) {
-      ((r += e[t + 1]), (t += 2));
+      (r += e[t + 1]), (t += 2);
       continue;
     }
     if (e[t] === "`") {
       let o = T(e, t);
       if (o) {
-        (i(), n.push(o.token), (t = o.end));
+        i(), n.push(o.token), (t = o.end);
         continue;
       }
     }
@@ -222,39 +222,39 @@ function b(e) {
       let o = e[t] === "!",
         s = J(e, o ? t + 1 : t, o);
       if (s) {
-        (i(), n.push(s.token), (t = s.end));
+        i(), n.push(s.token), (t = s.end);
         continue;
       }
     }
     if (e[t] === "*" || e[t] === "_") {
       let o = L(e, t);
       if (o) {
-        (i(), n.push(o.token), (t = o.end));
+        i(), n.push(o.token), (t = o.end);
         continue;
       }
     }
     if (e[t] === "~" && e[t + 1] === "~") {
       let o = E(e, t);
       if (o) {
-        (i(), n.push(o.token), (t = o.end));
+        i(), n.push(o.token), (t = o.end);
         continue;
       }
     }
     if (e[t] === "=" && e[t + 1] === "=") {
       let o = A(e, t);
       if (o) {
-        (i(), n.push(o.token), (t = o.end));
+        i(), n.push(o.token), (t = o.end);
         continue;
       }
     }
-    ((r += e[t]), t++);
+    (r += e[t]), t++;
   }
-  return (i(), n);
+  return i(), n;
 }
 function T(e, n) {
   let t = 0,
     r = n;
-  for (; r < e.length && e[r] === "`"; ) (t++, r++);
+  for (; r < e.length && e[r] === "`"; ) t++, r++;
   if (t === 0) return null;
   let i = "`".repeat(t),
     o = e.indexOf(i, r);
@@ -267,7 +267,7 @@ function J(e, n, t = !1) {
   let r = 1,
     i = n + 1;
   for (; i < e.length && r > 0; )
-    (e[i] === "[" ? r++ : e[i] === "]" ? r-- : e[i] === "\\" && i++, i++);
+    e[i] === "[" ? r++ : e[i] === "]" ? r-- : e[i] === "\\" && i++, i++;
   if (r !== 0) return null;
   let o = e.slice(n + 1, i - 1);
   if (e[i] !== "(") return null;
@@ -275,7 +275,7 @@ function J(e, n, t = !1) {
     c = s,
     l = 1;
   for (; c < e.length && l > 0; )
-    (e[c] === "(" ? l++ : e[c] === ")" ? l-- : e[c] === "\\" && c++, c++);
+    e[c] === "(" ? l++ : e[c] === ")" ? l-- : e[c] === "\\" && c++, c++;
   if (l !== 0) return null;
   let a = e.slice(s, c - 1).trim(),
     u = a,
@@ -295,7 +295,7 @@ function L(e, n) {
   if (t !== "*" && t !== "_") return null;
   let r = 0,
     i = n;
-  for (; i < e.length && e[i] === t && r < 3; ) (r++, i++);
+  for (; i < e.length && e[i] === t && r < 3; ) r++, i++;
   if (r === 0) return null;
   let o = t.repeat(r),
     s = i;
@@ -326,8 +326,8 @@ function L(e, n) {
           end: c + r,
         }
       : r === 2
-        ? { token: { type: "bold", content: l, children: a }, end: c + r }
-        : { token: { type: "italic", content: l, children: a }, end: c + r };
+      ? { token: { type: "bold", content: l, children: a }, end: c + r }
+      : { token: { type: "italic", content: l, children: a }, end: c + r };
   }
   return null;
 }
@@ -469,7 +469,7 @@ function te(e) {
     case "image":
       return fe(e);
     default:
-      return (e.index++, null);
+      return e.index++, null;
   }
 }
 function re(e) {
@@ -490,7 +490,7 @@ function re(e) {
 function ie(e) {
   let n = [];
   for (; e.index < e.tokens.length && e.tokens[e.index].type === "paragraph"; )
-    (n.push(e.tokens[e.index].content), e.index++);
+    n.push(e.tokens[e.index].content), e.index++;
   let t = $(n.join(" "));
   return {
     id: e.options.generateId(),
@@ -508,6 +508,7 @@ function oe(e) {
     e.index < e.tokens.length &&
     e.tokens[e.index].type === "bullet_list_item" &&
     e.tokens[e.index].indent >= t;
+
   ) {
     let r = e.tokens[e.index];
     if (r.indent > t) {
@@ -515,14 +516,14 @@ function oe(e) {
       continue;
     }
     let i = $(r.content);
-    (n.push({
+    n.push({
       id: e.options.generateId(),
       type: "paragraph",
       content: i,
       children: [],
       props: {},
     }),
-      e.index++);
+      e.index++;
   }
   return {
     id: e.options.generateId(),
@@ -540,6 +541,7 @@ function ce(e) {
     e.index < e.tokens.length &&
     e.tokens[e.index].type === "numbered_list_item" &&
     e.tokens[e.index].indent >= t;
+
   ) {
     let r = e.tokens[e.index];
     if (r.indent > t) {
@@ -547,14 +549,14 @@ function ce(e) {
       continue;
     }
     let i = $(r.content);
-    (n.push({
+    n.push({
       id: e.options.generateId(),
       type: "paragraph",
       content: i,
       children: [],
       props: {},
     }),
-      e.index++);
+      e.index++;
   }
   return {
     id: e.options.generateId(),
@@ -585,8 +587,9 @@ function le(e) {
   for (
     e.index++;
     e.index < e.tokens.length && e.tokens[e.index].type === "code_content";
+
   )
-    (r.push(e.tokens[e.index].content), e.index++);
+    r.push(e.tokens[e.index].content), e.index++;
   return (
     e.index < e.tokens.length &&
       e.tokens[e.index].type === "code_fence_end" &&
@@ -596,7 +599,7 @@ function le(e) {
       type: "codeBlock",
       content: F(
         r.join(`
-`),
+`)
       ),
       children: [],
       props: { language: t || void 0 },
@@ -606,10 +609,10 @@ function le(e) {
 function ae(e) {
   let n = [];
   for (; e.index < e.tokens.length && e.tokens[e.index].type === "blockquote"; )
-    (n.push(e.tokens[e.index].content), e.index++);
+    n.push(e.tokens[e.index].content), e.index++;
   let t = $(
     n.join(`
-`),
+`)
   );
   return {
     id: e.options.generateId(),
@@ -624,10 +627,10 @@ function ue(e) {
   e.index++;
   let r = [];
   for (; e.index < e.tokens.length && e.tokens[e.index].type === "blockquote"; )
-    (r.push(e.tokens[e.index].content), e.index++);
+    r.push(e.tokens[e.index].content), e.index++;
   let i = $(
     r.join(`
-`),
+`)
   );
   return {
     id: e.options.generateId(),
@@ -660,17 +663,18 @@ function he(e) {
     e.index < e.tokens.length &&
     (e.tokens[e.index].type === "table_row" ||
       e.tokens[e.index].type === "table_separator");
+
   ) {
     let s = e.tokens[e.index];
     if (s.type === "table_separator") {
-      ((r = pe(s.content)), (o = !0), e.index++);
+      (r = pe(s.content)), (o = !0), e.index++;
       continue;
     }
     let c = s.content
       .split("|")
       .map((l) => l.trim())
       .filter((l) => l !== "");
-    (i && !o ? ((t = c), (i = !1)) : o && n.push(c), e.index++);
+    i && !o ? ((t = c), (i = !1)) : o && n.push(c), e.index++;
   }
   return (
     !o && t.length > 0 && (n.unshift(t), (t = [])),
@@ -771,7 +775,7 @@ function S(e, n) {
     case "blockquote":
       return `<blockquote class="${t}blockquote">${m(
         e.content,
-        n,
+        n
       )}</blockquote>`;
     case "table":
       return xe(e, n);
@@ -842,7 +846,7 @@ function xe(e, n) {
             .join("")}</tr></thead>`
         : "",
     l = i.map(
-      (a) => `<tr>${a.map((u, h) => `<td${s(h)}>${g(u)}</td>`).join("")}</tr>`,
+      (a) => `<tr>${a.map((u, h) => `<td${s(h)}>${g(u)}</td>`).join("")}</tr>`
     ).join(`
 `);
   return `<table class="${t}table">
@@ -929,11 +933,11 @@ function Te(e) {
             .createHighlighter;
           if (!r) {
             console.warn(
-              "@create-markdown/preview: Shiki module loaded but createHighlighter not found",
+              "@create-markdown/preview: Shiki module loaded but createHighlighter not found"
             );
             return;
           }
-          ((M = r({
+          (M = r({
             themes: [n.theme, n.darkTheme].filter(Boolean),
             langs: [
               "javascript",
@@ -952,10 +956,10 @@ function Te(e) {
               ...n.langs,
             ],
           })),
-            (v = await M));
+            (v = await M);
         } catch {
           console.warn(
-            "@create-markdown/preview: Shiki not available. Install with: npm install shiki",
+            "@create-markdown/preview: Shiki not available. Install with: npm install shiki"
           );
         }
     },
@@ -1032,17 +1036,17 @@ function Ee(e) {
       if (!j)
         try {
           let t = await import("/mermaid@>=10.0.0?target=es2022");
-          ((B = t.default || t),
+          (B = t.default || t),
             B.initialize({
               startOnLoad: !1,
               theme: n.theme,
               securityLevel: "loose",
               ...n.config,
             }),
-            (j = !0));
+            (j = !0);
         } catch {
           console.warn(
-            "@create-markdown/preview: Mermaid not available. Install with: npm install mermaid",
+            "@create-markdown/preview: Mermaid not available. Install with: npm install mermaid"
           );
         }
     },
@@ -1065,7 +1069,7 @@ function Ee(e) {
           i = n.classPrefix,
           o = new RegExp(
             `<pre class="${i}mermaid" id="([^"]+)">([\\s\\S]*?)</pre>`,
-            "g",
+            "g"
           ),
           s = [...t.matchAll(o)];
         for (let c of s) {
@@ -1146,7 +1150,7 @@ var _ = class extends HTMLElement {
       return ["theme", "link-target", "async"];
     }
     constructor() {
-      (super(),
+      super(),
         (this.shadow = this.attachShadow({ mode: "open" })),
         (this.plugins = []),
         (this.defaultTheme = "github"),
@@ -1155,7 +1159,7 @@ var _ = class extends HTMLElement {
         (this.contentElement = document.createElement("div")),
         (this.contentElement.className = "markdown-preview-content"),
         this.shadow.appendChild(this.contentElement),
-        this.updateStyles());
+        this.updateStyles();
     }
     connectedCallback() {
       this.render();
@@ -1164,10 +1168,10 @@ var _ = class extends HTMLElement {
       this.render();
     }
     setPlugins(n) {
-      ((this.plugins = n), this.render());
+      (this.plugins = n), this.render();
     }
     setDefaultTheme(n) {
-      ((this.defaultTheme = n), this.render());
+      (this.defaultTheme = n), this.render();
     }
     getMarkdown() {
       let n = this.getAttribute("blocks");
@@ -1183,10 +1187,10 @@ var _ = class extends HTMLElement {
       return this.textContent || "";
     }
     setMarkdown(n) {
-      ((this.textContent = n), this.render());
+      (this.textContent = n), this.render();
     }
     setBlocks(n) {
-      (this.setAttribute("blocks", JSON.stringify(n)), this.render());
+      this.setAttribute("blocks", JSON.stringify(n)), this.render();
     }
     getOptions() {
       let n = this.getAttribute("theme") || this.defaultTheme,
@@ -1200,8 +1204,7 @@ var _ = class extends HTMLElement {
           return JSON.parse(n);
         } catch {
           return (
-            console.warn("Invalid blocks JSON in markdown-preview element"),
-            []
+            console.warn("Invalid blocks JSON in markdown-preview element"), []
           );
         }
       let t = this.textContent || "";
@@ -1213,12 +1216,12 @@ var _ = class extends HTMLElement {
         r = this.hasAttribute("async") || this.plugins.length > 0;
       try {
         let i;
-        (r ? (i = await me(n, t)) : (i = C(n, t)),
-          (this.contentElement.innerHTML = i));
+        r ? (i = await me(n, t)) : (i = C(n, t)),
+          (this.contentElement.innerHTML = i);
       } catch (i) {
-        (console.error("Error rendering markdown preview:", i),
+        console.error("Error rendering markdown preview:", i),
           (this.contentElement.innerHTML =
-            '<div class="error">Error rendering content</div>'));
+            '<div class="error">Error rendering content</div>');
       }
     }
     updateStyles() {
@@ -1256,7 +1259,7 @@ function Se(e) {
   if (((O = t), (q = r), !customElements.get(n))) {
     class i extends _ {
       constructor() {
-        (super(), this.setPlugins(O), this.setDefaultTheme(q));
+        super(), this.setPlugins(O), this.setDefaultTheme(q);
       }
     }
     customElements.define(n, i);

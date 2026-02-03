@@ -224,10 +224,7 @@ export class MemoryIndexManager implements MemorySearchManager {
       enabled: params.settings.cache.enabled,
       maxEntries: params.settings.cache.maxEntries,
     };
-    this.fts = {
-      enabled: params.settings.query.hybrid.enabled,
-      available: false,
-    };
+    this.fts = { enabled: params.settings.query.hybrid.enabled, available: false };
     this.ensureSchema();
     this.vector = {
       enabled: params.settings.store.vector.enabled,
@@ -490,10 +487,7 @@ export class MemoryIndexManager implements MemorySearchManager {
         .prepare(
           `SELECT source, COUNT(*) as c FROM files WHERE 1=1${sourceFilter.sql} GROUP BY source`,
         )
-        .all(...sourceFilter.params) as Array<{
-        source: MemorySource;
-        c: number;
-      }>;
+        .all(...sourceFilter.params) as Array<{ source: MemorySource; c: number }>;
       for (const row of fileRows) {
         const entry = bySource.get(row.source) ?? { files: 0, chunks: 0 };
         entry.files = row.c ?? 0;
@@ -503,10 +497,7 @@ export class MemoryIndexManager implements MemorySearchManager {
         .prepare(
           `SELECT source, COUNT(*) as c FROM chunks WHERE 1=1${sourceFilter.sql} GROUP BY source`,
         )
-        .all(...sourceFilter.params) as Array<{
-        source: MemorySource;
-        c: number;
-      }>;
+        .all(...sourceFilter.params) as Array<{ source: MemorySource; c: number }>;
       for (const row of chunkRows) {
         const entry = bySource.get(row.source) ?? { files: 0, chunks: 0 };
         entry.chunks = row.c ?? 0;
@@ -654,10 +645,7 @@ export class MemoryIndexManager implements MemorySearchManager {
       const resolvedPath = this.vector.extensionPath?.trim()
         ? resolveUserPath(this.vector.extensionPath)
         : undefined;
-      const loaded = await loadSqliteVecExtension({
-        db: this.db,
-        extensionPath: resolvedPath,
-      });
+      const loaded = await loadSqliteVecExtension({ db: this.db, extensionPath: resolvedPath });
       if (!loaded.ok) {
         throw new Error(loaded.error ?? "unknown sqlite-vec load error");
       }
@@ -698,10 +686,7 @@ export class MemoryIndexManager implements MemorySearchManager {
     }
   }
 
-  private buildSourceFilter(alias?: string): {
-    sql: string;
-    params: MemorySource[];
-  } {
+  private buildSourceFilter(alias?: string): { sql: string; params: MemorySource[] } {
     const sources = Array.from(this.sources);
     if (sources.length === 0) {
       return { sql: "", params: [] };
@@ -720,9 +705,7 @@ export class MemoryIndexManager implements MemorySearchManager {
     const dir = path.dirname(dbPath);
     ensureDir(dir);
     const { DatabaseSync } = requireNodeSqlite();
-    return new DatabaseSync(dbPath, {
-      allowExtension: this.settings.store.vector.enabled,
-    });
+    return new DatabaseSync(dbPath, { allowExtension: this.settings.store.vector.enabled });
   }
 
   private seedEmbeddingCache(sourceDb: DatabaseSync): void {
@@ -1213,10 +1196,7 @@ export class MemoryIndexManager implements MemorySearchManager {
         this.resetSessionDelta(absPath, entry.size);
         return;
       }
-      await this.indexFile(entry, {
-        source: "sessions",
-        content: entry.content,
-      });
+      await this.indexFile(entry, { source: "sessions", content: entry.content });
       this.resetSessionDelta(absPath, entry.size);
       if (params.progress) {
         params.progress.completed += 1;
@@ -1322,18 +1302,12 @@ export class MemoryIndexManager implements MemorySearchManager {
       const shouldSyncSessions = this.shouldSyncSessions(params, needsFullReindex);
 
       if (shouldSyncMemory) {
-        await this.syncMemoryFiles({
-          needsFullReindex,
-          progress: progress ?? undefined,
-        });
+        await this.syncMemoryFiles({ needsFullReindex, progress: progress ?? undefined });
         this.dirty = false;
       }
 
       if (shouldSyncSessions) {
-        await this.syncSessionFiles({
-          needsFullReindex,
-          progress: progress ?? undefined,
-        });
+        await this.syncSessionFiles({ needsFullReindex, progress: progress ?? undefined });
         this.sessionsDirty = false;
         this.sessionsDirtyFiles.clear();
       } else if (this.sessionsDirtyFiles.size > 0) {
@@ -1417,9 +1391,7 @@ export class MemoryIndexManager implements MemorySearchManager {
     this.gemini = fallbackResult.gemini;
     this.providerKey = this.computeProviderKey();
     this.batch = this.resolveBatchConfig();
-    log.warn(`memory embeddings: switched to fallback provider (${fallback})`, {
-      reason,
-    });
+    log.warn(`memory embeddings: switched to fallback provider (${fallback})`, { reason });
     return true;
   }
 
@@ -1477,18 +1449,12 @@ export class MemoryIndexManager implements MemorySearchManager {
       );
 
       if (shouldSyncMemory) {
-        await this.syncMemoryFiles({
-          needsFullReindex: true,
-          progress: params.progress,
-        });
+        await this.syncMemoryFiles({ needsFullReindex: true, progress: params.progress });
         this.dirty = false;
       }
 
       if (shouldSyncSessions) {
-        await this.syncSessionFiles({
-          needsFullReindex: true,
-          progress: params.progress,
-        });
+        await this.syncSessionFiles({ needsFullReindex: true, progress: params.progress });
         this.sessionsDirty = false;
         this.sessionsDirtyFiles.clear();
       } else if (this.sessionsDirtyFiles.size > 0) {
@@ -1745,10 +1711,7 @@ export class MemoryIndexManager implements MemorySearchManager {
           `SELECT hash, embedding FROM ${EMBEDDING_CACHE_TABLE}\n` +
             ` WHERE provider = ? AND model = ? AND provider_key = ? AND hash IN (${placeholders})`,
         )
-        .all(...baseParams, ...batch) as Array<{
-        hash: string;
-        embedding: string;
-      }>;
+        .all(...baseParams, ...batch) as Array<{ hash: string; embedding: string }>;
       for (const row of rows) {
         out.set(row.hash, parseEmbedding(row.embedding));
       }
@@ -1888,12 +1851,7 @@ export class MemoryIndexManager implements MemorySearchManager {
         }),
       );
     }
-    return hashText(
-      JSON.stringify({
-        provider: this.provider.id,
-        model: this.provider.model,
-      }),
-    );
+    return hashText(JSON.stringify({ provider: this.provider.id, model: this.provider.model }));
   }
 
   private async embedChunksWithBatch(
@@ -2121,10 +2079,7 @@ export class MemoryIndexManager implements MemorySearchManager {
 
   private async embedQueryWithTimeout(text: string): Promise<number[]> {
     const timeoutMs = this.resolveEmbeddingTimeout("query");
-    log.debug("memory embeddings: query start", {
-      provider: this.provider.id,
-      timeoutMs,
-    });
+    log.debug("memory embeddings: query start", { provider: this.provider.id, timeoutMs });
     return await this.withTimeout(
       this.provider.embedQuery(text),
       timeoutMs,

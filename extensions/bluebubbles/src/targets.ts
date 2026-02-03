@@ -14,19 +14,13 @@ export type BlueBubblesAllowTarget =
 
 const CHAT_ID_PREFIXES = ["chat_id:", "chatid:", "chat:"];
 const CHAT_GUID_PREFIXES = ["chat_guid:", "chatguid:", "guid:"];
-const CHAT_IDENTIFIER_PREFIXES = [
-  "chat_identifier:",
-  "chatidentifier:",
-  "chatident:",
+const CHAT_IDENTIFIER_PREFIXES = ["chat_identifier:", "chatidentifier:", "chatident:"];
+const SERVICE_PREFIXES: Array<{ prefix: string; service: BlueBubblesService }> = [
+  { prefix: "imessage:", service: "imessage" },
+  { prefix: "sms:", service: "sms" },
+  { prefix: "auto:", service: "auto" },
 ];
-const SERVICE_PREFIXES: Array<{ prefix: string; service: BlueBubblesService }> =
-  [
-    { prefix: "imessage:", service: "imessage" },
-    { prefix: "sms:", service: "sms" },
-    { prefix: "auto:", service: "auto" },
-  ];
-const CHAT_IDENTIFIER_UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const CHAT_IDENTIFIER_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const CHAT_IDENTIFIER_HEX_RE = /^[0-9a-f]{24,64}$/i;
 
 function parseRawChatGuid(value: string): string | null {
@@ -73,10 +67,7 @@ function looksLikeRawChatIdentifier(value: string): boolean {
   if (/^chat\d+$/i.test(trimmed)) {
     return true;
   }
-  return (
-    CHAT_IDENTIFIER_UUID_RE.test(trimmed) ||
-    CHAT_IDENTIFIER_HEX_RE.test(trimmed)
-  );
+  return CHAT_IDENTIFIER_UUID_RE.test(trimmed) || CHAT_IDENTIFIER_HEX_RE.test(trimmed);
 }
 
 export function normalizeBlueBubblesHandle(raw: string): string {
@@ -117,9 +108,7 @@ export function extractHandleFromChatGuid(chatGuid: string): string | null {
   return null;
 }
 
-export function normalizeBlueBubblesMessagingTarget(
-  raw: string,
-): string | undefined {
+export function normalizeBlueBubblesMessagingTarget(raw: string): string | undefined {
   let trimmed = raw.trim();
   if (!trimmed) {
     return undefined;
@@ -156,10 +145,7 @@ export function normalizeBlueBubblesMessagingTarget(
   }
 }
 
-export function looksLikeBlueBubblesTargetId(
-  raw: string,
-  normalized?: string,
-): boolean {
+export function looksLikeBlueBubblesTargetId(raw: string, normalized?: string): boolean {
   const trimmed = raw.trim();
   if (!trimmed) {
     return false;
@@ -300,9 +286,7 @@ export function parseBlueBubblesTarget(raw: string): BlueBubblesTarget {
   return { kind: "handle", to: trimmed, service: "auto" };
 }
 
-export function parseBlueBubblesAllowTarget(
-  raw: string,
-): BlueBubblesAllowTarget {
+export function parseBlueBubblesAllowTarget(raw: string): BlueBubblesAllowTarget {
   const trimmed = raw.trim();
   if (!trimmed) {
     return { kind: "handle", handle: "" };

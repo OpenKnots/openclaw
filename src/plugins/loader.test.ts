@@ -9,11 +9,7 @@ type TempPlugin = { dir: string; file: string; id: string };
 
 const tempDirs: string[] = [];
 const prevBundledDir = process.env.OPENCLAW_BUNDLED_PLUGINS_DIR;
-const EMPTY_PLUGIN_SCHEMA = {
-  type: "object",
-  additionalProperties: false,
-  properties: {},
-};
+const EMPTY_PLUGIN_SCHEMA = { type: "object", additionalProperties: false, properties: {} };
 
 function makeTempDir() {
   const dir = path.join(os.tmpdir(), `openclaw-plugin-${randomUUID()}`);

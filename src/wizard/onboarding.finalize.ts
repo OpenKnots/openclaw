@@ -152,10 +152,7 @@ export async function finalizeOnboardingWizard(
           { doneMessage: "Gateway service uninstalled." },
           async (progress) => {
             progress.update("Uninstalling Gateway service…");
-            await service.uninstall({
-              env: process.env,
-              stdout: process.stdout,
-            });
+            await service.uninstall({ env: process.env, stdout: process.stdout });
           },
         );
       }

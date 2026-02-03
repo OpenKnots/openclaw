@@ -30,10 +30,7 @@ describe("resolveNpmChannelTag", () => {
     versionByTag.beta = "1.0.0-beta.1";
     versionByTag.latest = "1.0.1-1";
 
-    const resolved = await resolveNpmChannelTag({
-      channel: "beta",
-      timeoutMs: 1000,
-    });
+    const resolved = await resolveNpmChannelTag({ channel: "beta", timeoutMs: 1000 });
 
     expect(resolved).toEqual({ tag: "latest", version: "1.0.1-1" });
   });
@@ -42,10 +39,7 @@ describe("resolveNpmChannelTag", () => {
     versionByTag.beta = "1.0.2-beta.1";
     versionByTag.latest = "1.0.1-1";
 
-    const resolved = await resolveNpmChannelTag({
-      channel: "beta",
-      timeoutMs: 1000,
-    });
+    const resolved = await resolveNpmChannelTag({ channel: "beta", timeoutMs: 1000 });
 
     expect(resolved).toEqual({ tag: "beta", version: "1.0.2-beta.1" });
   });

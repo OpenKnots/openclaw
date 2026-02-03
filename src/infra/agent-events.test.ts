@@ -50,11 +50,7 @@ describe("agent-events sequencing", () => {
       }
     });
 
-    emitAgentEvent({
-      runId: "run-1",
-      stream: "compaction",
-      data: { phase: "start" },
-    });
+    emitAgentEvent({ runId: "run-1", stream: "compaction", data: { phase: "start" } });
     emitAgentEvent({
       runId: "run-1",
       stream: "compaction",

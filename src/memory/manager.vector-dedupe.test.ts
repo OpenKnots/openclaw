@@ -80,9 +80,7 @@ describe("memory vector dedupe", () => {
     };
 
     (
-      manager as unknown as {
-        ensureVectorReady: (dims?: number) => Promise<boolean>;
-      }
+      manager as unknown as { ensureVectorReady: (dims?: number) => Promise<boolean> }
     ).ensureVectorReady = async () => true;
 
     const entry = await buildFileEntry(path.join(workspaceDir, "MEMORY.md"), workspaceDir);

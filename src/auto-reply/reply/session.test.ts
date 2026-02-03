@@ -317,11 +317,7 @@ describe("initSessionState reset policy", () => {
         },
       } as OpenClawConfig;
       const result = await initSessionState({
-        ctx: {
-          Body: "reply",
-          SessionKey: sessionKey,
-          ThreadLabel: "Slack thread",
-        },
+        ctx: { Body: "reply", SessionKey: sessionKey, ThreadLabel: "Slack thread" },
         cfg,
         commandAuthorized: true,
       });
@@ -356,11 +352,7 @@ describe("initSessionState reset policy", () => {
         },
       } as OpenClawConfig;
       const result = await initSessionState({
-        ctx: {
-          Body: "reply",
-          SessionKey: sessionKey,
-          ThreadLabel: "Discord thread",
-        },
+        ctx: { Body: "reply", SessionKey: sessionKey, ThreadLabel: "Discord thread" },
         cfg,
         commandAuthorized: true,
       });

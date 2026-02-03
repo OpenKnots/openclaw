@@ -47,9 +47,7 @@ export async function loadChatHistory(state: ChatState) {
   }
 }
 
-function dataUrlToBase64(
-  dataUrl: string,
-): { content: string; mimeType: string } | null {
+function dataUrlToBase64(dataUrl: string): { content: string; mimeType: string } | null {
   const match = /^data:([^;]+);base64,(.+)$/.exec(dataUrl);
   if (!match) {
     return null;
@@ -74,11 +72,7 @@ export async function sendChatMessage(
   const now = Date.now();
 
   // Build user message content blocks
-  const contentBlocks: Array<{
-    type: string;
-    text?: string;
-    source?: unknown;
-  }> = [];
+  const contentBlocks: Array<{ type: string; text?: string; source?: unknown }> = [];
   if (msg) {
     contentBlocks.push({ type: "text", text: msg });
   }
@@ -162,9 +156,7 @@ export async function abortChatRun(state: ChatState): Promise<boolean> {
   try {
     await state.client.request(
       "chat.abort",
-      runId
-        ? { sessionKey: state.sessionKey, runId }
-        : { sessionKey: state.sessionKey },
+      runId ? { sessionKey: state.sessionKey, runId } : { sessionKey: state.sessionKey },
     );
     return true;
   } catch (err) {

@@ -3,11 +3,7 @@
  * Combines vector similarity with keyword boosting for improved relevance.
  */
 import { Embeddings } from "./embeddings.js";
-import {
-  DocsStore,
-  type DocsChunk,
-  type SearchResult,
-} from "./store-upstash.js";
+import { DocsStore, type DocsChunk, type SearchResult } from "./store-upstash.js";
 
 export interface RetrievalResult {
   chunk: Omit<DocsChunk, "vector">;

@@ -4,9 +4,7 @@ export function formatModelName(modelString?: string | null): string {
   if (!modelString) {
     return "AI";
   }
-  const modelName = modelString.includes("/")
-    ? modelString.split("/")[1]
-    : modelString;
+  const modelName = modelString.includes("/") ? modelString.split("/")[1] : modelString;
   const modelMappings: Record<string, string> = {
     "claude-opus-4-5": "Claude Opus 4.5",
     "claude-sonnet-4-5": "Claude Sonnet 4.5",
@@ -28,10 +26,7 @@ export function formatModelName(modelString?: string | null): string {
     .join(" ");
 }
 
-export function isBotMentioned(
-  messageText: string,
-  botShipName: string,
-): boolean {
+export function isBotMentioned(messageText: string, botShipName: string): boolean {
   if (!messageText || !botShipName) {
     return false;
   }
@@ -41,17 +36,12 @@ export function isBotMentioned(
   return mentionPattern.test(messageText);
 }
 
-export function isDmAllowed(
-  senderShip: string,
-  allowlist: string[] | undefined,
-): boolean {
+export function isDmAllowed(senderShip: string, allowlist: string[] | undefined): boolean {
   if (!allowlist || allowlist.length === 0) {
     return true;
   }
   const normalizedSender = normalizeShip(senderShip);
-  return allowlist
-    .map((ship) => normalizeShip(ship))
-    .some((ship) => ship === normalizedSender);
+  return allowlist.map((ship) => normalizeShip(ship)).some((ship) => ship === normalizedSender);
 }
 
 export function extractMessageText(content: unknown): string {

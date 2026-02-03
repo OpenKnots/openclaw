@@ -29,10 +29,7 @@ function resolveToken(params: {
 
   // Check account-level config first
   if (accountConfig?.channelAccessToken?.trim()) {
-    return {
-      token: accountConfig.channelAccessToken.trim(),
-      tokenSource: "config",
-    };
+    return { token: accountConfig.channelAccessToken.trim(), tokenSource: "config" };
   }
 
   // Check account-level token file
@@ -44,10 +41,7 @@ function resolveToken(params: {
   // For default account, check base config and env
   if (accountId === DEFAULT_ACCOUNT_ID) {
     if (baseConfig?.channelAccessToken?.trim()) {
-      return {
-        token: baseConfig.channelAccessToken.trim(),
-        tokenSource: "config",
-      };
+      return { token: baseConfig.channelAccessToken.trim(), tokenSource: "config" };
     }
 
     const baseFileToken = readFileIfExists(baseConfig?.tokenFile);

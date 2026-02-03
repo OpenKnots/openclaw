@@ -259,9 +259,7 @@ describe("legacy config detection", () => {
     expect(res.changes).not.toContain("Migrated gateway.bind from 'tailnet' to 'auto'.");
     expect(res.config).toBeNull();
 
-    const validated = validateConfigObject({
-      gateway: { bind: "tailnet" as const },
-    });
+    const validated = validateConfigObject({ gateway: { bind: "tailnet" as const } });
     expect(validated.ok).toBe(true);
     if (validated.ok) {
       expect(validated.config.gateway?.bind).toBe("tailnet");

@@ -15,16 +15,10 @@ export async function startBrowserControlServerIfEnabled(): Promise<BrowserContr
   const start =
     typeof (mod as { startBrowserControlServiceFromConfig?: unknown })
       .startBrowserControlServiceFromConfig === "function"
-      ? (
-          mod as {
-            startBrowserControlServiceFromConfig: () => Promise<unknown>;
-          }
-        ).startBrowserControlServiceFromConfig
-      : (
-          mod as {
-            startBrowserControlServerFromConfig?: () => Promise<unknown>;
-          }
-        ).startBrowserControlServerFromConfig;
+      ? (mod as { startBrowserControlServiceFromConfig: () => Promise<unknown> })
+          .startBrowserControlServiceFromConfig
+      : (mod as { startBrowserControlServerFromConfig?: () => Promise<unknown> })
+          .startBrowserControlServerFromConfig;
   const stop =
     typeof (mod as { stopBrowserControlService?: unknown }).stopBrowserControlService === "function"
       ? (mod as { stopBrowserControlService: () => Promise<void> }).stopBrowserControlService

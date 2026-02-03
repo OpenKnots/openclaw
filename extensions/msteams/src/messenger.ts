@@ -10,22 +10,14 @@ import {
 import type { MSTeamsAccessTokenProvider } from "./attachments/types.js";
 import type { StoredConversationReference } from "./conversation-store.js";
 import { classifyMSTeamsSendError } from "./errors.js";
-import {
-  prepareFileConsentActivity,
-  requiresFileConsent,
-} from "./file-consent-helpers.js";
+import { prepareFileConsentActivity, requiresFileConsent } from "./file-consent-helpers.js";
 import { buildTeamsFileInfoCard } from "./graph-chat.js";
 import {
   getDriveItemProperties,
   uploadAndShareOneDrive,
   uploadAndShareSharePoint,
 } from "./graph-upload.js";
-import {
-  extractFilename,
-  extractMessageId,
-  getMimeType,
-  isLocalPath,
-} from "./media-helpers.js";
+import { extractFilename, extractMessageId, getMimeType, isLocalPath } from "./media-helpers.js";
 import { getMSTeamsRuntime } from "./runtime.js";
 
 /**
@@ -210,12 +202,8 @@ function computeRetryDelayMs(
   return clampMs(exponential, opts.maxDelayMs);
 }
 
-function shouldRetry(
-  classification: ReturnType<typeof classifyMSTeamsSendError>,
-): boolean {
-  return (
-    classification.kind === "throttled" || classification.kind === "transient"
-  );
+function shouldRetry(classification: ReturnType<typeof classifyMSTeamsSendError>): boolean {
+  return classification.kind === "throttled" || classification.kind === "transient";
 }
 
 export function renderReplyPayloadsToMessages(
@@ -235,8 +223,7 @@ export function renderReplyPayloadsToMessages(
     });
 
   for (const payload of replies) {
-    const mediaList =
-      payload.mediaUrls ?? (payload.mediaUrl ? [payload.mediaUrl] : []);
+    const mediaList = payload.mediaUrls ?? (payload.mediaUrl ? [payload.mediaUrl] : []);
     const text = getMSTeamsRuntime().channel.text.convertMarkdownTables(
       payload.text ?? "",
       tableMode,
@@ -307,8 +294,7 @@ async function buildActivity(
 
       // Determine conversation type and file type
       // Teams only accepts base64 data URLs for images
-      const conversationType =
-        conversationRef.conversation?.conversationType?.toLowerCase();
+      const conversationType = conversationRef.conversation?.conversationType?.toLowerCase();
       const isPersonal = conversationType === "personal";
       const isImage = contentType?.startsWith("image/") ?? false;
 
@@ -433,17 +419,12 @@ export async function sendMSTeamsMessages(params: {
         return await sendOnce();
       } catch (err) {
         const classification = classifyMSTeamsSendError(err);
-        const canRetry =
-          attempt < retryOptions.maxAttempts && shouldRetry(classification);
+        const canRetry = attempt < retryOptions.maxAttempts && shouldRetry(classification);
         if (!canRetry) {
           throw err;
         }
 
-        const delayMs = computeRetryDelayMs(
-          attempt,
-          classification,
-          retryOptions,
-        );
+        const delayMs = computeRetryDelayMs(attempt, classification, retryOptions);
         const nextAttempt = attempt + 1;
         params.onRetry?.({
           messageIndex: meta.messageIndex,
@@ -492,27 +473,23 @@ export async function sendMSTeamsMessages(params: {
   };
 
   const messageIds: string[] = [];
-  await params.adapter.continueConversation(
-    params.appId,
-    proactiveRef,
-    async (ctx) => {
-      for (const [idx, message] of messages.entries()) {
-        const response = await sendWithRetry(
-          async () =>
-            await ctx.sendActivity(
-              await buildActivity(
-                message,
-                params.conversationRef,
-                params.tokenProvider,
-                params.sharePointSiteId,
-                params.mediaMaxBytes,
-              ),
+  await params.adapter.continueConversation(params.appId, proactiveRef, async (ctx) => {
+    for (const [idx, message] of messages.entries()) {
+      const response = await sendWithRetry(
+        async () =>
+          await ctx.sendActivity(
+            await buildActivity(
+              message,
+              params.conversationRef,
+              params.tokenProvider,
+              params.sharePointSiteId,
+              params.mediaMaxBytes,
             ),
-          { messageIndex: idx, messageCount: messages.length },
-        );
-        messageIds.push(extractMessageId(response) ?? "unknown");
-      }
-    },
-  );
+          ),
+        { messageIndex: idx, messageCount: messages.length },
+      );
+      messageIds.push(extractMessageId(response) ?? "unknown");
+    }
+  });
   return messageIds;
 }

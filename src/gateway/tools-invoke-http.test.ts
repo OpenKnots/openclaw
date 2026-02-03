@@ -45,16 +45,8 @@ describe("POST /tools/invoke", () => {
 
     const res = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        tool: "agents_list",
-        action: "json",
-        args: {},
-        sessionKey: "main",
-      }),
+      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+      body: JSON.stringify({ tool: "agents_list", action: "json", args: {}, sessionKey: "main" }),
     });
 
     expect(res.status).toBe(200);
@@ -85,16 +77,8 @@ describe("POST /tools/invoke", () => {
 
     const res = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        tool: "agents_list",
-        action: "json",
-        args: {},
-        sessionKey: "main",
-      }),
+      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+      body: JSON.stringify({ tool: "agents_list", action: "json", args: {}, sessionKey: "main" }),
     });
 
     expect(res.status).toBe(200);
@@ -124,16 +108,8 @@ describe("POST /tools/invoke", () => {
 
     const res = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        tool: "agents_list",
-        action: "json",
-        args: {},
-        sessionKey: "main",
-      }),
+      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+      body: JSON.stringify({ tool: "agents_list", action: "json", args: {}, sessionKey: "main" }),
     });
 
     expect(res.status).toBe(200);
@@ -168,12 +144,7 @@ describe("POST /tools/invoke", () => {
         "content-type": "application/json",
         authorization: "Bearer secret",
       },
-      body: JSON.stringify({
-        tool: "agents_list",
-        action: "json",
-        args: {},
-        sessionKey: "main",
-      }),
+      body: JSON.stringify({ tool: "agents_list", action: "json", args: {}, sessionKey: "main" }),
     });
 
     expect(res.status).toBe(200);
@@ -218,10 +189,7 @@ describe("POST /tools/invoke", () => {
       const token = resolveGatewayToken();
       const res = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
+        headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
         body: JSON.stringify({
           tool: "agents_list",
           action: "json",
@@ -260,12 +228,7 @@ describe("POST /tools/invoke", () => {
     const res = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        tool: "agents_list",
-        action: "json",
-        args: {},
-        sessionKey: "main",
-      }),
+      body: JSON.stringify({ tool: "agents_list", action: "json", args: {}, sessionKey: "main" }),
     });
 
     expect(res.status).toBe(401);
@@ -292,16 +255,8 @@ describe("POST /tools/invoke", () => {
 
     const res = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        tool: "agents_list",
-        action: "json",
-        args: {},
-        sessionKey: "main",
-      }),
+      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+      body: JSON.stringify({ tool: "agents_list", action: "json", args: {}, sessionKey: "main" }),
     });
 
     expect(res.status).toBe(404);
@@ -334,16 +289,8 @@ describe("POST /tools/invoke", () => {
 
     const res = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        tool: "agents_list",
-        action: "json",
-        args: {},
-        sessionKey: "main",
-      }),
+      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+      body: JSON.stringify({ tool: "agents_list", action: "json", args: {}, sessionKey: "main" }),
     });
 
     expect(res.status).toBe(404);
@@ -380,20 +327,14 @@ describe("POST /tools/invoke", () => {
 
     const resDefault = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
+      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
       body: JSON.stringify(payload),
     });
     expect(resDefault.status).toBe(200);
 
     const resMain = await fetch(`http://127.0.0.1:${port}/tools/invoke`, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${token}`,
-      },
+      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
       body: JSON.stringify({ ...payload, sessionKey: "main" }),
     });
     expect(resMain.status).toBe(200);

@@ -189,11 +189,7 @@ function normalizeSessionEntry(entry: SessionEntryLike): SessionEntry | null {
     typeof entry.updatedAt === "number" && Number.isFinite(entry.updatedAt)
       ? entry.updatedAt
       : Date.now();
-  const normalized = {
-    ...(entry as unknown as SessionEntry),
-    sessionId,
-    updatedAt,
-  };
+  const normalized = { ...(entry as unknown as SessionEntry), sessionId, updatedAt };
   const rec = normalized as unknown as Record<string, unknown>;
   if (typeof rec.groupChannel !== "string" && typeof rec.room === "string") {
     rec.groupChannel = rec.room;
@@ -254,10 +250,7 @@ function canonicalizeSessionStore(params: {
     const existing = canonical[canonicalKey];
     if (!existing) {
       canonical[canonicalKey] = entry;
-      meta.set(canonicalKey, {
-        isCanonical,
-        updatedAt: resolveUpdatedAt(entry),
-      });
+      meta.set(canonicalKey, { isCanonical, updatedAt: resolveUpdatedAt(entry) });
       continue;
     }
 
@@ -635,9 +628,7 @@ async function migrateLegacySessions(
     scope: detected.targetScope,
   });
 
-  const merged: Record<string, SessionEntryLike> = {
-    ...canonicalizedTarget.store,
-  };
+  const merged: Record<string, SessionEntryLike> = { ...canonicalizedTarget.store };
   for (const [key, entry] of Object.entries(canonicalizedLegacy.store)) {
     merged[key] = mergeSessionEntry({
       existing: merged[key],

@@ -19,9 +19,7 @@ vi.mock("./reactions.js", () => ({
 }));
 
 vi.mock("./send.js", () => ({
-  resolveChatGuidForTarget: vi
-    .fn()
-    .mockResolvedValue("iMessage;-;+15551234567"),
+  resolveChatGuidForTarget: vi.fn().mockResolvedValue("iMessage;-;+15551234567"),
   sendMessageBlueBubbles: vi.fn().mockResolvedValue({ messageId: "msg-123" }),
 }));
 
@@ -36,9 +34,7 @@ vi.mock("./chat.js", () => ({
 }));
 
 vi.mock("./attachments.js", () => ({
-  sendBlueBubblesAttachment: vi
-    .fn()
-    .mockResolvedValue({ messageId: "att-msg-123" }),
+  sendBlueBubblesAttachment: vi.fn().mockResolvedValue({ messageId: "att-msg-123" }),
 }));
 
 vi.mock("./monitor.js", () => ({
@@ -102,53 +98,25 @@ describe("bluebubblesMessageActions", () => {
 
   describe("supportsAction", () => {
     it("returns true for react action", () => {
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "react" }),
-      ).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "react" })).toBe(true);
     });
 
     it("returns true for all supported actions", () => {
-      expect(bluebubblesMessageActions.supportsAction({ action: "edit" })).toBe(
-        true,
-      );
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "unsend" }),
-      ).toBe(true);
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "reply" }),
-      ).toBe(true);
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "sendWithEffect" }),
-      ).toBe(true);
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "renameGroup" }),
-      ).toBe(true);
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "setGroupIcon" }),
-      ).toBe(true);
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "addParticipant" }),
-      ).toBe(true);
-      expect(
-        bluebubblesMessageActions.supportsAction({
-          action: "removeParticipant",
-        }),
-      ).toBe(true);
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "leaveGroup" }),
-      ).toBe(true);
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "sendAttachment" }),
-      ).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "edit" })).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "unsend" })).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "reply" })).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "sendWithEffect" })).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "renameGroup" })).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "setGroupIcon" })).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "addParticipant" })).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "removeParticipant" })).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "leaveGroup" })).toBe(true);
+      expect(bluebubblesMessageActions.supportsAction({ action: "sendAttachment" })).toBe(true);
     });
 
     it("returns false for unsupported actions", () => {
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "delete" }),
-      ).toBe(false);
-      expect(
-        bluebubblesMessageActions.supportsAction({ action: "unknown" }),
-      ).toBe(false);
+      expect(bluebubblesMessageActions.supportsAction({ action: "delete" })).toBe(false);
+      expect(bluebubblesMessageActions.supportsAction({ action: "unknown" })).toBe(false);
     });
   });
 
@@ -334,9 +302,7 @@ describe("bluebubblesMessageActions", () => {
     it("resolves chatGuid from to parameter", async () => {
       const { sendBlueBubblesReaction } = await import("./reactions.js");
       const { resolveChatGuidForTarget } = await import("./send.js");
-      vi.mocked(resolveChatGuidForTarget).mockResolvedValueOnce(
-        "iMessage;-;+15559876543",
-      );
+      vi.mocked(resolveChatGuidForTarget).mockResolvedValueOnce("iMessage;-;+15559876543");
 
       const cfg: OpenClawConfig = {
         channels: {
@@ -398,9 +364,7 @@ describe("bluebubblesMessageActions", () => {
     it("uses toolContext currentChannelId when no explicit target is provided", async () => {
       const { sendBlueBubblesReaction } = await import("./reactions.js");
       const { resolveChatGuidForTarget } = await import("./send.js");
-      vi.mocked(resolveChatGuidForTarget).mockResolvedValueOnce(
-        "iMessage;-;+15550001111",
-      );
+      vi.mocked(resolveChatGuidForTarget).mockResolvedValueOnce("iMessage;-;+15550001111");
 
       const cfg: OpenClawConfig = {
         channels: {
@@ -438,9 +402,7 @@ describe("bluebubblesMessageActions", () => {
     it("resolves short messageId before reacting", async () => {
       const { resolveBlueBubblesMessageId } = await import("./monitor.js");
       const { sendBlueBubblesReaction } = await import("./reactions.js");
-      vi.mocked(resolveBlueBubblesMessageId).mockReturnValueOnce(
-        "resolved-uuid",
-      );
+      vi.mocked(resolveBlueBubblesMessageId).mockReturnValueOnce("resolved-uuid");
 
       const cfg: OpenClawConfig = {
         channels: {
@@ -462,9 +424,7 @@ describe("bluebubblesMessageActions", () => {
         accountId: null,
       });
 
-      expect(resolveBlueBubblesMessageId).toHaveBeenCalledWith("1", {
-        requireKnownShortId: true,
-      });
+      expect(resolveBlueBubblesMessageId).toHaveBeenCalledWith("1", { requireKnownShortId: true });
       expect(sendBlueBubblesReaction).toHaveBeenCalledWith(
         expect.objectContaining({
           messageGuid: "resolved-uuid",

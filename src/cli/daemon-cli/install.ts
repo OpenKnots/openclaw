@@ -37,11 +37,7 @@ export async function runDaemonInstall(opts: DaemonInstallOptions) {
   };
   const fail = (message: string) => {
     if (json) {
-      emit({
-        ok: false,
-        error: message,
-        warnings: warnings.length ? warnings : undefined,
-      });
+      emit({ ok: false, error: message, warnings: warnings.length ? warnings : undefined });
     } else {
       defaultRuntime.error(message);
     }

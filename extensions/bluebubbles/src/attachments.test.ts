@@ -1,9 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import type { BlueBubblesAttachment } from "./types.js";
-import {
-  downloadBlueBubblesAttachment,
-  sendBlueBubblesAttachment,
-} from "./attachments.js";
+import { downloadBlueBubblesAttachment, sendBlueBubblesAttachment } from "./attachments.js";
 
 vi.mock("./accounts.js", () => ({
   resolveBlueBubblesAccount: vi.fn(({ cfg, accountId }) => {
@@ -113,9 +110,7 @@ describe("downloadBlueBubblesAttachment", () => {
       arrayBuffer: () => Promise.resolve(mockBuffer.buffer),
     });
 
-    const attachment: BlueBubblesAttachment = {
-      guid: "att/with/special chars",
-    };
+    const attachment: BlueBubblesAttachment = { guid: "att/with/special chars" };
     await downloadBlueBubblesAttachment(attachment, {
       serverUrl: "http://localhost:1234",
       password: "test",

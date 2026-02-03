@@ -52,9 +52,7 @@ describe("getMemorySearchManager caching", () => {
   it("reuses the same QMD manager instance for repeated calls", async () => {
     const cfg = {
       memory: { backend: "qmd", qmd: {} },
-      agents: {
-        list: [{ id: "main", default: true, workspace: "/tmp/workspace" }],
-      },
+      agents: { list: [{ id: "main", default: true, workspace: "/tmp/workspace" }] },
     } as const;
 
     const first = await getMemorySearchManager({ cfg, agentId: "main" });

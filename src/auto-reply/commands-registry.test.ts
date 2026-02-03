@@ -181,21 +181,12 @@ describe("commands registry args", () => {
       args: [
         { name: "action", description: "action", type: "string" },
         { name: "path", description: "path", type: "string" },
-        {
-          name: "value",
-          description: "value",
-          type: "string",
-          captureRemaining: true,
-        },
+        { name: "value", description: "value", type: "string", captureRemaining: true },
       ],
     };
 
     const args = parseCommandArgs(command, "set foo bar baz");
-    expect(args?.values).toEqual({
-      action: "set",
-      path: "foo",
-      value: "bar baz",
-    });
+    expect(args?.values).toEqual({ action: "set", path: "foo", value: "bar baz" });
   });
 
   it("serializes args via raw first, then values", () => {
@@ -205,14 +196,7 @@ describe("commands registry args", () => {
       textAliases: [],
       scope: "both",
       argsParsing: "positional",
-      args: [
-        {
-          name: "model",
-          description: "model",
-          type: "string",
-          captureRemaining: true,
-        },
-      ],
+      args: [{ name: "model", description: "model", type: "string", captureRemaining: true }],
     };
 
     expect(serializeCommandArgs(command, { raw: "gpt-5.2-codex" })).toBe("gpt-5.2-codex");
@@ -242,11 +226,7 @@ describe("commands registry args", () => {
       ],
     };
 
-    const menu = resolveCommandArgMenu({
-      command,
-      args: undefined,
-      cfg: {} as never,
-    });
+    const menu = resolveCommandArgMenu({ command, args: undefined, cfg: {} as never });
     expect(menu?.arg.name).toBe("mode");
     expect(menu?.choices).toEqual([
       { label: "off", value: "off" },
@@ -283,12 +263,8 @@ describe("commands registry args", () => {
   });
 
   it("resolves function-based choices with a default provider/model context", () => {
-    let seen: {
-      provider: string;
-      model: string;
-      commandKey: string;
-      argName: string;
-    } | null = null;
+    let seen: { provider: string; model: string; commandKey: string; argName: string } | null =
+      null;
 
     const command: ChatCommandDefinition = {
       key: "think",
@@ -303,23 +279,14 @@ describe("commands registry args", () => {
           description: "level",
           type: "string",
           choices: ({ provider, model, command, arg }) => {
-            seen = {
-              provider,
-              model,
-              commandKey: command.key,
-              argName: arg.name,
-            };
+            seen = { provider, model, commandKey: command.key, argName: arg.name };
             return ["low", "high"];
           },
         },
       ],
     };
 
-    const menu = resolveCommandArgMenu({
-      command,
-      args: undefined,
-      cfg: {} as never,
-    });
+    const menu = resolveCommandArgMenu({ command, args: undefined, cfg: {} as never });
     expect(menu?.arg.name).toBe("level");
     expect(menu?.choices).toEqual([
       { label: "low", value: "low" },

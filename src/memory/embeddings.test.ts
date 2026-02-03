@@ -179,11 +179,7 @@ describe("embedding provider auto selection", () => {
     const authModule = await import("../agents/model-auth.js");
     vi.mocked(authModule.resolveApiKeyForProvider).mockImplementation(async ({ provider }) => {
       if (provider === "openai") {
-        return {
-          apiKey: "openai-key",
-          source: "env: OPENAI_API_KEY",
-          mode: "api-key",
-        };
+        return { apiKey: "openai-key", source: "env: OPENAI_API_KEY", mode: "api-key" };
       }
       throw new Error(`No API key found for provider "${provider}".`);
     });
@@ -214,11 +210,7 @@ describe("embedding provider auto selection", () => {
         throw new Error('No API key found for provider "openai".');
       }
       if (provider === "google") {
-        return {
-          apiKey: "gemini-key",
-          source: "env: GEMINI_API_KEY",
-          mode: "api-key",
-        };
+        return { apiKey: "gemini-key", source: "env: GEMINI_API_KEY", mode: "api-key" };
       }
       throw new Error(`Unexpected provider ${provider}`);
     });
@@ -251,11 +243,7 @@ describe("embedding provider auto selection", () => {
     const authModule = await import("../agents/model-auth.js");
     vi.mocked(authModule.resolveApiKeyForProvider).mockImplementation(async ({ provider }) => {
       if (provider === "openai") {
-        return {
-          apiKey: "openai-key",
-          source: "env: OPENAI_API_KEY",
-          mode: "api-key",
-        };
+        return { apiKey: "openai-key", source: "env: OPENAI_API_KEY", mode: "api-key" };
       }
       throw new Error(`Unexpected provider ${provider}`);
     });
@@ -272,9 +260,7 @@ describe("embedding provider auto selection", () => {
     await result.provider.embedQuery("hello");
     const [url, init] = fetchMock.mock.calls[0] ?? [];
     expect(url).toBe("https://api.openai.com/v1/embeddings");
-    const payload = JSON.parse(String(init?.body ?? "{}")) as {
-      model?: string;
-    };
+    const payload = JSON.parse(String(init?.body ?? "{}")) as { model?: string };
     expect(payload.model).toBe("text-embedding-3-small");
   });
 });
@@ -466,15 +452,9 @@ describe("local embedding normalization", () => {
             createEmbeddingContext: vi.fn().mockResolvedValue({
               getEmbeddingFor: vi
                 .fn()
-                .mockResolvedValueOnce({
-                  vector: new Float32Array(unnormalizedVectors[0]),
-                })
-                .mockResolvedValueOnce({
-                  vector: new Float32Array(unnormalizedVectors[1]),
-                })
-                .mockResolvedValueOnce({
-                  vector: new Float32Array(unnormalizedVectors[2]),
-                }),
+                .mockResolvedValueOnce({ vector: new Float32Array(unnormalizedVectors[0]) })
+                .mockResolvedValueOnce({ vector: new Float32Array(unnormalizedVectors[1]) })
+                .mockResolvedValueOnce({ vector: new Float32Array(unnormalizedVectors[2]) }),
             }),
           }),
         }),

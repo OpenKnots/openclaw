@@ -31,9 +31,7 @@ describe("browser chrome profile decoration", () => {
   it("writes expected name + signed ARGB seed to Chrome prefs", async () => {
     const userDataDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openclaw-chrome-test-"));
     try {
-      decorateOpenClawProfile(userDataDir, {
-        color: DEFAULT_OPENCLAW_BROWSER_COLOR,
-      });
+      decorateOpenClawProfile(userDataDir, { color: DEFAULT_OPENCLAW_BROWSER_COLOR });
 
       const expectedSignedArgb = ((0xff << 24) | 0xff4500) >> 0;
 
@@ -95,9 +93,7 @@ describe("browser chrome profile decoration", () => {
         "utf-8",
       );
 
-      decorateOpenClawProfile(userDataDir, {
-        color: DEFAULT_OPENCLAW_BROWSER_COLOR,
-      });
+      decorateOpenClawProfile(userDataDir, { color: DEFAULT_OPENCLAW_BROWSER_COLOR });
 
       const localState = await readJson(path.join(userDataDir, "Local State"));
       expect(typeof localState.profile).toBe("object");
@@ -124,12 +120,8 @@ describe("browser chrome profile decoration", () => {
   it("is idempotent when rerun on an existing profile", async () => {
     const userDataDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openclaw-chrome-test-"));
     try {
-      decorateOpenClawProfile(userDataDir, {
-        color: DEFAULT_OPENCLAW_BROWSER_COLOR,
-      });
-      decorateOpenClawProfile(userDataDir, {
-        color: DEFAULT_OPENCLAW_BROWSER_COLOR,
-      });
+      decorateOpenClawProfile(userDataDir, { color: DEFAULT_OPENCLAW_BROWSER_COLOR });
+      decorateOpenClawProfile(userDataDir, { color: DEFAULT_OPENCLAW_BROWSER_COLOR });
 
       const prefs = await readJson(path.join(userDataDir, "Default", "Preferences"));
       const profile = prefs.profile as Record<string, unknown>;

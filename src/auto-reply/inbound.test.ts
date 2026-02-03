@@ -103,20 +103,12 @@ describe("finalizeInboundContext", () => {
 
 describe("formatInboundBodyWithSenderMeta", () => {
   it("does nothing for direct messages", () => {
-    const ctx: MsgContext = {
-      ChatType: "direct",
-      SenderName: "Alice",
-      SenderId: "A1",
-    };
+    const ctx: MsgContext = { ChatType: "direct", SenderName: "Alice", SenderId: "A1" };
     expect(formatInboundBodyWithSenderMeta({ ctx, body: "[X] hi" })).toBe("[X] hi");
   });
 
   it("appends a sender meta line for non-direct messages", () => {
-    const ctx: MsgContext = {
-      ChatType: "group",
-      SenderName: "Alice",
-      SenderId: "A1",
-    };
+    const ctx: MsgContext = { ChatType: "group", SenderName: "Alice", SenderId: "A1" };
     expect(formatInboundBodyWithSenderMeta({ ctx, body: "[X] hi" })).toBe(
       "[X] hi\n[from: Alice (A1)]",
     );
@@ -135,51 +127,29 @@ describe("formatInboundBodyWithSenderMeta", () => {
   });
 
   it("appends with a real newline even if the body contains literal \\n", () => {
-    const ctx: MsgContext = {
-      ChatType: "group",
-      SenderName: "Bob",
-      SenderId: "+222",
-    };
+    const ctx: MsgContext = { ChatType: "group", SenderName: "Bob", SenderId: "+222" };
     expect(formatInboundBodyWithSenderMeta({ ctx, body: "[X] one\\n[X] two" })).toBe(
       "[X] one\\n[X] two\n[from: Bob (+222)]",
     );
   });
 
   it("does not duplicate a sender meta line when one is already present", () => {
-    const ctx: MsgContext = {
-      ChatType: "group",
-      SenderName: "Alice",
-      SenderId: "A1",
-    };
-    expect(
-      formatInboundBodyWithSenderMeta({
-        ctx,
-        body: "[X] hi\n[from: Alice (A1)]",
-      }),
-    ).toBe("[X] hi\n[from: Alice (A1)]");
+    const ctx: MsgContext = { ChatType: "group", SenderName: "Alice", SenderId: "A1" };
+    expect(formatInboundBodyWithSenderMeta({ ctx, body: "[X] hi\n[from: Alice (A1)]" })).toBe(
+      "[X] hi\n[from: Alice (A1)]",
+    );
   });
 
   it("does not append when the body already includes a sender prefix", () => {
-    const ctx: MsgContext = {
-      ChatType: "group",
-      SenderName: "Alice",
-      SenderId: "A1",
-    };
+    const ctx: MsgContext = { ChatType: "group", SenderName: "Alice", SenderId: "A1" };
     expect(formatInboundBodyWithSenderMeta({ ctx, body: "Alice (A1): hi" })).toBe("Alice (A1): hi");
   });
 
   it("does not append when the sender prefix follows an envelope header", () => {
-    const ctx: MsgContext = {
-      ChatType: "group",
-      SenderName: "Alice",
-      SenderId: "A1",
-    };
-    expect(
-      formatInboundBodyWithSenderMeta({
-        ctx,
-        body: "[Signal Group] Alice (A1): hi",
-      }),
-    ).toBe("[Signal Group] Alice (A1): hi");
+    const ctx: MsgContext = { ChatType: "group", SenderName: "Alice", SenderId: "A1" };
+    expect(formatInboundBodyWithSenderMeta({ ctx, body: "[Signal Group] Alice (A1): hi" })).toBe(
+      "[Signal Group] Alice (A1): hi",
+    );
   });
 });
 
@@ -268,11 +238,7 @@ describe("createInboundDebouncer", () => {
     vi.useFakeTimers();
     const calls: Array<string[]> = [];
 
-    const debouncer = createInboundDebouncer<{
-      key: string;
-      id: string;
-      debounce: boolean;
-    }>({
+    const debouncer = createInboundDebouncer<{ key: string; id: string; debounce: boolean }>({
       debounceMs: 50,
       buildKey: (item) => item.key,
       shouldDebounce: (item) => item.debounce,

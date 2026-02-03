@@ -366,34 +366,17 @@ export function createGridLayout(
 
   return [
     // Top row
-    {
-      bounds: { x: 0, y: 0, width: colWidth, height: rowHeight },
-      action: actions[0],
-    },
-    {
-      bounds: { x: colWidth, y: 0, width: colWidth, height: rowHeight },
-      action: actions[1],
-    },
-    {
-      bounds: { x: colWidth * 2, y: 0, width: colWidth, height: rowHeight },
-      action: actions[2],
-    },
+    { bounds: { x: 0, y: 0, width: colWidth, height: rowHeight }, action: actions[0] },
+    { bounds: { x: colWidth, y: 0, width: colWidth, height: rowHeight }, action: actions[1] },
+    { bounds: { x: colWidth * 2, y: 0, width: colWidth, height: rowHeight }, action: actions[2] },
     // Bottom row
-    {
-      bounds: { x: 0, y: rowHeight, width: colWidth, height: rowHeight },
-      action: actions[3],
-    },
+    { bounds: { x: 0, y: rowHeight, width: colWidth, height: rowHeight }, action: actions[3] },
     {
       bounds: { x: colWidth, y: rowHeight, width: colWidth, height: rowHeight },
       action: actions[4],
     },
     {
-      bounds: {
-        x: colWidth * 2,
-        y: rowHeight,
-        width: colWidth,
-        height: rowHeight,
-      },
+      bounds: { x: colWidth * 2, y: rowHeight, width: colWidth, height: rowHeight },
       action: actions[5],
     },
   ];

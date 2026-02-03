@@ -315,10 +315,7 @@ export async function ensureSandboxContainer(params: {
         running &&
         (typeof lastUsedAtMs !== "number" || now - lastUsedAtMs < HOT_CONTAINER_WINDOW_MS);
       if (isHot) {
-        const hint = formatSandboxRecreateHint({
-          scope: params.cfg.scope,
-          sessionKey: scopeKey,
-        });
+        const hint = formatSandboxRecreateHint({ scope: params.cfg.scope, sessionKey: scopeKey });
         defaultRuntime.log(
           `Sandbox config changed for ${containerName} (recently used). Recreate to apply: ${hint}`,
         );

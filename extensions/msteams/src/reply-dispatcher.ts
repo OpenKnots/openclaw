@@ -64,12 +64,8 @@ export function createMSTeamsReplyDispatcher(params: {
   const { dispatcher, replyOptions, markDispatchIdle } =
     core.channel.reply.createReplyDispatcherWithTyping({
       responsePrefix: prefixContext.responsePrefix,
-      responsePrefixContextProvider:
-        prefixContext.responsePrefixContextProvider,
-      humanDelay: core.channel.reply.resolveHumanDelayConfig(
-        params.cfg,
-        params.agentId,
-      ),
+      responsePrefixContextProvider: prefixContext.responsePrefixContextProvider,
+      humanDelay: core.channel.reply.resolveHumanDelayConfig(params.cfg, params.agentId),
       deliver: async (payload) => {
         const tableMode = core.channel.text.resolveMarkdownTableMode({
           cfg: params.cfg,
@@ -128,10 +124,7 @@ export function createMSTeamsReplyDispatcher(params: {
 
   return {
     dispatcher,
-    replyOptions: {
-      ...replyOptions,
-      onModelSelected: prefixContext.onModelSelected,
-    },
+    replyOptions: { ...replyOptions, onModelSelected: prefixContext.onModelSelected },
     markDispatchIdle,
   };
 }

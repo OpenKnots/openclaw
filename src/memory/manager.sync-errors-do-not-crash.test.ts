@@ -66,12 +66,7 @@ describe("memory manager sync failures", () => {
             provider: "openai",
             model: "mock-embed",
             store: { path: indexPath },
-            sync: {
-              watch: true,
-              watchDebounceMs: 1,
-              onSessionStart: false,
-              onSearch: false,
-            },
+            sync: { watch: true, watchDebounceMs: 1, onSessionStart: false, onSearch: false },
           },
         },
         list: [{ id: "main", default: true }],

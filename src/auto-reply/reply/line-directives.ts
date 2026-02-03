@@ -186,13 +186,9 @@ export function parseLineDirectives(payload: ReplyPayload): ReplyPayload {
         imageUrl: validImageUrl,
         isPlaying: statusStr ? isPlaying : undefined,
         controls: {
-          previous: {
-            data: lineActionData("previous", { "line.device": deviceKey }),
-          },
+          previous: { data: lineActionData("previous", { "line.device": deviceKey }) },
           play: { data: lineActionData("play", { "line.device": deviceKey }) },
-          pause: {
-            data: lineActionData("pause", { "line.device": deviceKey }),
-          },
+          pause: { data: lineActionData("pause", { "line.device": deviceKey }) },
           next: { data: lineActionData("next", { "line.device": deviceKey }) },
         },
       });
@@ -250,9 +246,7 @@ export function parseLineDirectives(payload: ReplyPayload): ReplyPayload {
           play: lineActionData("play", { "line.device": deviceKey }),
           pause: lineActionData("pause", { "line.device": deviceKey }),
           volumeUp: lineActionData("volume_up", { "line.device": deviceKey }),
-          volumeDown: lineActionData("volume_down", {
-            "line.device": deviceKey,
-          }),
+          volumeDown: lineActionData("volume_down", { "line.device": deviceKey }),
           mute: lineActionData("mute", { "line.device": deviceKey }),
         },
       });
@@ -309,10 +303,7 @@ export function parseLineDirectives(payload: ReplyPayload): ReplyPayload {
         ? controlsStr.split(",").map((ctrlStr) => {
             const [label, data] = ctrlStr.split(":").map((s) => s.trim());
             const action = data || label.toLowerCase().replace(/\s+/g, "_");
-            return {
-              label,
-              data: lineActionData(action, { "line.device": deviceKey }),
-            };
+            return { label, data: lineActionData(action, { "line.device": deviceKey }) };
           })
         : [];
 

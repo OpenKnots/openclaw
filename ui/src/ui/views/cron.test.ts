@@ -46,9 +46,7 @@ describe("cron view", () => {
     const container = document.createElement("div");
     render(renderCron(createProps()), container);
 
-    expect(container.textContent).toContain(
-      "Select a job to inspect run history.",
-    );
+    expect(container.textContent).toContain("Select a job to inspect run history.");
   });
 
   it("loads run history when clicking a job row", () => {

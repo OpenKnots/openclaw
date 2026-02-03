@@ -1,12 +1,7 @@
 import { execSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import type {
-  ApiContributor,
-  Entry,
-  MapConfig,
-  User,
-} from "./update-clawtributors.types.js";
+import type { ApiContributor, Entry, MapConfig, User } from "./update-clawtributors.types.js";
 
 const REPO = "openclaw/openclaw";
 const PER_LINE = 10;
@@ -17,20 +12,13 @@ const mapConfig = JSON.parse(readFileSync(mapPath, "utf8")) as MapConfig;
 const displayName = mapConfig.displayName ?? {};
 const nameToLogin = normalizeMap(mapConfig.nameToLogin ?? {});
 const emailToLogin = normalizeMap(mapConfig.emailToLogin ?? {});
-const ensureLogins = (mapConfig.ensureLogins ?? []).map((login) =>
-  login.toLowerCase(),
-);
+const ensureLogins = (mapConfig.ensureLogins ?? []).map((login) => login.toLowerCase());
 
 const readmePath = resolve("README.md");
-const placeholderAvatar =
-  mapConfig.placeholderAvatar ?? "assets/avatar-placeholder.svg";
+const placeholderAvatar = mapConfig.placeholderAvatar ?? "assets/avatar-placeholder.svg";
 const seedCommit = mapConfig.seedCommit ?? null;
-const seedEntries = seedCommit
-  ? parseReadmeEntries(run(`git show ${seedCommit}:README.md`))
-  : [];
-const raw = run(
-  `gh api "repos/${REPO}/contributors?per_page=100&anon=1" --paginate`,
-);
+const seedEntries = seedCommit ? parseReadmeEntries(run(`git show ${seedCommit}:README.md`)) : [];
+const raw = run(`gh api "repos/${REPO}/contributors?per_page=100&anon=1" --paginate`);
 const contributors = parsePaginatedJson(raw) as ApiContributor[];
 const apiByLogin = new Map<string, User>();
 const contributionsByLogin = new Map<string, number>();
@@ -92,13 +80,7 @@ for (const line of log.split("\n")) {
     continue;
   }
 
-  let login = resolveLogin(
-    currentName,
-    currentEmail,
-    apiByLogin,
-    nameToLogin,
-    emailToLogin,
-  );
+  let login = resolveLogin(currentName, currentEmail, apiByLogin, nameToLogin, emailToLogin);
   if (!login) {
     continue;
   }
@@ -118,11 +100,8 @@ const entriesByKey = new Map<string, Entry>();
 for (const seed of seedEntries) {
   const login = loginFromUrl(seed.html_url);
   const resolvedLogin =
-    login ??
-    resolveLogin(seed.display, null, apiByLogin, nameToLogin, emailToLogin);
-  const key = resolvedLogin
-    ? resolvedLogin.toLowerCase()
-    : `name:${normalizeName(seed.display)}`;
+    login ?? resolveLogin(seed.display, null, apiByLogin, nameToLogin, emailToLogin);
+  const key = resolvedLogin ? resolvedLogin.toLowerCase() : `name:${normalizeName(seed.display)}`;
   const avatar =
     seed.avatar_url && !isGhostAvatar(seed.avatar_url)
       ? normalizeAvatar(seed.avatar_url)
@@ -150,21 +129,14 @@ for (const seed of seedEntries) {
 }
 
 for (const item of contributors) {
-  const baseName =
-    item.name?.trim() || item.email?.trim() || item.login?.trim();
+  const baseName = item.name?.trim() || item.email?.trim() || item.login?.trim();
   if (!baseName) {
     continue;
   }
 
   const resolvedLogin = item.login
     ? item.login
-    : resolveLogin(
-        baseName,
-        item.email ?? null,
-        apiByLogin,
-        nameToLogin,
-        emailToLogin,
-      );
+    : resolveLogin(baseName, item.email ?? null, apiByLogin, nameToLogin, emailToLogin);
 
   if (resolvedLogin) {
     const key = resolvedLogin.toLowerCase();
@@ -185,11 +157,7 @@ for (const item of contributors) {
       }
     } else if (existing) {
       existing.login = existing.login ?? resolvedLogin;
-      existing.display = pickDisplay(
-        baseName,
-        existing.login,
-        existing.display,
-      );
+      existing.display = pickDisplay(baseName, existing.login, existing.display);
       if (existing.avatar_url === placeholderAvatar || !existing.avatar_url) {
         const user = apiByLogin.get(key) ?? fetchUser(resolvedLogin);
         if (user) {
@@ -199,10 +167,7 @@ for (const item of contributors) {
       }
       const lines = linesByLogin.get(key) ?? 0;
       const contributions = contributionsByLogin.get(key) ?? 0;
-      existing.lines = Math.max(
-        existing.lines,
-        lines > 0 ? lines : contributions,
-      );
+      existing.lines = Math.max(existing.lines, lines > 0 ? lines : contributions);
     }
     continue;
   }
@@ -455,13 +420,8 @@ function parseReadmeEntries(
     return [];
   }
   const block = content.slice(start, end);
-  const entries: Array<{
-    display: string;
-    html_url: string;
-    avatar_url: string;
-  }> = [];
-  const linked =
-    /<a href="([^"]+)"><img src="([^"]+)"[^>]*alt="([^"]+)"[^>]*>/g;
+  const entries: Array<{ display: string; html_url: string; avatar_url: string }> = [];
+  const linked = /<a href="([^"]+)"><img src="([^"]+)"[^>]*alt="([^"]+)"[^>]*>/g;
   for (const match of block.matchAll(linked)) {
     const [, href, src, alt] = match;
     if (!href || !src || !alt) {
@@ -475,16 +435,10 @@ function parseReadmeEntries(
     if (!src || !alt) {
       continue;
     }
-    if (
-      entries.some((entry) => entry.display === alt && entry.avatar_url === src)
-    ) {
+    if (entries.some((entry) => entry.display === alt && entry.avatar_url === src)) {
       continue;
     }
-    entries.push({
-      html_url: fallbackHref(alt),
-      avatar_url: src,
-      display: alt,
-    });
+    entries.push({ html_url: fallbackHref(alt), avatar_url: src, display: alt });
   }
   return entries;
 }
@@ -503,9 +457,7 @@ function loginFromUrl(url: string): string | null {
 
 function fallbackHref(value: string): string {
   const encoded = encodeURIComponent(value.trim());
-  return encoded
-    ? `https://github.com/search?q=${encoded}`
-    : "https://github.com";
+  return encoded ? `https://github.com/search?q=${encoded}` : "https://github.com";
 }
 
 function pickDisplay(

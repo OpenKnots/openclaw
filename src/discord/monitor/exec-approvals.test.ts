@@ -21,10 +21,7 @@ describe("buildExecApprovalCustomId", () => {
 
 describe("parseExecApprovalData", () => {
   it("parses valid data", () => {
-    const result = parseExecApprovalData({
-      id: "abc-123",
-      action: "allow-once",
-    });
+    const result = parseExecApprovalData({ id: "abc-123", action: "allow-once" });
     expect(result).toEqual({ approvalId: "abc-123", action: "allow-once" });
   });
 
@@ -33,10 +30,7 @@ describe("parseExecApprovalData", () => {
       id: "abc%3D123%3Btest",
       action: "allow-always",
     });
-    expect(result).toEqual({
-      approvalId: "abc=123;test",
-      action: "allow-always",
-    });
+    expect(result).toEqual({ approvalId: "abc=123;test", action: "allow-always" });
   });
 
   it("rejects invalid action", () => {

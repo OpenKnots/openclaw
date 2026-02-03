@@ -37,8 +37,7 @@ const geminiCliPlugin = {
                 openUrl: ctx.openUrl,
                 log: (msg) => ctx.runtime.log(msg),
                 note: ctx.prompter.note,
-                prompt: async (message) =>
-                  String(await ctx.prompter.text({ message })),
+                prompt: async (message) => String(await ctx.prompter.text({ message })),
                 progress: spin,
               });
 
@@ -69,9 +68,7 @@ const geminiCliPlugin = {
                   },
                 },
                 defaultModel: DEFAULT_MODEL,
-                notes: [
-                  "If requests fail, set GOOGLE_CLOUD_PROJECT or GOOGLE_CLOUD_PROJECT_ID.",
-                ],
+                notes: ["If requests fail, set GOOGLE_CLOUD_PROJECT or GOOGLE_CLOUD_PROJECT_ID."],
               };
             } catch (err) {
               spin.stop("Gemini CLI OAuth failed");

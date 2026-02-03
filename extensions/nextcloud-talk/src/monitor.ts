@@ -1,10 +1,5 @@
 import type { RuntimeEnv } from "openclaw/plugin-sdk";
-import {
-  createServer,
-  type IncomingMessage,
-  type Server,
-  type ServerResponse,
-} from "node:http";
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import type {
   CoreConfig,
   NextcloudTalkInboundMessage,
@@ -14,10 +9,7 @@ import type {
 import { resolveNextcloudTalkAccount } from "./accounts.js";
 import { handleNextcloudTalkInbound } from "./inbound.js";
 import { getNextcloudTalkRuntime } from "./runtime.js";
-import {
-  extractNextcloudTalkHeaders,
-  verifyNextcloudTalkSignature,
-} from "./signature.js";
+import { extractNextcloudTalkHeaders, verifyNextcloudTalkSignature } from "./signature.js";
 
 const DEFAULT_WEBHOOK_PORT = 8788;
 const DEFAULT_WEBHOOK_HOST = "0.0.0.0";
@@ -79,87 +71,83 @@ function readBody(req: IncomingMessage): Promise<string> {
   });
 }
 
-export function createNextcloudTalkWebhookServer(
-  opts: NextcloudTalkWebhookServerOptions,
-): {
+export function createNextcloudTalkWebhookServer(opts: NextcloudTalkWebhookServerOptions): {
   server: Server;
   start: () => Promise<void>;
   stop: () => void;
 } {
   const { port, host, path, secret, onMessage, onError, abortSignal } = opts;
 
-  const server = createServer(
-    async (req: IncomingMessage, res: ServerResponse) => {
-      if (req.url === HEALTH_PATH) {
-        res.writeHead(200, { "Content-Type": "text/plain" });
-        res.end("ok");
+  const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
+    if (req.url === HEALTH_PATH) {
+      res.writeHead(200, { "Content-Type": "text/plain" });
+      res.end("ok");
+      return;
+    }
+
+    if (req.url !== path || req.method !== "POST") {
+      res.writeHead(404);
+      res.end();
+      return;
+    }
+
+    try {
+      const body = await readBody(req);
+
+      const headers = extractNextcloudTalkHeaders(
+        req.headers as Record<string, string | string[] | undefined>,
+      );
+      if (!headers) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Missing signature headers" }));
         return;
       }
 
-      if (req.url !== path || req.method !== "POST") {
-        res.writeHead(404);
-        res.end();
+      const isValid = verifyNextcloudTalkSignature({
+        signature: headers.signature,
+        random: headers.random,
+        body,
+        secret,
+      });
+
+      if (!isValid) {
+        res.writeHead(401, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Invalid signature" }));
         return;
       }
 
-      try {
-        const body = await readBody(req);
+      const payload = parseWebhookPayload(body);
+      if (!payload) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Invalid payload format" }));
+        return;
+      }
 
-        const headers = extractNextcloudTalkHeaders(
-          req.headers as Record<string, string | string[] | undefined>,
-        );
-        if (!headers) {
-          res.writeHead(400, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: "Missing signature headers" }));
-          return;
-        }
-
-        const isValid = verifyNextcloudTalkSignature({
-          signature: headers.signature,
-          random: headers.random,
-          body,
-          secret,
-        });
-
-        if (!isValid) {
-          res.writeHead(401, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: "Invalid signature" }));
-          return;
-        }
-
-        const payload = parseWebhookPayload(body);
-        if (!payload) {
-          res.writeHead(400, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: "Invalid payload format" }));
-          return;
-        }
-
-        if (payload.type !== "Create") {
-          res.writeHead(200);
-          res.end();
-          return;
-        }
-
-        const message = payloadToInboundMessage(payload);
-
+      if (payload.type !== "Create") {
         res.writeHead(200);
         res.end();
-
-        try {
-          await onMessage(message);
-        } catch (err) {
-          onError?.(err instanceof Error ? err : new Error(formatError(err)));
-        }
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error(formatError(err));
-        onError?.(error);
-        if (!res.headersSent) {
-          res.writeHead(500, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ error: "Internal server error" }));
-        }
+        return;
       }
-    },
-  );
+
+      const message = payloadToInboundMessage(payload);
+
+      res.writeHead(200);
+      res.end();
+
+      try {
+        await onMessage(message);
+      } catch (err) {
+        onError?.(err instanceof Error ? err : new Error(formatError(err)));
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(formatError(err));
+      onError?.(error);
+      if (!res.headersSent) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Internal server error" }));
+      }
+    }
+  });
 
   const start = (): Promise<void> => {
     return new Promise((resolve) => {
@@ -184,10 +172,7 @@ export type NextcloudTalkMonitorOptions = {
   runtime?: RuntimeEnv;
   abortSignal?: AbortSignal;
   onMessage?: (message: NextcloudTalkInboundMessage) => void | Promise<void>;
-  statusSink?: (patch: {
-    lastInboundAt?: number;
-    lastOutboundAt?: number;
-  }) => void;
+  statusSink?: (patch: { lastInboundAt?: number; lastOutboundAt?: number }) => void;
 };
 
 export async function monitorNextcloudTalkProvider(
@@ -208,9 +193,7 @@ export async function monitorNextcloudTalkProvider(
   };
 
   if (!account.secret) {
-    throw new Error(
-      `Nextcloud Talk bot secret not configured for account "${account.accountId}"`,
-    );
+    throw new Error(`Nextcloud Talk bot secret not configured for account "${account.accountId}"`);
   }
 
   const port = account.config.webhookPort ?? DEFAULT_WEBHOOK_PORT;
@@ -247,9 +230,7 @@ export async function monitorNextcloudTalkProvider(
       });
     },
     onError: (error) => {
-      logger.error(
-        `[nextcloud-talk:${account.accountId}] webhook error: ${error.message}`,
-      );
+      logger.error(`[nextcloud-talk:${account.accountId}] webhook error: ${error.message}`);
     },
     abortSignal: opts.abortSignal,
   });
@@ -259,9 +240,7 @@ export async function monitorNextcloudTalkProvider(
   const publicUrl =
     account.config.webhookPublicUrl ??
     `http://${host === "0.0.0.0" ? "localhost" : host}:${port}${path}`;
-  logger.info(
-    `[nextcloud-talk:${account.accountId}] webhook listening on ${publicUrl}`,
-  );
+  logger.info(`[nextcloud-talk:${account.accountId}] webhook listening on ${publicUrl}`);
 
   return { stop };
 }

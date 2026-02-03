@@ -112,10 +112,7 @@ const createStubPluginRegistry = (): PluginRegistry => ({
     {
       pluginId: "msteams",
       source: "test",
-      plugin: createStubChannelPlugin({
-        id: "msteams",
-        label: "Microsoft Teams",
-      }),
+      plugin: createStubChannelPlugin({ id: "msteams", label: "Microsoft Teams" }),
     },
     {
       pluginId: "matrix",
@@ -130,18 +127,12 @@ const createStubPluginRegistry = (): PluginRegistry => ({
     {
       pluginId: "zalouser",
       source: "test",
-      plugin: createStubChannelPlugin({
-        id: "zalouser",
-        label: "Zalo Personal",
-      }),
+      plugin: createStubChannelPlugin({ id: "zalouser", label: "Zalo Personal" }),
     },
     {
       pluginId: "bluebubbles",
       source: "test",
-      plugin: createStubChannelPlugin({
-        id: "bluebubbles",
-        label: "BlueBubbles",
-      }),
+      plugin: createStubChannelPlugin({ id: "bluebubbles", label: "BlueBubbles" }),
     },
   ],
   providers: [],
@@ -489,9 +480,7 @@ vi.mock("../config/config.js", async () => {
         fileConfig.canvasHost &&
         typeof fileConfig.canvasHost === "object" &&
         !Array.isArray(fileConfig.canvasHost)
-          ? ({
-              ...(fileConfig.canvasHost as Record<string, unknown>),
-            } as Record<string, unknown>)
+          ? ({ ...(fileConfig.canvasHost as Record<string, unknown>) } as Record<string, unknown>)
           : {};
       if (typeof testState.canvasHostPort === "number") {
         fileCanvasHost.port = testState.canvasHostPort;

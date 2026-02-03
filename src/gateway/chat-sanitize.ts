@@ -48,10 +48,7 @@ function stripMessageIdHints(text: string): string {
   return filtered.length === lines.length ? text : filtered.join("\n");
 }
 
-function stripEnvelopeFromContent(content: unknown[]): {
-  content: unknown[];
-  changed: boolean;
-} {
+function stripEnvelopeFromContent(content: unknown[]): { content: unknown[]; changed: boolean } {
   let changed = false;
   const next = content.map((item) => {
     if (!item || typeof item !== "object") {

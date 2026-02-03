@@ -497,11 +497,7 @@ export const nodeHandlers: GatewayRequestHandlers = {
       });
       return;
     }
-    const p = params as {
-      event: string;
-      payload?: unknown;
-      payloadJSON?: string | null;
-    };
+    const p = params as { event: string; payload?: unknown; payloadJSON?: string | null };
     const payloadJSON =
       typeof p.payloadJSON === "string"
         ? p.payloadJSON

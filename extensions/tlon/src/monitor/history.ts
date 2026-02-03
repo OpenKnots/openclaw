@@ -68,9 +68,7 @@ export async function fetchChannelHistory(
     runtime?.log?.(`[tlon] Extracted ${messages.length} messages from history`);
     return messages;
   } catch (error) {
-    runtime?.log?.(
-      `[tlon] Error fetching channel history: ${error?.message ?? String(error)}`,
-    );
+    runtime?.log?.(`[tlon] Error fetching channel history: ${error?.message ?? String(error)}`);
     return [];
   }
 }
@@ -87,8 +85,6 @@ export async function getChannelHistory(
     return cache.slice(0, count);
   }
 
-  runtime?.log?.(
-    `[tlon] Cache has ${cache.length} messages, need ${count}, fetching from scry...`,
-  );
+  runtime?.log?.(`[tlon] Cache has ${cache.length} messages, need ${count}, fetching from scry...`);
   return await fetchChannelHistory(api, channelNest, count, runtime);
 }

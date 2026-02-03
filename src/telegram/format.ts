@@ -66,10 +66,7 @@ export function markdownToTelegramHtml(
 
 export function renderTelegramHtmlText(
   text: string,
-  options: {
-    textMode?: "markdown" | "html";
-    tableMode?: MarkdownTableMode;
-  } = {},
+  options: { textMode?: "markdown" | "html"; tableMode?: MarkdownTableMode } = {},
 ): string {
   const textMode = options.textMode ?? "markdown";
   if (textMode === "html") {

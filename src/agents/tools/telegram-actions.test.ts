@@ -102,9 +102,7 @@ describe("handleTelegramAction", () => {
   });
 
   it("rejects sticker actions when disabled by default", async () => {
-    const cfg = {
-      channels: { telegram: { botToken: "tok" } },
-    } as OpenClawConfig;
+    const cfg = { channels: { telegram: { botToken: "tok" } } } as OpenClawConfig;
     await expect(
       handleTelegramAction(
         {

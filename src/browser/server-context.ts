@@ -151,10 +151,7 @@ function createProfileContext(
       const mod = await getPwAiModule({ mode: "strict" });
       const createPageViaPlaywright = (mod as Partial<PwAiModule> | null)?.createPageViaPlaywright;
       if (typeof createPageViaPlaywright === "function") {
-        const page = await createPageViaPlaywright({
-          cdpUrl: profile.cdpUrl,
-          url,
-        });
+        const page = await createPageViaPlaywright({ cdpUrl: profile.cdpUrl, url });
         const profileState = getProfileState();
         profileState.lastTargetId = page.targetId;
         return {

@@ -51,9 +51,7 @@ describe("browser config", () => {
     const prev = process.env.OPENCLAW_GATEWAY_PORT;
     delete process.env.OPENCLAW_GATEWAY_PORT;
     try {
-      const resolved = resolveBrowserConfig(undefined, {
-        gateway: { port: 19011 },
-      });
+      const resolved = resolveBrowserConfig(undefined, { gateway: { port: 19011 } });
       expect(resolved.controlPort).toBe(19013);
       const chrome = resolveProfile(resolved, "chrome");
       expect(chrome?.driver).toBe("extension");

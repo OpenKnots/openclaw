@@ -86,9 +86,7 @@ export async function browserStorageGet(
     ok: true;
     targetId: string;
     values: Record<string, string>;
-  }>(withBaseUrl(baseUrl, `/storage/${opts.kind}${suffix}`), {
-    timeoutMs: 20000,
-  });
+  }>(withBaseUrl(baseUrl, `/storage/${opts.kind}${suffix}`), { timeoutMs: 20000 });
 }
 
 export async function browserStorageSet(

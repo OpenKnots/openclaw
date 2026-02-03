@@ -164,10 +164,7 @@ async function resolveFilePath(rootReal: string, urlPath: string) {
 
   const tryOpen = async (relative: string) => {
     try {
-      return await openFileWithinRoot({
-        rootDir: rootReal,
-        relativePath: relative,
-      });
+      return await openFileWithinRoot({ rootDir: rootReal, relativePath: relative });
     } catch (err) {
       if (err instanceof SafeOpenError) {
         return null;

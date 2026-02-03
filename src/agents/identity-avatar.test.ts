@@ -95,10 +95,7 @@ describe("resolveAgentAvatar", () => {
     const cfg: OpenClawConfig = {
       agents: {
         list: [
-          {
-            id: "main",
-            identity: { avatar: "https://example.com/avatar.png" },
-          },
+          { id: "main", identity: { avatar: "https://example.com/avatar.png" } },
           { id: "data", identity: { avatar: "data:image/png;base64,aaaa" } },
         ],
       },

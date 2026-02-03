@@ -150,11 +150,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         res.setHeader(key, value);
       });
       res.setHeader("Content-Type", "text/plain; charset=utf-8");
-      res
-        .status(200)
-        .send(
-          "I couldn't find relevant documentation excerpts for that question. Try rephrasing or search the docs.",
-        );
+      res.status(200).send(
+        "I couldn't find relevant documentation excerpts for that question. Try rephrasing or search the docs.",
+      );
       return;
     }
 

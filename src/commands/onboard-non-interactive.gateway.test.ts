@@ -184,19 +184,10 @@ describe("onboard (non-interactive): gateway and remote auth", () => {
     expect(cfg?.gateway?.auth?.token).toBe(token);
 
     const { authorizeGatewayConnect, resolveGatewayAuth } = await import("../gateway/auth.js");
-    const auth = resolveGatewayAuth({
-      authConfig: cfg.gateway?.auth,
-      env: process.env,
-    });
-    const resNoToken = await authorizeGatewayConnect({
-      auth,
-      connectAuth: { token: undefined },
-    });
+    const auth = resolveGatewayAuth({ authConfig: cfg.gateway?.auth, env: process.env });
+    const resNoToken = await authorizeGatewayConnect({ auth, connectAuth: { token: undefined } });
     expect(resNoToken.ok).toBe(false);
-    const resToken = await authorizeGatewayConnect({
-      auth,
-      connectAuth: { token },
-    });
+    const resToken = await authorizeGatewayConnect({ auth, connectAuth: { token } });
     expect(resToken.ok).toBe(true);
 
     await fs.rm(stateDir, { recursive: true, force: true });
@@ -292,19 +283,10 @@ describe("onboard (non-interactive): gateway and remote auth", () => {
     expect(token.length).toBeGreaterThan(8);
 
     const { authorizeGatewayConnect, resolveGatewayAuth } = await import("../gateway/auth.js");
-    const auth = resolveGatewayAuth({
-      authConfig: cfg.gateway?.auth,
-      env: process.env,
-    });
-    const resNoToken = await authorizeGatewayConnect({
-      auth,
-      connectAuth: { token: undefined },
-    });
+    const auth = resolveGatewayAuth({ authConfig: cfg.gateway?.auth, env: process.env });
+    const resNoToken = await authorizeGatewayConnect({ auth, connectAuth: { token: undefined } });
     expect(resNoToken.ok).toBe(false);
-    const resToken = await authorizeGatewayConnect({
-      auth,
-      connectAuth: { token },
-    });
+    const resToken = await authorizeGatewayConnect({ auth, connectAuth: { token } });
     expect(resToken.ok).toBe(true);
 
     await fs.rm(stateDir, { recursive: true, force: true });

@@ -134,12 +134,7 @@ describe("sanitizeToolCallInputs", () => {
         role: "assistant",
         content: [
           { type: "text", text: "before" },
-          {
-            type: "toolUse",
-            id: "call_ok",
-            name: "read",
-            input: { path: "a" },
-          },
+          { type: "toolUse", id: "call_ok", name: "read", input: { path: "a" } },
           { type: "toolCall", id: "call_drop", name: "read" },
         ],
       },

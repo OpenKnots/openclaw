@@ -39,10 +39,7 @@ export function resolveContextWindowInfo(params: {
     ? { tokens: fromModelsConfig, source: "modelsConfig" as const }
     : fromModel
       ? { tokens: fromModel, source: "model" as const }
-      : {
-          tokens: Math.floor(params.defaultTokens),
-          source: "default" as const,
-        };
+      : { tokens: Math.floor(params.defaultTokens), source: "default" as const };
 
   const capTokens = normalizePositiveInt(params.cfg?.agents?.defaults?.contextTokens);
   if (capTokens && capTokens < baseInfo.tokens) {

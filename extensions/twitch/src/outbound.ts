@@ -103,9 +103,7 @@ export const twitchOutbound: ChannelOutboundAdapter = {
    *   accountId: "default",
    * });
    */
-  sendText: async (
-    params: ChannelOutboundContext,
-  ): Promise<OutboundDeliveryResult> => {
+  sendText: async (params: ChannelOutboundContext): Promise<OutboundDeliveryResult> => {
     const { cfg, to, text, accountId, signal } = params;
 
     if (signal?.aborted) {
@@ -124,9 +122,7 @@ export const twitchOutbound: ChannelOutboundAdapter = {
 
     const channel = to || account.channel;
     if (!channel) {
-      throw new Error(
-        "No channel specified and no default channel in account config",
-      );
+      throw new Error("No channel specified and no default channel in account config");
     }
 
     const result = await sendMessageTwitchInternal(
@@ -168,9 +164,7 @@ export const twitchOutbound: ChannelOutboundAdapter = {
    *   accountId: "default",
    * });
    */
-  sendMedia: async (
-    params: ChannelOutboundContext,
-  ): Promise<OutboundDeliveryResult> => {
+  sendMedia: async (params: ChannelOutboundContext): Promise<OutboundDeliveryResult> => {
     const { text, mediaUrl, signal } = params;
 
     if (signal?.aborted) {

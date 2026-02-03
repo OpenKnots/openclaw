@@ -39,15 +39,10 @@ describe("before_tool_call hook integration", () => {
 
   it("allows hook to modify parameters", async () => {
     hookRunner.hasHooks.mockReturnValue(true);
-    hookRunner.runBeforeToolCall.mockResolvedValue({
-      params: { mode: "safe" },
-    });
+    hookRunner.runBeforeToolCall.mockResolvedValue({ params: { mode: "safe" } });
     const execute = vi.fn().mockResolvedValue({ content: [], details: { ok: true } });
     // oxlint-disable-next-line typescript/no-explicit-any
-    const tool = wrapToolWithBeforeToolCallHook({
-      name: "exec",
-      execute,
-    } as any);
+    const tool = wrapToolWithBeforeToolCallHook({ name: "exec", execute } as any);
 
     await tool.execute("call-2", { cmd: "ls" }, undefined, undefined);
 
@@ -67,10 +62,7 @@ describe("before_tool_call hook integration", () => {
     });
     const execute = vi.fn().mockResolvedValue({ content: [], details: { ok: true } });
     // oxlint-disable-next-line typescript/no-explicit-any
-    const tool = wrapToolWithBeforeToolCallHook({
-      name: "exec",
-      execute,
-    } as any);
+    const tool = wrapToolWithBeforeToolCallHook({ name: "exec", execute } as any);
 
     await expect(tool.execute("call-3", { cmd: "rm -rf /" }, undefined, undefined)).rejects.toThrow(
       "blocked",
@@ -83,10 +75,7 @@ describe("before_tool_call hook integration", () => {
     hookRunner.runBeforeToolCall.mockRejectedValue(new Error("boom"));
     const execute = vi.fn().mockResolvedValue({ content: [], details: { ok: true } });
     // oxlint-disable-next-line typescript/no-explicit-any
-    const tool = wrapToolWithBeforeToolCallHook({
-      name: "read",
-      execute,
-    } as any);
+    const tool = wrapToolWithBeforeToolCallHook({ name: "read", execute } as any);
 
     await tool.execute("call-4", { path: "/tmp/file" }, undefined, undefined);
 
@@ -145,10 +134,7 @@ describe("before_tool_call hook integration for client tools", () => {
           function: {
             name: "client_tool",
             description: "Client tool",
-            parameters: {
-              type: "object",
-              properties: { value: { type: "string" } },
-            },
+            parameters: { type: "object", properties: { value: { type: "string" } } },
           },
         },
       ],

@@ -43,9 +43,9 @@ describe("channel plugin catalog", () => {
       }),
     );
 
-    const ids = listChannelPluginCatalogEntries({
-      catalogPaths: [catalogPath],
-    }).map((entry) => entry.id);
+    const ids = listChannelPluginCatalogEntries({ catalogPaths: [catalogPath] }).map(
+      (entry) => entry.id,
+    );
     expect(ids).toContain("demo-channel");
   });
 });

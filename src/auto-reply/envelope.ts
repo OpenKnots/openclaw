@@ -88,10 +88,7 @@ function resolveEnvelopeTimezone(options: NormalizedEnvelopeOptions): ResolvedEn
     return { mode: "local" };
   }
   if (lowered === "user") {
-    return {
-      mode: "iana",
-      timeZone: resolveUserTimezone(options.userTimezone),
-    };
+    return { mode: "iana", timeZone: resolveUserTimezone(options.userTimezone) };
   }
   const explicit = resolveExplicitTimezone(trimmed);
   return explicit ? { mode: "iana", timeZone: explicit } : { mode: "utc" };

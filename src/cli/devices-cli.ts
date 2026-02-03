@@ -190,9 +190,7 @@ export function registerDevicesCli(program: Command) {
       .description("Approve a pending device pairing request")
       .argument("<requestId>", "Pending request id")
       .action(async (requestId: string, opts: DevicesRpcOpts) => {
-        const result = await callGatewayCli("device.pair.approve", opts, {
-          requestId,
-        });
+        const result = await callGatewayCli("device.pair.approve", opts, { requestId });
         if (opts.json) {
           defaultRuntime.log(JSON.stringify(result, null, 2));
           return;
@@ -208,9 +206,7 @@ export function registerDevicesCli(program: Command) {
       .description("Reject a pending device pairing request")
       .argument("<requestId>", "Pending request id")
       .action(async (requestId: string, opts: DevicesRpcOpts) => {
-        const result = await callGatewayCli("device.pair.reject", opts, {
-          requestId,
-        });
+        const result = await callGatewayCli("device.pair.reject", opts, { requestId });
         if (opts.json) {
           defaultRuntime.log(JSON.stringify(result, null, 2));
           return;

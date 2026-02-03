@@ -172,9 +172,7 @@ describe("installHooksFromArchive", () => {
     const archivePath = path.join(workDir, "hooks.tar");
     const pkgDir = path.join(workDir, "package");
 
-    fs.mkdirSync(path.join(pkgDir, "hooks", "reserved-hook"), {
-      recursive: true,
-    });
+    fs.mkdirSync(path.join(pkgDir, "hooks", "reserved-hook"), { recursive: true });
     fs.writeFileSync(
       path.join(pkgDir, "package.json"),
       JSON.stringify({

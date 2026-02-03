@@ -127,12 +127,8 @@ function renderApprovalsSnapshot(snapshot: ExecApprovalsSnapshot, targetLabel: s
       : null,
   ].filter(Boolean) as string[];
   const agents = file.agents ?? {};
-  const allowlistRows: Array<{
-    Target: string;
-    Agent: string;
-    Pattern: string;
-    LastUsed: string;
-  }> = [];
+  const allowlistRows: Array<{ Target: string; Agent: string; Pattern: string; LastUsed: string }> =
+    [];
   const now = Date.now();
   for (const [agentId, agent] of Object.entries(agents)) {
     const allowlist = Array.isArray(agent.allowlist) ? agent.allowlist : [];
@@ -158,10 +154,7 @@ function renderApprovalsSnapshot(snapshot: ExecApprovalsSnapshot, targetLabel: s
     { Field: "Hash", Value: snapshot.hash },
     { Field: "Version", Value: String(file.version ?? 1) },
     { Field: "Socket", Value: file.socket?.path ?? "default" },
-    {
-      Field: "Defaults",
-      Value: defaultsParts.length > 0 ? defaultsParts.join(", ") : "none",
-    },
+    { Field: "Defaults", Value: defaultsParts.length > 0 ? defaultsParts.join(", ") : "none" },
     { Field: "Agents", Value: String(Object.keys(agents).length) },
     { Field: "Allowlist", Value: String(allowlistRows.length) },
   ];

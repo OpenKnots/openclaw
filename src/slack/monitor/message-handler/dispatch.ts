@@ -95,10 +95,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
     },
   });
 
-  const prefixContext = createReplyPrefixContext({
-    cfg,
-    agentId: route.agentId,
-  });
+  const prefixContext = createReplyPrefixContext({ cfg, agentId: route.agentId });
 
   const { dispatcher, replyOptions, markDispatchIdle } = createReplyDispatcherWithTyping({
     responsePrefix: prefixContext.responsePrefix,

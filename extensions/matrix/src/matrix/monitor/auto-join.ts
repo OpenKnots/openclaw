@@ -45,9 +45,7 @@ export function registerMatrixAutoJoin(params: {
         .getRoomStateEvent(roomId, "m.room.canonical_alias", "")
         .catch(() => null);
       alias = aliasState?.alias;
-      altAliases = Array.isArray(aliasState?.alt_aliases)
-        ? aliasState.alt_aliases
-        : [];
+      altAliases = Array.isArray(aliasState?.alt_aliases) ? aliasState.alt_aliases : [];
     } catch {
       // Ignore errors
     }

@@ -376,8 +376,7 @@ const myChannel = {
   },
   capabilities: { chatTypes: ["direct"] },
   config: {
-    listAccountIds: (cfg) =>
-      Object.keys(cfg.channels?.acmechat?.accounts ?? {}),
+    listAccountIds: (cfg) => Object.keys(cfg.channels?.acmechat?.accounts ?? {}),
     resolveAccount: (cfg, accountId) =>
       cfg.channels?.acmechat?.accounts?.[accountId ?? "default"] ?? {
         accountId,
@@ -464,8 +463,7 @@ const plugin = {
   },
   capabilities: { chatTypes: ["direct"] },
   config: {
-    listAccountIds: (cfg) =>
-      Object.keys(cfg.channels?.acmechat?.accounts ?? {}),
+    listAccountIds: (cfg) => Object.keys(cfg.channels?.acmechat?.accounts ?? {}),
     resolveAccount: (cfg, accountId) =>
       cfg.channels?.acmechat?.accounts?.[accountId ?? "default"] ?? {
         accountId,

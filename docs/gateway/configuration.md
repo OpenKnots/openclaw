@@ -235,20 +235,12 @@ Included files can themselves contain `$include` directives (up to 10 levels dee
       sandbox: { mode: "all", scope: "session" },
     },
     // Merge agent lists from all clients
-    list: {
-      $include: [
-        "./clients/mueller/agents.json5",
-        "./clients/schmidt/agents.json5",
-      ],
-    },
+    list: { $include: ["./clients/mueller/agents.json5", "./clients/schmidt/agents.json5"] },
   },
 
   // Merge broadcast configs
   broadcast: {
-    $include: [
-      "./clients/mueller/broadcast.json5",
-      "./clients/schmidt/broadcast.json5",
-    ],
+    $include: ["./clients/mueller/broadcast.json5", "./clients/schmidt/broadcast.json5"],
   },
 
   channels: { whatsapp: { groupPolicy: "allowlist" } },
@@ -400,11 +392,7 @@ rotation order used for failover.
 {
   auth: {
     profiles: {
-      "anthropic:me@example.com": {
-        provider: "anthropic",
-        mode: "oauth",
-        email: "me@example.com",
-      },
+      "anthropic:me@example.com": { provider: "anthropic", mode: "oauth", email: "me@example.com" },
       "anthropic:work": { provider: "anthropic", mode: "api_key" },
     },
     order: {
@@ -616,9 +604,7 @@ Group messages default to **require mention** (either metadata mention or regex 
     groupChat: { historyLimit: 50 },
   },
   agents: {
-    list: [
-      { id: "main", groupChat: { mentionPatterns: ["@openclaw", "openclaw"] } },
-    ],
+    list: [{ id: "main", groupChat: { mentionPatterns: ["@openclaw", "openclaw"] } }],
   },
 }
 ```
@@ -656,14 +642,8 @@ Per-agent override (takes precedence when set, even `[]`):
 {
   agents: {
     list: [
-      {
-        id: "work",
-        groupChat: { mentionPatterns: ["@workbot", "\\+15555550123"] },
-      },
-      {
-        id: "personal",
-        groupChat: { mentionPatterns: ["@homebot", "\\+15555550999"] },
-      },
+      { id: "work", groupChat: { mentionPatterns: ["@workbot", "\\+15555550123"] } },
+      { id: "personal", groupChat: { mentionPatterns: ["@homebot", "\\+15555550999"] } },
     ],
   },
 }
@@ -1388,10 +1368,7 @@ Signal reactions can emit system events (shared reaction tooling):
   channels: {
     signal: {
       reactionNotifications: "own", // off | own | all | allowlist
-      reactionAllowlist: [
-        "+15551234567",
-        "uuid:123e4567-e89b-12d3-a456-426614174000",
-      ],
+      reactionAllowlist: ["+15551234567", "uuid:123e4567-e89b-12d3-a456-426614174000"],
       historyLimit: 50, // include last N group messages as context (0 disables)
     },
   },
@@ -1920,10 +1897,7 @@ Example (adaptive tuned):
         hardClearRatio: 0.5,
         minPrunableToolChars: 50000,
         softTrim: { maxChars: 4000, headChars: 1500, tailChars: 1500 },
-        hardClear: {
-          enabled: true,
-          placeholder: "[Old tool result content cleared]",
-        },
+        hardClear: { enabled: true, placeholder: "[Old tool result content cleared]" },
         // Optional: restrict pruning to specific tools (deny wins; supports "*" wildcards)
         tools: { deny: ["browser", "canvas"] },
       },
@@ -1986,9 +1960,7 @@ Block streaming:
   Example:
   ```json5
   {
-    agents: {
-      defaults: { blockStreamingChunk: { minChars: 800, maxChars: 1200 } },
-    },
+    agents: { defaults: { blockStreamingChunk: { minChars: 800, maxChars: 1200 } } },
   }
   ```
 - `agents.defaults.blockStreamingCoalesce`: merge streamed blocks before sending.
@@ -2122,11 +2094,7 @@ Example:
         },
         models: [
           { provider: "openai", model: "gpt-4o-mini-transcribe" },
-          {
-            type: "cli",
-            command: "whisper",
-            args: ["--model", "base", "{{MediaPath}}"],
-          },
+          { type: "cli", command: "whisper", args: ["--model", "base", "{{MediaPath}}"] },
         ],
       },
       video: {
@@ -2354,10 +2322,7 @@ For package installs, ensure network egress, a writable root FS, and a root user
           apparmorProfile: "openclaw-sandbox",
           dns: ["1.1.1.1", "8.8.8.8"],
           extraHosts: ["internal.service:10.0.0.5"],
-          binds: [
-            "/var/run/docker.sock:/var/run/docker.sock",
-            "/home/user/source:/source:rw",
-          ],
+          binds: ["/var/run/docker.sock:/var/run/docker.sock", "/home/user/source:/source:rw"],
         },
         browser: {
           enabled: false,
@@ -2619,9 +2584,7 @@ Use Synthetic's Anthropic-compatible endpoint:
   agents: {
     defaults: {
       model: { primary: "synthetic/hf:MiniMaxAI/MiniMax-M2.1" },
-      models: {
-        "synthetic/hf:MiniMaxAI/MiniMax-M2.1": { alias: "MiniMax M2.1" },
-      },
+      models: { "synthetic/hf:MiniMaxAI/MiniMax-M2.1": { alias: "MiniMax M2.1" } },
     },
   },
   models: {
@@ -2784,9 +2747,7 @@ Controls session scoping, reset policy, reset triggers, and where the session st
       maxPingPongTurns: 5,
     },
     sendPolicy: {
-      rules: [
-        { action: "deny", match: { channel: "discord", chatType: "group" } },
-      ],
+      rules: [{ action: "deny", match: { channel: "discord", chatType: "group" } }],
       default: "allow",
     },
   },
@@ -2843,10 +2804,7 @@ Example:
   skills: {
     allowBundled: ["gemini", "peekaboo"],
     load: {
-      extraDirs: [
-        "~/Projects/agent-scripts/skills",
-        "~/Projects/oss/some-skill-pack/skills",
-      ],
+      extraDirs: ["~/Projects/agent-scripts/skills", "~/Projects/oss/some-skill-pack/skills"],
     },
     install: {
       preferBrew: true,

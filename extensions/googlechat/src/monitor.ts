@@ -16,10 +16,7 @@ import {
   sendGoogleChatMessage,
   updateGoogleChatMessage,
 } from "./api.js";
-import {
-  verifyGoogleChatRequest,
-  type GoogleChatAudienceType,
-} from "./auth.js";
+import { verifyGoogleChatRequest, type GoogleChatAudienceType } from "./auth.js";
 import { getGoogleChatRuntime } from "./runtime.js";
 
 export type GoogleChatRuntimeEnv = {
@@ -34,10 +31,7 @@ export type GoogleChatMonitorOptions = {
   abortSignal: AbortSignal;
   webhookPath?: string;
   webhookUrl?: string;
-  statusSink?: (patch: {
-    lastInboundAt?: number;
-    lastOutboundAt?: number;
-  }) => void;
+  statusSink?: (patch: { lastInboundAt?: number; lastOutboundAt?: number }) => void;
 };
 
 type GoogleChatCoreRuntime = ReturnType<typeof getGoogleChatRuntime>;
@@ -50,20 +44,13 @@ type WebhookTarget = {
   path: string;
   audienceType?: GoogleChatAudienceType;
   audience?: string;
-  statusSink?: (patch: {
-    lastInboundAt?: number;
-    lastOutboundAt?: number;
-  }) => void;
+  statusSink?: (patch: { lastInboundAt?: number; lastOutboundAt?: number }) => void;
   mediaMaxMb: number;
 };
 
 const webhookTargets = new Map<string, WebhookTarget[]>();
 
-function logVerbose(
-  core: GoogleChatCoreRuntime,
-  runtime: GoogleChatRuntimeEnv,
-  message: string,
-) {
+function logVerbose(core: GoogleChatCoreRuntime, runtime: GoogleChatRuntimeEnv, message: string) {
   if (core.logging.shouldLogVerbose()) {
     runtime.log?.(`[googlechat] ${message}`);
   }
@@ -81,10 +68,7 @@ function normalizeWebhookPath(raw: string): string {
   return withSlash;
 }
 
-function resolveWebhookPath(
-  webhookPath?: string,
-  webhookUrl?: string,
-): string | null {
+function resolveWebhookPath(webhookPath?: string, webhookUrl?: string): string | null {
   const trimmedPath = webhookPath?.trim();
   if (trimmedPath) {
     return normalizeWebhookPath(trimmedPath);
@@ -103,67 +87,51 @@ function resolveWebhookPath(
 async function readJsonBody(req: IncomingMessage, maxBytes: number) {
   const chunks: Buffer[] = [];
   let total = 0;
-  return await new Promise<{ ok: boolean; value?: unknown; error?: string }>(
-    (resolve) => {
-      let resolved = false;
-      const doResolve = (value: {
-        ok: boolean;
-        value?: unknown;
-        error?: string;
-      }) => {
-        if (resolved) {
+  return await new Promise<{ ok: boolean; value?: unknown; error?: string }>((resolve) => {
+    let resolved = false;
+    const doResolve = (value: { ok: boolean; value?: unknown; error?: string }) => {
+      if (resolved) {
+        return;
+      }
+      resolved = true;
+      req.removeAllListeners();
+      resolve(value);
+    };
+    req.on("data", (chunk: Buffer) => {
+      total += chunk.length;
+      if (total > maxBytes) {
+        doResolve({ ok: false, error: "payload too large" });
+        req.destroy();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on("end", () => {
+      try {
+        const raw = Buffer.concat(chunks).toString("utf8");
+        if (!raw.trim()) {
+          doResolve({ ok: false, error: "empty payload" });
           return;
         }
-        resolved = true;
-        req.removeAllListeners();
-        resolve(value);
-      };
-      req.on("data", (chunk: Buffer) => {
-        total += chunk.length;
-        if (total > maxBytes) {
-          doResolve({ ok: false, error: "payload too large" });
-          req.destroy();
-          return;
-        }
-        chunks.push(chunk);
-      });
-      req.on("end", () => {
-        try {
-          const raw = Buffer.concat(chunks).toString("utf8");
-          if (!raw.trim()) {
-            doResolve({ ok: false, error: "empty payload" });
-            return;
-          }
-          doResolve({ ok: true, value: JSON.parse(raw) as unknown });
-        } catch (err) {
-          doResolve({
-            ok: false,
-            error: err instanceof Error ? err.message : String(err),
-          });
-        }
-      });
-      req.on("error", (err) => {
-        doResolve({
-          ok: false,
-          error: err instanceof Error ? err.message : String(err),
-        });
-      });
-    },
-  );
+        doResolve({ ok: true, value: JSON.parse(raw) as unknown });
+      } catch (err) {
+        doResolve({ ok: false, error: err instanceof Error ? err.message : String(err) });
+      }
+    });
+    req.on("error", (err) => {
+      doResolve({ ok: false, error: err instanceof Error ? err.message : String(err) });
+    });
+  });
 }
 
-export function registerGoogleChatWebhookTarget(
-  target: WebhookTarget,
-): () => void {
+export function registerGoogleChatWebhookTarget(target: WebhookTarget): () => void {
   const key = normalizeWebhookPath(target.path);
   const normalizedTarget = { ...target, path: key };
   const existing = webhookTargets.get(key) ?? [];
   const next = [...existing, normalizedTarget];
   webhookTargets.set(key, next);
   return () => {
-    const updated = (webhookTargets.get(key) ?? []).filter(
-      (entry) => entry !== normalizedTarget,
-    );
+    const updated = (webhookTargets.get(key) ?? []).filter((entry) => entry !== normalizedTarget);
     if (updated.length > 0) {
       webhookTargets.set(key, updated);
     } else {
@@ -172,15 +140,9 @@ export function registerGoogleChatWebhookTarget(
   };
 }
 
-function normalizeAudienceType(
-  value?: string | null,
-): GoogleChatAudienceType | undefined {
+function normalizeAudienceType(value?: string | null): GoogleChatAudienceType | undefined {
   const normalized = value?.trim().toLowerCase();
-  if (
-    normalized === "app-url" ||
-    normalized === "app_url" ||
-    normalized === "app"
-  ) {
+  if (normalized === "app-url" || normalized === "app_url" || normalized === "app") {
     return "app-url";
   }
   if (
@@ -241,10 +203,7 @@ export async function handleGoogleChatWebhookRequest(
     authorizationEventObject?: { systemIdToken?: string };
   };
 
-  if (
-    rawObj.commonEventObject?.hostApp === "CHAT" &&
-    rawObj.chat?.messagePayload
-  ) {
+  if (rawObj.commonEventObject?.hostApp === "CHAT" && rawObj.chat?.messagePayload) {
     const chat = rawObj.chat;
     const messagePayload = chat.messagePayload;
     raw = {
@@ -270,22 +229,14 @@ export async function handleGoogleChatWebhookRequest(
     return true;
   }
 
-  if (
-    !event.space ||
-    typeof event.space !== "object" ||
-    Array.isArray(event.space)
-  ) {
+  if (!event.space || typeof event.space !== "object" || Array.isArray(event.space)) {
     res.statusCode = 400;
     res.end("invalid payload");
     return true;
   }
 
   if (eventType === "MESSAGE") {
-    if (
-      !event.message ||
-      typeof event.message !== "object" ||
-      Array.isArray(event.message)
-    ) {
+    if (!event.message || typeof event.message !== "object" || Array.isArray(event.message)) {
       res.statusCode = 400;
       res.end("invalid payload");
       return true;
@@ -332,10 +283,7 @@ export async function handleGoogleChatWebhookRequest(
   return true;
 }
 
-async function processGoogleChatEvent(
-  event: GoogleChatEvent,
-  target: WebhookTarget,
-) {
+async function processGoogleChatEvent(event: GoogleChatEvent, target: WebhookTarget) {
   const eventType = event.type ?? (event as { eventType?: string }).eventType;
   if (eventType !== "MESSAGE") {
     return;
@@ -384,19 +332,13 @@ export function isSenderAllowed(
     if (normalizedEmail && normalized === normalizedEmail) {
       return true;
     }
-    if (
-      normalizedEmail &&
-      normalized.replace(/^users\//i, "") === normalizedEmail
-    ) {
+    if (normalizedEmail && normalized.replace(/^users\//i, "") === normalizedEmail) {
       return true;
     }
     if (normalized.replace(/^users\//i, "") === normalizedSenderId) {
       return true;
     }
-    if (
-      normalized.replace(/^(googlechat|google-chat|gchat):/i, "") ===
-      normalizedSenderId
-    ) {
+    if (normalized.replace(/^(googlechat|google-chat|gchat):/i, "") === normalizedSenderId) {
       return true;
     }
     return false;
@@ -424,9 +366,7 @@ function resolveGroupConfig(params: {
     return { entry: undefined, allowlistConfigured: false };
   }
   const normalizedName = groupName?.trim().toLowerCase();
-  const candidates = [groupId, groupName ?? "", normalizedName ?? ""].filter(
-    Boolean,
-  );
+  const candidates = [groupId, groupName ?? "", normalizedName ?? ""].filter(Boolean);
   let entry = candidates.map((candidate) => entries[candidate]).find(Boolean);
   if (!entry && normalizedName) {
     entry = entries[normalizedName];
@@ -435,17 +375,10 @@ function resolveGroupConfig(params: {
   return { entry: entry ?? fallback, allowlistConfigured: true, fallback };
 }
 
-function extractMentionInfo(
-  annotations: GoogleChatAnnotation[],
-  botUser?: string | null,
-) {
-  const mentionAnnotations = annotations.filter(
-    (entry) => entry.type === "USER_MENTION",
-  );
+function extractMentionInfo(annotations: GoogleChatAnnotation[], botUser?: string | null) {
+  const mentionAnnotations = annotations.filter((entry) => entry.type === "USER_MENTION");
   const hasAnyMention = mentionAnnotations.length > 0;
-  const botTargets = new Set(
-    ["users/app", botUser?.trim()].filter(Boolean) as string[],
-  );
+  const botTargets = new Set(["users/app", botUser?.trim()].filter(Boolean) as string[]);
   const wasMentioned = mentionAnnotations.some((entry) => {
     const userName = entry.userMention?.user?.name;
     if (!userName) {
@@ -487,14 +420,10 @@ async function processMessageWithPipeline(params: {
   config: OpenClawConfig;
   runtime: GoogleChatRuntimeEnv;
   core: GoogleChatCoreRuntime;
-  statusSink?: (patch: {
-    lastInboundAt?: number;
-    lastOutboundAt?: number;
-  }) => void;
+  statusSink?: (patch: { lastInboundAt?: number; lastOutboundAt?: number }) => void;
   mediaMaxMb: number;
 }): Promise<void> {
-  const { event, account, config, runtime, core, statusSink, mediaMaxMb } =
-    params;
+  const { event, account, config, runtime, core, statusSink, mediaMaxMb } = params;
   const space = event.space;
   const message = event.message;
   if (!space || !message) {
@@ -515,11 +444,7 @@ async function processMessageWithPipeline(params: {
   const allowBots = account.config.allowBots === true;
   if (!allowBots) {
     if (sender?.type?.toUpperCase() === "BOT") {
-      logVerbose(
-        core,
-        runtime,
-        `skip bot-authored message (${senderId || "unknown"})`,
-      );
+      logVerbose(core, runtime, `skip bot-authored message (${senderId || "unknown"})`);
       return;
     }
     if (senderId === "users/app") {
@@ -537,8 +462,7 @@ async function processMessageWithPipeline(params: {
   }
 
   const defaultGroupPolicy = config.channels?.defaults?.groupPolicy;
-  const groupPolicy =
-    account.config.groupPolicy ?? defaultGroupPolicy ?? "allowlist";
+  const groupPolicy = account.config.groupPolicy ?? defaultGroupPolicy ?? "allowlist";
   const groupConfigResolved = resolveGroupConfig({
     groupId: spaceId,
     groupName: space.displayName ?? null,
@@ -550,16 +474,11 @@ async function processMessageWithPipeline(params: {
 
   if (isGroup) {
     if (groupPolicy === "disabled") {
-      logVerbose(
-        core,
-        runtime,
-        `drop group message (groupPolicy=disabled, space=${spaceId})`,
-      );
+      logVerbose(core, runtime, `drop group message (groupPolicy=disabled, space=${spaceId})`);
       return;
     }
     const groupAllowlistConfigured = groupConfigResolved.allowlistConfigured;
-    const groupAllowed =
-      Boolean(groupEntry) || Boolean((account.config.groups ?? {})["*"]);
+    const groupAllowed = Boolean(groupEntry) || Boolean((account.config.groups ?? {})["*"]);
     if (groupPolicy === "allowlist") {
       if (!groupAllowlistConfigured) {
         logVerbose(
@@ -570,20 +489,12 @@ async function processMessageWithPipeline(params: {
         return;
       }
       if (!groupAllowed) {
-        logVerbose(
-          core,
-          runtime,
-          `drop group message (not allowlisted, space=${spaceId})`,
-        );
+        logVerbose(core, runtime, `drop group message (not allowlisted, space=${spaceId})`);
         return;
       }
     }
     if (groupEntry?.enabled === false || groupEntry?.allow === false) {
-      logVerbose(
-        core,
-        runtime,
-        `drop group message (space disabled, space=${spaceId})`,
-      );
+      logVerbose(core, runtime, `drop group message (space disabled, space=${spaceId})`);
       return;
     }
 
@@ -594,53 +505,34 @@ async function processMessageWithPipeline(params: {
         groupUsers.map((v) => String(v)),
       );
       if (!ok) {
-        logVerbose(
-          core,
-          runtime,
-          `drop group message (sender not allowed, ${senderId})`,
-        );
+        logVerbose(core, runtime, `drop group message (sender not allowed, ${senderId})`);
         return;
       }
     }
   }
 
   const dmPolicy = account.config.dm?.policy ?? "pairing";
-  const configAllowFrom = (account.config.dm?.allowFrom ?? []).map((v) =>
-    String(v),
-  );
-  const shouldComputeAuth =
-    core.channel.commands.shouldComputeCommandAuthorized(rawBody, config);
+  const configAllowFrom = (account.config.dm?.allowFrom ?? []).map((v) => String(v));
+  const shouldComputeAuth = core.channel.commands.shouldComputeCommandAuthorized(rawBody, config);
   const storeAllowFrom =
     !isGroup && (dmPolicy !== "open" || shouldComputeAuth)
-      ? await core.channel.pairing
-          .readAllowFromStore("googlechat")
-          .catch(() => [])
+      ? await core.channel.pairing.readAllowFromStore("googlechat").catch(() => [])
       : [];
   const effectiveAllowFrom = [...configAllowFrom, ...storeAllowFrom];
-  const commandAllowFrom = isGroup
-    ? groupUsers.map((v) => String(v))
-    : effectiveAllowFrom;
+  const commandAllowFrom = isGroup ? groupUsers.map((v) => String(v)) : effectiveAllowFrom;
   const useAccessGroups = config.commands?.useAccessGroups !== false;
-  const senderAllowedForCommands = isSenderAllowed(
-    senderId,
-    senderEmail,
-    commandAllowFrom,
-  );
+  const senderAllowedForCommands = isSenderAllowed(senderId, senderEmail, commandAllowFrom);
   const commandAuthorized = shouldComputeAuth
     ? core.channel.commands.resolveCommandAuthorizedFromAuthorizers({
         useAccessGroups,
         authorizers: [
-          {
-            configured: commandAllowFrom.length > 0,
-            allowed: senderAllowedForCommands,
-          },
+          { configured: commandAllowFrom.length > 0, allowed: senderAllowedForCommands },
         ],
       })
     : undefined;
 
   if (isGroup) {
-    const requireMention =
-      groupEntry?.requireMention ?? account.config.requireMention ?? true;
+    const requireMention = groupEntry?.requireMention ?? account.config.requireMention ?? true;
     const annotations = message.annotations ?? [];
     const mentionInfo = extractMentionInfo(annotations, account.config.botUser);
     const allowTextCommands = core.channel.commands.shouldHandleTextCommands({
@@ -660,22 +552,14 @@ async function processMessageWithPipeline(params: {
     });
     effectiveWasMentioned = mentionGate.effectiveWasMentioned;
     if (mentionGate.shouldSkip) {
-      logVerbose(
-        core,
-        runtime,
-        `drop group message (mention required, space=${spaceId})`,
-      );
+      logVerbose(core, runtime, `drop group message (mention required, space=${spaceId})`);
       return;
     }
   }
 
   if (!isGroup) {
     if (dmPolicy === "disabled" || account.config.dm?.enabled === false) {
-      logVerbose(
-        core,
-        runtime,
-        `Blocked Google Chat DM from ${senderId} (dmPolicy=disabled)`,
-      );
+      logVerbose(core, runtime, `Blocked Google Chat DM from ${senderId} (dmPolicy=disabled)`);
       return;
     }
 
@@ -683,18 +567,13 @@ async function processMessageWithPipeline(params: {
       const allowed = senderAllowedForCommands;
       if (!allowed) {
         if (dmPolicy === "pairing") {
-          const { code, created } =
-            await core.channel.pairing.upsertPairingRequest({
-              channel: "googlechat",
-              id: senderId,
-              meta: { name: senderName || undefined, email: senderEmail },
-            });
+          const { code, created } = await core.channel.pairing.upsertPairingRequest({
+            channel: "googlechat",
+            id: senderId,
+            meta: { name: senderName || undefined, email: senderEmail },
+          });
           if (created) {
-            logVerbose(
-              core,
-              runtime,
-              `googlechat pairing request sender=${senderId}`,
-            );
+            logVerbose(core, runtime, `googlechat pairing request sender=${senderId}`);
             try {
               await sendGoogleChatMessage({
                 account,
@@ -707,11 +586,7 @@ async function processMessageWithPipeline(params: {
               });
               statusSink?.({ lastOutboundAt: Date.now() });
             } catch (err) {
-              logVerbose(
-                core,
-                runtime,
-                `pairing reply failed for ${senderId}: ${String(err)}`,
-              );
+              logVerbose(core, runtime, `pairing reply failed for ${senderId}: ${String(err)}`);
             }
           }
         } else {
@@ -731,11 +606,7 @@ async function processMessageWithPipeline(params: {
     core.channel.commands.isControlCommandMessage(rawBody, config) &&
     commandAuthorized !== true
   ) {
-    logVerbose(
-      core,
-      runtime,
-      `googlechat: drop control command from ${senderId}`,
-    );
+    logVerbose(core, runtime, `googlechat: drop control command from ${senderId}`);
     return;
   }
 
@@ -753,12 +624,7 @@ async function processMessageWithPipeline(params: {
   let mediaType: string | undefined;
   if (attachments.length > 0) {
     const first = attachments[0];
-    const attachmentData = await downloadAttachment(
-      first,
-      account,
-      mediaMaxMb,
-      core,
-    );
+    const attachmentData = await downloadAttachment(first, account, mediaMaxMb, core);
     if (attachmentData) {
       mediaPath = attachmentData.path;
       mediaType = attachmentData.contentType;
@@ -768,14 +634,10 @@ async function processMessageWithPipeline(params: {
   const fromLabel = isGroup
     ? space.displayName || `space:${spaceId}`
     : senderName || `user:${senderId}`;
-  const storePath = core.channel.session.resolveStorePath(
-    config.session?.store,
-    {
-      agentId: route.agentId,
-    },
-  );
-  const envelopeOptions =
-    core.channel.reply.resolveEnvelopeFormatOptions(config);
+  const storePath = core.channel.session.resolveStorePath(config.session?.store, {
+    agentId: route.agentId,
+  });
+  const envelopeOptions = core.channel.reply.resolveEnvelopeFormatOptions(config);
   const previousTimestamp = core.channel.session.readSessionUpdatedAt({
     storePath,
     sessionKey: route.sessionKey,
@@ -789,8 +651,7 @@ async function processMessageWithPipeline(params: {
     body: rawBody,
   });
 
-  const groupSystemPrompt =
-    groupConfigResolved.entry?.systemPrompt?.trim() || undefined;
+  const groupSystemPrompt = groupConfigResolved.entry?.systemPrompt?.trim() || undefined;
 
   const ctxPayload = core.channel.reply.finalizeInboundContext({
     Body: body,
@@ -829,9 +690,7 @@ async function processMessageWithPipeline(params: {
       ctx: ctxPayload,
     })
     .catch((err) => {
-      runtime.error?.(
-        `googlechat: failed updating session meta: ${String(err)}`,
-      );
+      runtime.error?.(`googlechat: failed updating session meta: ${String(err)}`);
     });
 
   // Typing indicator setup
@@ -904,11 +763,7 @@ async function downloadAttachment(
     return null;
   }
   const maxBytes = Math.max(1, mediaMaxMb) * 1024 * 1024;
-  const downloaded = await downloadGoogleChatMedia({
-    account,
-    resourceName,
-    maxBytes,
-  });
+  const downloaded = await downloadGoogleChatMedia({ account, resourceName, maxBytes });
   const saved = await core.channel.media.saveMediaBuffer(
     downloaded.buffer,
     downloaded.contentType ?? attachment.contentType,
@@ -920,33 +775,17 @@ async function downloadAttachment(
 }
 
 async function deliverGoogleChatReply(params: {
-  payload: {
-    text?: string;
-    mediaUrls?: string[];
-    mediaUrl?: string;
-    replyToId?: string;
-  };
+  payload: { text?: string; mediaUrls?: string[]; mediaUrl?: string; replyToId?: string };
   account: ResolvedGoogleChatAccount;
   spaceId: string;
   runtime: GoogleChatRuntimeEnv;
   core: GoogleChatCoreRuntime;
   config: OpenClawConfig;
-  statusSink?: (patch: {
-    lastInboundAt?: number;
-    lastOutboundAt?: number;
-  }) => void;
+  statusSink?: (patch: { lastInboundAt?: number; lastOutboundAt?: number }) => void;
   typingMessageName?: string;
 }): Promise<void> {
-  const {
-    payload,
-    account,
-    spaceId,
-    runtime,
-    core,
-    config,
-    statusSink,
-    typingMessageName,
-  } = params;
+  const { payload, account, spaceId, runtime, core, config, statusSink, typingMessageName } =
+    params;
   const mediaList = payload.mediaUrls?.length
     ? payload.mediaUrls
     : payload.mediaUrl
@@ -976,9 +815,7 @@ async function deliverGoogleChatReply(params: {
           });
           suppressCaption = Boolean(payload.text?.trim());
         } catch (updateErr) {
-          runtime.error?.(
-            `Google Chat typing update failed: ${String(updateErr)}`,
-          );
+          runtime.error?.(`Google Chat typing update failed: ${String(updateErr)}`);
         }
       }
     }
@@ -1006,10 +843,7 @@ async function deliverGoogleChatReply(params: {
           text: caption,
           thread: payload.replyToId,
           attachments: [
-            {
-              attachmentUploadToken: upload.attachmentUploadToken,
-              contentName: loaded.filename,
-            },
+            { attachmentUploadToken: upload.attachmentUploadToken, contentName: loaded.filename },
           ],
         });
         statusSink?.({ lastOutboundAt: Date.now() });
@@ -1022,16 +856,8 @@ async function deliverGoogleChatReply(params: {
 
   if (payload.text) {
     const chunkLimit = account.config.textChunkLimit ?? 4000;
-    const chunkMode = core.channel.text.resolveChunkMode(
-      config,
-      "googlechat",
-      account.accountId,
-    );
-    const chunks = core.channel.text.chunkMarkdownTextWithMode(
-      payload.text,
-      chunkLimit,
-      chunkMode,
-    );
+    const chunkMode = core.channel.text.resolveChunkMode(config, "googlechat", account.accountId);
+    const chunks = core.channel.text.chunkMarkdownTextWithMode(payload.text, chunkLimit, chunkMode);
     for (let i = 0; i < chunks.length; i++) {
       const chunk = chunks[i];
       try {
@@ -1076,24 +902,15 @@ async function uploadAttachmentForReply(params: {
   });
 }
 
-export function monitorGoogleChatProvider(
-  options: GoogleChatMonitorOptions,
-): () => void {
+export function monitorGoogleChatProvider(options: GoogleChatMonitorOptions): () => void {
   const core = getGoogleChatRuntime();
-  const webhookPath = resolveWebhookPath(
-    options.webhookPath,
-    options.webhookUrl,
-  );
+  const webhookPath = resolveWebhookPath(options.webhookPath, options.webhookUrl);
   if (!webhookPath) {
-    options.runtime.error?.(
-      `[${options.account.accountId}] invalid webhook path`,
-    );
+    options.runtime.error?.(`[${options.account.accountId}] invalid webhook path`);
     return () => {};
   }
 
-  const audienceType = normalizeAudienceType(
-    options.account.config.audienceType,
-  );
+  const audienceType = normalizeAudienceType(options.account.config.audienceType);
   const audience = options.account.config.audience?.trim();
   const mediaMaxMb = options.account.config.mediaMaxMb ?? 20;
 
@@ -1122,15 +939,11 @@ export function resolveGoogleChatWebhookPath(params: {
   account: ResolvedGoogleChatAccount;
 }): string {
   return (
-    resolveWebhookPath(
-      params.account.config.webhookPath,
-      params.account.config.webhookUrl,
-    ) ?? "/googlechat"
+    resolveWebhookPath(params.account.config.webhookPath, params.account.config.webhookUrl) ??
+    "/googlechat"
   );
 }
 
-export function computeGoogleChatMediaMaxMb(params: {
-  account: ResolvedGoogleChatAccount;
-}) {
+export function computeGoogleChatMediaMaxMb(params: { account: ResolvedGoogleChatAccount }) {
   return params.account.config.mediaMaxMb ?? 20;
 }

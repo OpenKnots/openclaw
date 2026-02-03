@@ -177,9 +177,7 @@ describe("subagent registry persistence", () => {
     expect(entry?.requesterOrigin?.channel).toBe("whatsapp");
     expect(entry?.requesterOrigin?.accountId).toBe("legacy-account");
 
-    const after = JSON.parse(await fs.readFile(registryPath, "utf8")) as {
-      version?: number;
-    };
+    const after = JSON.parse(await fs.readFile(registryPath, "utf8")) as { version?: number };
     expect(after.version).toBe(2);
   });
 
