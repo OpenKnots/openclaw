@@ -1,18 +1,17 @@
 #!/usr/bin/env bun
 /**
  * Docs-chat API with RAG (vector search).
- * Env: OPENAI_API_KEY, DOCS_CHAT_DB, PORT, RATE_LIMIT, RATE_WINDOW_MS
+ * Auto-detects Upstash Vector (cloud) or LanceDB (local) based on environment.
+ *
+ * Env: OPENAI_API_KEY (required)
+ *      UPSTASH_VECTOR_REST_URL, UPSTASH_VECTOR_REST_TOKEN (optional, for cloud)
+ *      PORT, RATE_LIMIT, RATE_WINDOW_MS
  */
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import http from "node:http";
 import { Embeddings } from "./rag/embeddings.js";
-import { DocsStore } from "./rag/store.js";
-import { Retriever } from "./rag/retriever.js";
+import { createStore, type IDocsStore, type StoreMode } from "./rag/store-factory.js";
+import { Retriever } from "./rag/retriever-factory.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const defaultDbPath = path.join(__dirname, ".lance-db");
-const dbPath = process.env.DOCS_CHAT_DB || defaultDbPath;
 const port = Number(process.env.PORT || 3001);
 
 // Rate limiting configuration
@@ -78,10 +77,11 @@ if (!apiKey) {
   process.exit(1);
 }
 
-// Initialize RAG components
+// RAG components (initialized async before server starts)
+let store: IDocsStore;
+let storeMode: StoreMode;
+let retriever: Retriever;
 const embeddings = new Embeddings(apiKey);
-const store = new DocsStore(dbPath, embeddings.dimensions);
-const retriever = new Retriever(store, embeddings);
 
 const corsHeaders: Record<string, string> = {
   "Access-Control-Allow-Origin": "*",
@@ -241,28 +241,29 @@ const server = http.createServer(async (req, res) => {
 
   if (req.method === "GET" && (req.url === "/" || req.url === "/health")) {
     const count = await store.count();
-    sendJson(res, 200, { ok: true, chunks: count, mode: "vector" });
+    sendJson(res, 200, { ok: true, chunks: count, mode: storeMode });
     return;
   }
 
   if (req.method === "POST" && req.url === "/chat") {
-    // Apply rate limiting
-    const clientIP = getClientIP(req);
-    const rateCheck = checkRateLimit(clientIP);
+    // Only apply rate limiting in production (Upstash) mode
+    if (storeMode === "upstash") {
+      const clientIP = getClientIP(req);
+      const rateCheck = checkRateLimit(clientIP);
 
-    // Add rate limit headers
-    res.setHeader("X-RateLimit-Limit", RATE_LIMIT);
-    res.setHeader("X-RateLimit-Remaining", Math.max(0, rateCheck.remaining));
-    res.setHeader("X-RateLimit-Reset", Math.ceil(rateCheck.resetAt / 1000));
+      res.setHeader("X-RateLimit-Limit", RATE_LIMIT);
+      res.setHeader("X-RateLimit-Remaining", Math.max(0, rateCheck.remaining));
+      res.setHeader("X-RateLimit-Reset", Math.ceil(rateCheck.resetAt / 1000));
 
-    if (!rateCheck.allowed) {
-      const retryAfter = Math.ceil((rateCheck.resetAt - Date.now()) / 1000);
-      res.setHeader("Retry-After", retryAfter);
-      sendJson(res, 429, {
-        error: "Too many requests. Please wait before trying again.",
-        retryAfter,
-      });
-      return;
+      if (!rateCheck.allowed) {
+        const retryAfter = Math.ceil((rateCheck.resetAt - Date.now()) / 1000);
+        res.setHeader("Retry-After", retryAfter);
+        sendJson(res, 429, {
+          error: "Too many requests. Please wait before trying again.",
+          retryAfter,
+        });
+        return;
+      }
     }
 
     await handleChat(req, res);
@@ -272,12 +273,28 @@ const server = http.createServer(async (req, res) => {
   sendJson(res, 404, { error: "Not found" });
 });
 
-server.listen(port, async () => {
-  const count = await store.count();
-  console.error(
-    `docs-chat API (RAG) running at http://localhost:${port} (chunks: ${count})`,
-  );
-  console.error(
-    `Rate limit: ${RATE_LIMIT} requests per ${RATE_WINDOW_MS / 1000}s window`,
-  );
+// Initialize store and start server
+async function main() {
+  const result = await createStore();
+  store = result.store;
+  storeMode = result.mode;
+  retriever = new Retriever(store, embeddings);
+
+  server.listen(port, async () => {
+    const count = await store.count();
+    const modeName = storeMode === "upstash" ? "Upstash Vector" : "LanceDB (local)";
+    console.error(
+      `docs-chat API (${modeName}) running at http://localhost:${port} (chunks: ${count})`,
+    );
+    if (storeMode === "upstash") {
+      console.error(
+        `Rate limit: ${RATE_LIMIT} requests per ${RATE_WINDOW_MS / 1000}s window`,
+      );
+    }
+  });
+}
+
+main().catch((err) => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
 });

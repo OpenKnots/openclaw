@@ -73,4 +73,5 @@ USER.md
 .serena/
 
 # docs-chat vector database
-scripts/docs-chat/.lance-db/
+.lancedb
+.lance-db

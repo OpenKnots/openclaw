@@ -3,33 +3,36 @@
  * Build a vector search index from docs/*.md for the docs-chat RAG pipeline.
  * Usage: bun build-vector-index.ts [--docs path/to/docs] [--base-url https://docs.openclaw.ai]
  *
- * Requires: OPENAI_API_KEY environment variable
+ * Requires environment variables:
+ *   OPENAI_API_KEY - for embeddings
+ *
+ * Optional (for Upstash cloud store):
+ *   UPSTASH_VECTOR_REST_URL - Upstash Vector endpoint
+ *   UPSTASH_VECTOR_REST_TOKEN - Upstash Vector auth token
+ *
+ * If Upstash credentials are not set, falls back to LanceDB (local file store).
  */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
 import { Embeddings } from "./rag/embeddings.js";
-import { DocsStore, type DocsChunk } from "./rag/store.js";
+import { createStore, detectStoreMode, type DocsChunk } from "./rag/store-factory.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "../..");
 const defaultDocsDir = path.join(root, "docs");
-const defaultDbPath = path.join(__dirname, ".lance-db");
 
 // Parse CLI arguments
 const args = process.argv.slice(2);
 let docsDir = defaultDocsDir;
 let baseUrl = "https://docs.openclaw.ai";
-let dbPath = defaultDbPath;
 
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--docs" && args[i + 1]) {
     docsDir = path.resolve(args[++i]);
   } else if (args[i] === "--base-url" && args[i + 1]) {
     baseUrl = args[++i].replace(/\/$/, "");
-  } else if (args[i] === "--db" && args[i + 1]) {
-    dbPath = path.resolve(args[++i]);
   }
 }
 
@@ -255,13 +258,18 @@ async function main() {
     vector: vectors[i],
   }));
 
-  // Store in LanceDB
-  console.error(`Storing in LanceDB at: ${dbPath}`);
-  const store = new DocsStore(dbPath, embeddings.dimensions);
+  // Store in vector database (auto-detects Upstash or LanceDB)
+  const storeMode = detectStoreMode();
+  console.error(
+    `Storing in ${storeMode === "upstash" ? "Upstash Vector" : "LanceDB (local)"}...`,
+  );
+  const { store, mode } = await createStore();
   await store.replaceAll(docsChunks);
 
   const count = await store.count();
-  console.error(`Done! Stored ${count} chunks in vector database.`);
+  console.error(
+    `Done! Stored ${count} chunks in ${mode === "upstash" ? "Upstash Vector" : "LanceDB"}.`,
+  );
 }
 
 main().catch((err) => {
