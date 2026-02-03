@@ -6,19 +6,17 @@
   const isDocsSite = hostname === "localhost" || hostname === "127.0.0.1" ||
     hostname.includes("docs.openclaw") || hostname.endsWith(".mintlify.app");
   const assetsBase = isDocsSite ? "" : "https://docs.openclaw.ai";
-  const apiBase = window.DOCS_CHAT_API_URL || "https://claw-api.openknot.ai/api";
+  const apiBase = "https://claw-api.openknot.ai/api";
 
-  // Load vendored @create-markdown/preview@0.1.0 for markdown rendering
-  // Uses script tag + global to avoid ES module issues with Mintlify's bundler
+  // Load @create-markdown/preview for markdown rendering (via CDN)
   let markdownToHTML = null;
   const loadMarkdownLib = () => {
-    // Check if already loaded (e.g., via separate script tag)
     if (window.CreateMarkdownPreview) {
       markdownToHTML = window.CreateMarkdownPreview.markdownToHTML;
       return;
     }
     const script = document.createElement("script");
-    script.src = `${assetsBase}/assets/create-markdown-preview.js`;
+    script.src = "https://unpkg.com/@create-markdown/preview@0.1.0/dist/index.global.js";
     script.onload = () => {
       if (window.CreateMarkdownPreview) {
         markdownToHTML = window.CreateMarkdownPreview.markdownToHTML;
